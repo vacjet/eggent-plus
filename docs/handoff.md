@@ -619,4 +619,13 @@ python3 scripts/install-template.py --template seo --project <id> --data /app/da
 `scripts/install-themes.sh` (не перезаписывает чужой `current.css` без `--force`).
 
 `./check.sh` — зелёный, `check-touched` — 13 патчей / 85 файлов, наложение на чистый `v0.8.0` — ok,
-`tsc --noEmit` — 0, тест темы 6/6. Живой прогон — после сборки образа.
+`tsc --noEmit` — 0, тест темы 6/6.
+
+Живой прогон (`:3103`, образ `test61` с 13 патчами, чистые данные):
+
+| Шаг | Результат |
+|---|---|
+| `install-themes.sh … warm` | в `data/themes` три файла, `current.css` = тёплая |
+| HTML экрана | `<link rel="stylesheet" href="/api/theme.css" data-eggent-theme=""/>` |
+| `GET /api/theme.css` | `200`, `text/css`, 1147 байт, в теле `--background: oklch(0.985 0.012 85)` |
+| `--off` (удалить `current.css`) | маршрут `404`, ссылки в HTML нет — оформление сборки вернулось |
