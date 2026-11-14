@@ -11,7 +11,8 @@ for f in README.md AGENTS.md context.md memory.md TOUCHED.md .gitignore patches/
          scripts/check-i18n.py scripts/check-touched.py tests/i18n/en-reference.json \
          scripts/install-skills.sh docs/stage-4-plan.md docs/stage-5-plan.md \
          scripts/check-specialists.py scripts/check-private.py \
-         scripts/install-template.py scripts/check-templates.py \
+         scripts/install-template.py scripts/check-templates.py scripts/memory.py \
+         skills/typed-memory/SKILL.md docs/stage-6-plan.md \
          templates/seo/template.json templates/seo/project/check.sh \
          templates/seo/project/AGENTS.md templates/seo/README.md \
          bundled-skills/seo/SKILL.md bundled-skills/seo/specialist.json \
@@ -137,6 +138,14 @@ if [[ -f upstream/scripts/test-specialist-choice.ts ]] && command -v node >/dev/
 else
   echo "специалист чата: тест пропущен (нет патча в upstream/)" >&2
 fi
+
+# Типизированная память: формат и негативные кейсы скрипта.
+python3 scripts/memory.py --self-test >/dev/null
+for memory_file in templates/*/project/memory.md; do
+  [ -f "$memory_file" ] || continue
+  python3 scripts/memory.py check "$memory_file" >/dev/null || { echo "память шаблона: формат нарушен: $memory_file" >&2; exit 1; }
+done
+echo "типизированная память: ok"
 
 # Шаблоны проектов: формат, установка в пустой каталог, проверка и её падения.
 python3 scripts/check-templates.py --self-test >/dev/null

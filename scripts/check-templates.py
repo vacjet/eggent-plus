@@ -19,6 +19,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import shutil
 import subprocess
@@ -31,6 +32,7 @@ TEMPLATES = ROOT / "templates"
 BUNDLED = ROOT / "bundled-skills"
 SKILLS = ROOT / "skills"
 INSTALL = ROOT / "scripts" / "install-template.py"
+MEMORY = ROOT / "scripts" / "memory.py"
 
 REQUIRED_KEYS = ("id", "title", "summary", "project")
 REQUIRED_FILES = ("AGENTS.md", "context.md", "memory.md", "check.sh")
@@ -38,6 +40,16 @@ REQUIRED_FILES = ("AGENTS.md", "context.md", "memory.md", "check.sh")
 
 class TemplateError(Exception):
     """Шаблон не проходит проверку."""
+
+
+def memory_problems(text: str) -> list[str]:
+    """Проверка `memory.md` тем же кодом, что и у людей: `scripts/memory.py`."""
+    spec = importlib.util.spec_from_file_location("eggent_memory", MEMORY)
+    if spec is None or spec.loader is None:
+        return ["не загружается scripts/memory.py"]
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return list(module.problems_of(text))
 
 
 def problems_of(directory: Path) -> list[str]:
@@ -66,6 +78,11 @@ def problems_of(directory: Path) -> list[str]:
     check = project / (meta.get("check") or "check.sh")
     if check.is_file() and not (check.stat().st_mode & 0o111):
         problems.append(f"{directory.name}: {check.name} не исполняемый")
+
+    memory = project / "memory.md"
+    if memory.is_file():
+        for problem in memory_problems(memory.read_text(encoding="utf-8")):
+            problems.append(f"{directory.name}: память шаблона — {problem}")
 
     for folder in meta.get("folders") or []:
         if not (project / folder).is_dir():
