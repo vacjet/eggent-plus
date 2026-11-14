@@ -1,0 +1,30 @@
+/* Лесная тема: приглушённая зелёная подложка, тёмно-зелёный акцент. */
+:root {
+  --background: oklch(0.975 0.012 150);
+  --card: oklch(0.99 0.008 150);
+  --popover: oklch(0.99 0.008 150);
+  --foreground: oklch(0.22 0.02 150);
+  --muted: oklch(0.95 0.014 150);
+  --muted-foreground: oklch(0.45 0.02 150);
+  --primary: oklch(0.38 0.07 155);
+  --primary-foreground: oklch(0.985 0.008 150);
+  --accent: oklch(0.93 0.02 150);
+  --accent-foreground: oklch(0.26 0.03 150);
+  --border: oklch(0.85 0.015 150);
+  --input: oklch(0.7 0.015 150);
+  --ring: oklch(0.55 0.05 155);
+}
+
+.dark {
+  --background: oklch(0.19 0.015 155);
+  --card: oklch(0.23 0.015 155);
+  --popover: oklch(0.23 0.015 155);
+  --foreground: oklch(0.94 0.01 150);
+  --muted: oklch(0.26 0.014 155);
+  --muted-foreground: oklch(0.74 0.015 150);
+  --primary: oklch(0.8 0.07 155);
+  --primary-foreground: oklch(0.2 0.02 155);
+  --border: oklch(0.33 0.014 155);
+  --input: oklch(0.4 0.014 155);
+  --ring: oklch(0.6 0.05 155);
+}

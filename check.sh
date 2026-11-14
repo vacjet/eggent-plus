@@ -13,6 +13,7 @@ for f in README.md AGENTS.md context.md memory.md TOUCHED.md .gitignore patches/
          scripts/check-specialists.py scripts/check-private.py \
          scripts/install-template.py scripts/check-templates.py scripts/memory.py \
          scripts/export-chat.py scripts/diagnose.py docs/stage-7-plan.md \
+         scripts/install-themes.sh docker/themes/warm.css docker/themes/contrast.css docker/themes/forest.css \
          skills/typed-memory/SKILL.md docs/stage-6-plan.md \
          templates/seo/template.json templates/seo/project/check.sh \
          templates/seo/project/AGENTS.md templates/seo/README.md \
@@ -26,6 +27,7 @@ for f in README.md AGENTS.md context.md memory.md TOUCHED.md .gitignore patches/
          patches/0007-soft-limit.patch \
          patches/0014-specialist-autoselect.patch patches/0015-build-info-image.patch \
          patches/0016-card-proof.patch patches/0017-file-review.patch patches/0018-command-policy.patch \
+         patches/0019-theme-file.patch \
          .github/workflows/patches.yml docker/Dockerfile; do
   if [[ ! -f "$f" ]]; then
     echo "нет файла: $f" >&2
@@ -141,6 +143,18 @@ else
   echo "специалист чата: тест пропущен (нет патча в upstream/)" >&2
 fi
 
+# Тема как файл: что считается темой (без сети и без данных).
+if [[ -f upstream/scripts/test-theme-file.ts ]] && command -v node >/dev/null; then
+  if ! node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types \
+      --import ./upstream/scripts/alias-loader-register.mjs upstream/scripts/test-theme-file.ts >/dev/null; then
+    echo "тема как файл: тест упал" >&2
+    exit 1
+  fi
+  echo "тема как файл: ok"
+else
+  echo "тема как файл: тест пропущен (нет патча в upstream/)" >&2
+fi
+
 # Политика команд: что спрашивать, что отказывать, что пропускать.
 if [[ -f upstream/scripts/test-command-policy.ts ]] && command -v node >/dev/null; then
   if ! node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types \
@@ -172,6 +186,25 @@ for memory_file in templates/*/project/memory.md; do
   python3 scripts/memory.py check "$memory_file" >/dev/null || { echo "память шаблона: формат нарушен: $memory_file" >&2; exit 1; }
 done
 echo "типизированная память: ok"
+
+# Темы: поставляемые файлы — валидный CSS с переменными, не страница.
+for theme in docker/themes/*.css; do
+  [ -f "$theme" ] || continue
+  python3 - "$theme" <<'PY2' || exit 1
+import re, sys
+path = sys.argv[1]
+css = open(path, encoding="utf-8").read()
+problems = []
+if "<" in css and re.search(r"<\s*(script|iframe|style)", css, re.I): problems.append("похоже на страницу, а не CSS")
+if "{" not in css: problems.append("нет ни одного правила")
+if not re.search(r"--(background|foreground)", css): problems.append("не переопределяет переменные темы")
+if len(css.encode()) > 256 * 1024: problems.append("слишком большой")
+if problems:
+    print(f"{path}: " + "; ".join(problems), file=sys.stderr)
+    sys.exit(1)
+PY2
+done
+echo "темы: ok"
 
 # Выгрузка чатов и диагностика: негативные кейсы самих скриптов.
 python3 scripts/export-chat.py --self-test >/dev/null && echo "выгрузка чатов: ok"

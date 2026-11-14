@@ -46,6 +46,10 @@
 | `src/lib/pi/command-policy.ts` | новый файл: правила deny/ask/allow для команд оболочки и исключения из политики | command-policy |
 | `src/lib/pi/interactive-bash-tool.ts` | проверка команды до запуска: отказ, вопрос человеку, запуск | command-policy |
 | `scripts/test-command-policy.ts` | новый файл: 25 кейсов правил и исключений | command-policy |
+| `src/lib/themes/current.ts` | новый файл: тема как файл `data/themes/current.css` и проверка, что это CSS | theme-file |
+| `src/app/api/theme.css/route.ts` | новый маршрут: отдаёт тему странице | theme-file |
+| `src/app/layout.tsx` | ссылка на тему в `<head>`, когда файл есть | theme-file |
+| `scripts/test-theme-file.ts` | новый файл: 6 кейсов «что считается темой» | theme-file |
 | `src/lib/specialists/choice.ts` | новый файл: правила выбора специалиста, промпт, разбор ответа модели | specialist-autoselect |
 | `src/lib/specialists/catalog.ts` | новый файл: специалисты, установленные в проекте (`specialist.json` рядом со скиллом) | specialist-autoselect |
 | `src/lib/specialists/select.ts` | новый файл: один вызов модели без инструментов, таймаут, выбор модели | specialist-autoselect |

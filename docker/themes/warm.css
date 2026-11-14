@@ -1,0 +1,31 @@
+/* Тёплая тема: бумажный фон вместо белого, коричневый акцент.
+   Только переменные — остальное наследуется, поэтому тема не ломает вёрстку. */
+:root {
+  --background: oklch(0.985 0.012 85);
+  --card: oklch(0.995 0.008 85);
+  --popover: oklch(0.995 0.008 85);
+  --foreground: oklch(0.22 0.02 60);
+  --muted: oklch(0.955 0.014 85);
+  --muted-foreground: oklch(0.48 0.02 60);
+  --primary: oklch(0.42 0.08 45);
+  --primary-foreground: oklch(0.985 0.008 85);
+  --accent: oklch(0.94 0.02 80);
+  --accent-foreground: oklch(0.28 0.03 55);
+  --border: oklch(0.86 0.02 80);
+  --input: oklch(0.72 0.02 75);
+  --ring: oklch(0.6 0.05 55);
+}
+
+.dark {
+  --background: oklch(0.2 0.012 65);
+  --card: oklch(0.24 0.012 65);
+  --popover: oklch(0.24 0.012 65);
+  --foreground: oklch(0.94 0.01 80);
+  --muted: oklch(0.27 0.012 65);
+  --muted-foreground: oklch(0.72 0.015 75);
+  --primary: oklch(0.82 0.06 70);
+  --primary-foreground: oklch(0.22 0.02 60);
+  --border: oklch(0.34 0.012 65);
+  --input: oklch(0.42 0.012 65);
+  --ring: oklch(0.6 0.04 70);
+}

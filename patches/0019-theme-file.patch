@@ -1,0 +1,144 @@
+diff --git a/scripts/test-theme-file.ts b/scripts/test-theme-file.ts
+new file mode 100644
+index 0000000..a4184ad
+--- /dev/null
++++ b/scripts/test-theme-file.ts
+@@ -0,0 +1,36 @@
++/**
++ * Checks what counts as a theme file: a small CSS with variables, and not a page.
++ *
++ * Run with Node 22:
++ *   node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types \
++ *     --import ./scripts/alias-loader-register.mjs scripts/test-theme-file.ts
++ */
++import assert from "node:assert/strict";
++import { themeProblem } from "../src/lib/themes/current.ts";
++
++let failed = 0;
++let ran = 0;
++function check(name: string, fn: () => void): void {
++  ran += 1;
++  try {
++    fn();
++    console.log(`  ok    ${name}`);
++  } catch (error) {
++    failed += 1;
++    console.log(`  FAIL  ${name}: ${error instanceof Error ? error.message : String(error)}`);
++  }
++}
++
++const good = ":root { --background: oklch(1 0 0); }\n.dark { --foreground: oklch(0.2 0 0); }\n";
++
++console.log("что считается темой:\n");
++
++check("обычная тема проходит", () => assert.equal(themeProblem(good), null));
++check("пустой файл — не тема", () => assert.equal(themeProblem("   "), "empty"));
++check("текст без правил — не тема", () => assert.equal(themeProblem("hello"), "not-css"));
++check("страница с script — не тема", () => assert.equal(themeProblem("<script>alert(1)</script>"), "not-css"));
++check("iframe — не тема", () => assert.equal(themeProblem("<iframe src=x></iframe>"), "not-css"));
++check("слишком большой файл — не тема", () => assert.equal(themeProblem(`:root{${"a".repeat(300_000)}}`), "too-large"));
++
++console.log(`\n${ran - failed}/${ran} проверок пройдено`);
++if (failed > 0) process.exit(1);
+diff --git a/src/app/api/theme.css/route.ts b/src/app/api/theme.css/route.ts
+new file mode 100644
+index 0000000..6a875a4
+--- /dev/null
++++ b/src/app/api/theme.css/route.ts
+@@ -0,0 +1,22 @@
++import { currentTheme } from "@/lib/themes/current";
++
++/**
++ * The theme file itself, served to the page that links it.
++ *
++ * A route rather than a static file because the theme lives in `data/`, which is
++ * the person's own directory and outlives the image. No theme is a normal state:
++ * the answer is 404 and the interface keeps its own colours.
++ */
++export async function GET() {
++  const theme = await currentTheme();
++  if (!theme) return new Response("/* no theme */", { status: 404, headers: { "Content-Type": "text/css; charset=utf-8" } });
++  return new Response(theme.css, {
++    headers: {
++      "Content-Type": "text/css; charset=utf-8",
++      // The file can be switched at any time by a copy; a minute of caching is
++      // enough to keep the page from asking on every navigation.
++      "Cache-Control": "public, max-age=60",
++      "X-Content-Type-Options": "nosniff",
++    },
++  });
++}
+diff --git a/src/app/layout.tsx b/src/app/layout.tsx
+index a1b89bc..cfec311 100644
+--- a/src/app/layout.tsx
++++ b/src/app/layout.tsx
+@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
+ import { unstable_noStore as noStore } from "next/cache";
+ import { headers } from "next/headers";
+ import { getSettings } from "@/lib/storage/settings-store";
++import { currentTheme } from "@/lib/themes/current";
+ import { I18nProvider } from "@/i18n/provider";
+ import { normalizeLocalePreference, resolveLocalePreference } from "@/i18n/locales";
+ import "./globals.css";
+@@ -32,9 +33,15 @@ export default async function RootLayout({
+   const requestHeaders = await headers();
+   const localePreference = normalizeLocalePreference(settings.general.language);
+   const locale = resolveLocalePreference(localePreference, requestHeaders.get("accept-language"));
++  // A theme is a file in the person's data directory; without one there is no
++  // link and the interface keeps its own colours.
++  const theme = await currentTheme();
+ 
+   return (
+     <html lang={locale} className={settings.general.darkMode ? "dark" : undefined}>
++      <head>
++        {theme ? <link rel="stylesheet" href="/api/theme.css" data-eggent-theme="" /> : null}
++      </head>
+       <body
+         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+       >
+diff --git a/src/lib/themes/current.ts b/src/lib/themes/current.ts
+new file mode 100644
+index 0000000..95ac1a5
+--- /dev/null
++++ b/src/lib/themes/current.ts
+@@ -0,0 +1,40 @@
++import fs from "node:fs/promises";
++import path from "node:path";
++
++/**
++ * The theme in use, as a file the person puts in `data/themes/current.css`.
++ *
++ * There is no theme engine and no marketplace: the interface is styled by CSS
++ * variables, so a theme is a file that overrides a few of them. Keeping it in
++ * `data/` means it survives an image update, and calling it `current.css` means
++ * switching is one copy - which is the whole feature.
++ */
++
++/** Bigger than any theme needs to be; a limit keeps a stray file from being the page. */
++const MAX_THEME_BYTES = 256 * 1024;
++
++export function themeFile(): string {
++  return path.join(process.cwd(), "data", "themes", "current.css");
++}
++
++/** Why this text is not a theme, or null when it is one. Pure, so it can be tested. */
++export function themeProblem(css: string): string | null {
++  if (!css.trim()) return "empty";
++  if (Buffer.byteLength(css, "utf-8") > MAX_THEME_BYTES) return "too-large";
++  if (/<\s*script|<\s*iframe|<\s*style/i.test(css)) return "not-css";
++  if (!css.includes("{")) return "not-css";
++  return null;
++}
++
++/** The theme file, or null when none is set. */
++export async function currentTheme(): Promise<{ css: string; mtimeMs: number } | null> {
++  try {
++    const file = themeFile();
++    const stat = await fs.stat(file);
++    const css = await fs.readFile(file, "utf-8");
++    if (themeProblem(css)) return null;
++    return { css, mtimeMs: stat.mtimeMs };
++  } catch {
++    return null;
++  }
++}

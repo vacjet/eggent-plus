@@ -1,0 +1,15 @@
+/* Тема высокой контрастности: тёмный текст и почти чёрные границы.
+   Для людей, которым обычный серый на белом читается плохо. */
+:root {
+  --background: oklch(1 0 0);
+  --card: oklch(1 0 0);
+  --popover: oklch(1 0 0);
+  --foreground: oklch(0.12 0 0);
+  --muted: oklch(0.94 0 0);
+  --muted-foreground: oklch(0.32 0 0);
+  --primary: oklch(0.12 0 0);
+  --primary-foreground: oklch(1 0 0);
+  --border: oklch(0.45 0 0);
+  --input: oklch(0.4 0 0);
+  --ring: oklch(0.4 0 0);
+}
