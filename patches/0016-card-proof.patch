@@ -1,0 +1,242 @@
+diff --git a/src/app/api/board/cards/[id]/route.ts b/src/app/api/board/cards/[id]/route.ts
+index d458d93..865ba42 100644
+--- a/src/app/api/board/cards/[id]/route.ts
++++ b/src/app/api/board/cards/[id]/route.ts
+@@ -40,11 +40,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
+       ...(typeof body.home === "string" ? { home: body.home } : {}),
+     };
+     if (Object.keys(edits).length > 0) card = await editCard(id, edits, "person");
+-    const move = body.move && typeof body.move === "object" ? (body.move as { to?: unknown; position?: unknown }) : null;
++    const move = body.move && typeof body.move === "object" ? (body.move as { to?: unknown; position?: unknown; proof?: unknown }) : null;
+     if (move) {
+       const to = MOVE_TARGETS.find((target) => target === move.to);
+       if (!to) return jsonError("Unknown column", 400);
+-      card = await moveCard(id, to, typeof move.position === "number" ? { position: move.position } : {});
++      card = await moveCard(id, to, {
++        ...(typeof move.position === "number" ? { position: move.position } : {}),
++        ...(typeof move.proof === "string" ? { proof: move.proof } : {}),
++      });
+     }
+     if (!card) card = await getCard(id);
+     if (!card) return jsonError("No such card", 404);
+diff --git a/src/components/board/card-sheet.tsx b/src/components/board/card-sheet.tsx
+index 44a69ec..c594b8d 100644
+--- a/src/components/board/card-sheet.tsx
++++ b/src/components/board/card-sheet.tsx
+@@ -373,6 +373,10 @@ function CardActions({
+   onMoveWithin: (card: BoardCard, direction: -1 | 1) => void;
+ }) {
+   const { t } = useI18n();
++  // Closing a card asks what checked it: the run ending is not a result, and a
++  // board of "done" that nobody can account for is worse than an open card.
++  const [askingProof, setAskingProof] = useState(false);
++  const [proofDraft, setProofDraft] = useState("");
+   const remove = () => {
+     if (!window.confirm(t("board.action.deleteConfirm", { title: card.title }))) return;
+     void act(() => board.deleteCard(card.id), true);
+@@ -454,10 +458,39 @@ function CardActions({
+       return (
+         <>
+           {card.waiting?.reason === "review" ? (
+-            <Button size="sm" disabled={busy} onClick={() => act(() => board.moveCard(card.id, "done"))}>
+-              <CheckCheck aria-hidden />
+-              {t("board.action.accept")}
+-            </Button>
++            askingProof ? (
++              <div className="flex w-full flex-col gap-2 rounded-md border p-2">
++                <label className="text-xs text-muted-foreground" htmlFor="card-proof">
++                  {t("board.proof.label")}
++                </label>
++                <textarea
++                  id="card-proof"
++                  value={proofDraft}
++                  onChange={(event) => setProofDraft(event.target.value)}
++                  placeholder={t("board.proof.placeholder")}
++                  rows={2}
++                  className="w-full resize-none rounded-md border bg-transparent px-2 py-1.5 text-sm focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none"
++                />
++                <div className="flex gap-2">
++                  <Button
++                    size="sm"
++                    disabled={busy || !proofDraft.trim()}
++                    onClick={() => act(() => board.moveCard(card.id, "done", undefined, proofDraft.trim()), true)}
++                  >
++                    <CheckCheck aria-hidden />
++                    {t("board.action.accept")}
++                  </Button>
++                  <Button size="sm" variant="ghost" disabled={busy} onClick={() => setAskingProof(false)}>
++                    {t("board.proof.cancel")}
++                  </Button>
++                </div>
++              </div>
++            ) : (
++              <Button size="sm" disabled={busy} onClick={() => setAskingProof(true)}>
++                <CheckCheck aria-hidden />
++                {t("board.action.accept")}
++              </Button>
++            )
+           ) : null}
+           {card.waiting?.reason === "question" ? (
+             // The answer above is the way on; this is for a question the person would rather leave to the agent.
+diff --git a/src/i18n/messages.ru.ts b/src/i18n/messages.ru.ts
+index 44fb7e1..38834bc 100644
+--- a/src/i18n/messages.ru.ts
++++ b/src/i18n/messages.ru.ts
+@@ -1489,6 +1489,11 @@ export const ruMessages: Record<string, string> = {
+   "board.action.moveUp": "Выше",
+   "board.action.moveDown": "Ниже",
+   "board.action.menu": "Действия: {title}",
++  "board.action.close": "Закрыть карточку",
++  "board.proof.label": "Чем проверено?",
++  "board.proof.placeholder": "Например: прочитал ответ, цифры сходятся с файлом данных от 14.11",
++  "board.proof.cancel": "Отмена",
++  "board.error.proofRequired": "Карточка не закрывается, пока не сказано, чем проверено.",
+   "board.chatBanner": "Этот чат — карточка на доске.",
+   "board.chatBanner.status": "Сейчас: {status}.",
+   "board.chatBanner.open": "Открыть доску",
+diff --git a/src/i18n/messages.ts b/src/i18n/messages.ts
+index f8c4944..7018a7d 100644
+--- a/src/i18n/messages.ts
++++ b/src/i18n/messages.ts
+@@ -1522,6 +1522,11 @@ const enMessages = {
+   "board.action.moveUp": "Move up",
+   "board.action.moveDown": "Move down",
+   "board.action.menu": "Actions for {title}",
++  "board.action.close": "Close the card",
++  "board.proof.label": "What checked it?",
++  "board.proof.placeholder": "For example: read the answer, the numbers match the data file of 14.11",
++  "board.proof.cancel": "Cancel",
++  "board.error.proofRequired": "A card is not done until you say what checked it.",
+   "board.chatBanner": "This conversation is a card on the board.",
+   "board.chatBanner.status": "Now: {status}.",
+   "board.chatBanner.open": "Open the board",
+diff --git a/src/lib/board/cards.ts b/src/lib/board/cards.ts
+index fce6656..4366830 100644
+--- a/src/lib/board/cards.ts
++++ b/src/lib/board/cards.ts
+@@ -209,7 +209,11 @@ export type MoveTarget = CardStatus | "archived" | "unarchived";
+  * that never ran, its task; for one that stopped, to carry on; for a question
+  * nobody answered, to decide; for a finished one, to do it again.
+  */
+-export async function moveCard(id: string, to: MoveTarget, options: { position?: number } = {}): Promise<BoardCard> {
++export async function moveCard(
++  id: string,
++  to: MoveTarget,
++  options: { position?: number; proof?: string } = {}
++): Promise<BoardCard> {
+   const card = await requireCard(id);
+   if (to !== card.status && to !== "archived" && to !== "unarchived") refuseWhileRunning(card);
+   if (to === "running") throw new BoardError("invalid", "A card starts by being put in the queue.", "board.error.moveRunning");
+@@ -243,6 +247,8 @@ export async function moveCard(id: string, to: MoveTarget, options: { position?:
+         ...current,
+         status: "queued",
+         position,
++        // A new run is a new question: what checked it last time is history.
++        proof: undefined,
+         next,
+         waiting: undefined,
+         question: current.waiting?.reason === "question" ? undefined : current.question,
+@@ -253,7 +259,27 @@ export async function moveCard(id: string, to: MoveTarget, options: { position?:
+       };
+     }
+     if (to === "done") {
+-      return { ...current, status: "done", position, waiting: undefined, question: undefined, retryAt: undefined, doneAt: now, archived: undefined };
++      // Closed means checked: the run ending is not a result. The sentence is the
++      // person's, and it is what a board of "done" is worth later on.
++      const proof = (options.proof ?? "").replace(/\s+/g, " ").trim().slice(0, 500);
++      if (!proof) {
++        throw new BoardError(
++          "invalid",
++          "A card is not done until you say what checked it.",
++          "board.error.proofRequired"
++        );
++      }
++      return {
++        ...current,
++        status: "done",
++        position,
++        waiting: undefined,
++        question: undefined,
++        retryAt: undefined,
++        doneAt: now,
++        archived: undefined,
++        proof: { text: proof, at: now },
++      };
+     }
+     if (to === "inbox") {
+       return { ...current, status: "inbox", position, waiting: undefined, retryAt: undefined, archived: undefined };
+diff --git a/src/lib/board/client.ts b/src/lib/board/client.ts
+index 7530c53..e9c961d 100644
+--- a/src/lib/board/client.ts
++++ b/src/lib/board/client.ts
+@@ -67,10 +67,12 @@ export function editCard(
+ 
+ export type MoveTo = "inbox" | "queued" | "done" | "archived" | "unarchived";
+ 
+-export function moveCard(id: string, to: MoveTo, position?: number): Promise<{ card: BoardCard }> {
++export function moveCard(id: string, to: MoveTo, position?: number, proof?: string): Promise<{ card: BoardCard }> {
+   return request(`/api/board/cards/${encodeURIComponent(id)}`, {
+     method: "PATCH",
+-    body: JSON.stringify({ move: { to, ...(position !== undefined ? { position } : {}) } }),
++    body: JSON.stringify({
++      move: { to, ...(position !== undefined ? { position } : {}), ...(proof ? { proof } : {}) },
++    }),
+   });
+ }
+ 
+diff --git a/src/lib/board/store.ts b/src/lib/board/store.ts
+index 44ffb5b..f0feaba 100644
+--- a/src/lib/board/store.ts
++++ b/src/lib/board/store.ts
+@@ -75,6 +75,8 @@ function isoOr(value: unknown, fallback: string): string {
+   return typeof value === "string" && Number.isFinite(Date.parse(value)) ? value : fallback;
+ }
+ 
++const MAX_PROOF_CHARS = 500;
++
+ const WAITING_REASONS: readonly WaitingReason[] = ["question", "failed", "stalled", "stopped", "refused", "review", "interrupted"];
+ const RUN_OUTCOMES = ["done", "question", "failed", "stalled", "stopped", "refused", "interrupted"] as const;
+ 
+@@ -146,6 +148,9 @@ export function normalizeCard(value: unknown): BoardCard | null {
+       ? { createdFrom: { chatId: raw.createdFrom.chatId.slice(0, 80), ...(typeof raw.createdFrom.title === "string" ? { title: clip(raw.createdFrom.title, 200) } : {}) } }
+       : {}),
+     ...(raw.review === true ? { review: true } : {}),
++    ...(raw.proof && typeof raw.proof.text === "string" && raw.proof.text.trim()
++      ? { proof: { text: clip(raw.proof.text, MAX_PROOF_CHARS), at: isoOr(raw.proof.at, now) } }
++      : {}),
+     ...(waitingReason
+       ? {
+           waiting: {
+diff --git a/src/lib/board/types.ts b/src/lib/board/types.ts
+index 708ffb5..ac8d5e8 100644
+--- a/src/lib/board/types.ts
++++ b/src/lib/board/types.ts
+@@ -51,6 +51,19 @@ export type WaitingReason =
+   /** The server restarted under it more than once in a row. */
+   | "interrupted";
+ 
++/**
++ * What checked the card before it was closed.
++ *
++ * A card is not done because the turn ended - the turn ends either way - but
++ * because something was checked afterwards. This is that sentence, in the
++ * person's words, and its date: closing a card without it is what makes a
++ * board of "done" that nobody can trust.
++ */
++export interface CardProof {
++  text: string;
++  at: string;
++}
++
+ export interface CardWaiting {
+   reason: WaitingReason;
+   /** What the person is shown: the error, the refusal in the service's words. */
+@@ -127,6 +140,8 @@ export interface BoardCard {
+   createdFrom?: { chatId: string; title?: string };
+   /** Stop in "waiting" for a look when finished, instead of going straight to done. */
+   review?: boolean;
++  /** What checked it, once the person closed it; absent while the card is open. */
++  proof?: CardProof;
+   waiting?: CardWaiting;
+   question?: CardQuestion;
+   next?: CardNext;

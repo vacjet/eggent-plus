@@ -6,8 +6,8 @@
 | Файл upstream | Зачем | Патч |
 |---|---|---|
 | `src/i18n/locales.ts` | добавить `ru` в `SUPPORTED_LOCALES` | ru-locale |
-| `src/i18n/messages.ru.ts` | новый файл перевода (1773 ключа, включая строки расхода) | ru-locale, chat-usage, project-usage, build-version, specialist-autoselect |
-| `src/i18n/messages.ts` | регистрация русского словаря (`ru: ruMessages`), ключи подписи расхода, подписи специалиста | ru-locale, chat-usage, specialist-autoselect |
+| `src/i18n/messages.ru.ts` | новый файл перевода (1773 ключа, включая строки расхода) | ru-locale, chat-usage, project-usage, build-version, specialist-autoselect, card-proof |
+| `src/i18n/messages.ts` | регистрация русского словаря (`ru: ruMessages`), ключи подписи расхода, подписи специалиста и карточки | ru-locale, chat-usage, specialist-autoselect, card-proof |
 | `src/i18n/vocabulary.ts` | русские намерения и стоп-слова | ru-locale |
 | `src/lib/pi/eggent-tools.ts` | асинхронные картинки (задача → опрос → файл); инструмент `eggent_script_schedules` | image-async, script-schedules |
 | `src/lib/pi/image-tasks.ts` | новый файл: распознать задачу в ответе провайдера и дождаться картинки | image-async |
@@ -33,6 +33,12 @@
 | `scripts/test-script-schedules.ts`, `scripts/test-script-runner.ts` | новые файлы: проверки расписаний и запуска (20 + 17 кейсов) | script-schedules |
 | `src/lib/email/config.ts`, `src/lib/email/sync.ts` | режим `imap` рядом с облачным | imap-mail |
 | `src/components/files/version-diff.tsx`, `version-history.tsx` | «принять / отклонить» правку | accept-reject |
+| `src/lib/board/types.ts` | поле `proof` на карточке: чем закрыта | card-proof |
+| `src/lib/board/store.ts` | чтение `proof` при загрузке карточки | card-proof |
+| `src/lib/board/cards.ts` | в `done` — только с «чем проверено»; новый запуск стирает старое | card-proof |
+| `src/app/api/board/cards/[id]/route.ts` | `move.proof` в PATCH карточки | card-proof |
+| `src/lib/board/client.ts` | `moveCard(..., proof)` | card-proof |
+| `src/components/board/card-sheet.tsx` | поле «Чем проверено?» перед закрытием карточки | card-proof |
 | `src/lib/specialists/choice.ts` | новый файл: правила выбора специалиста, промпт, разбор ответа модели | specialist-autoselect |
 | `src/lib/specialists/catalog.ts` | новый файл: специалисты, установленные в проекте (`specialist.json` рядом со скиллом) | specialist-autoselect |
 | `src/lib/specialists/select.ts` | новый файл: один вызов модели без инструментов, таймаут, выбор модели | specialist-autoselect |
