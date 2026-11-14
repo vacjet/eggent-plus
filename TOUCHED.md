@@ -16,10 +16,10 @@
 | `src/lib/types.ts` | поле мягкого порога в настройках (`general.usageSoftLimitTokens`), специалист на чате | soft-limit, specialist-autoselect |
 | `src/lib/storage/settings-store.ts` | значение по умолчанию для порога (0 = выключено) | soft-limit |
 | `src/app/api/chat/history/route.ts` | порог приходит вместе с чатом, без второго запроса | soft-limit |
-| `src/lib/build-info.ts` | новый файл: какая сборка отвечает (тег, число патчей, коммит) | build-version |
+| `src/lib/build-info.ts` | какой сборка отвечает (тег, число патчей, коммит); образ главнее данных | build-version, build-info-image |
 | `src/app/api/build-info/route.ts` | новый маршрут: отдаёт `data/build-info.json` странице настроек | build-version |
 | `src/app/dashboard/settings/general/page.tsx` | строка «Сборка …» и поле мягкого порога в «Общих» настройках | build-version, soft-limit |
-| `scripts/test-build-info.ts` | новый файл: проверки версии сборки (6 кейсов) | build-version |
+| `scripts/test-build-info.ts` | проверки версии сборки (9 кейсов: строка, чтение, образ против данных) | build-version, build-info-image |
 | `src/lib/usage/project-usage.ts` | новый файл: сумма по чатам проекта | project-usage |
 | `src/app/api/projects/[id]/usage/route.ts` | новый маршрут: расход проекта для настроек проекта | project-usage |
 | `src/components/project-model-settings.tsx` | строка «этот проект потратил N токенов» | project-usage |
@@ -47,6 +47,7 @@
 | `src/lib/pi/types.ts` | опция хода: с каким специалистом чат | specialist-autoselect |
 | `src/lib/pi/chat-runner.ts` | заметка ходу о специалисте и его скилле | specialist-autoselect |
 | `src/lib/storage/chat-store.ts` | `setChatSpecialist` — выбор или снятие специалиста | specialist-autoselect |
+| `Dockerfile` | `build-info.json` пишется в образ из build-arg (тег, число патчей, коммит) | build-info-image |
 
 Правило: новый патч добавляет строку в эту таблицу. Закрытые апстримом пункты (лимит вложений —
 уже 100 МБ, RAG/`kb_search` — удалён в 0.8.0) из таблицы убраны, см. `docs/stage-1-recheck.md`. Если патч трогает файл вне таблицы — это повод

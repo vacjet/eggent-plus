@@ -1,0 +1,160 @@
+diff --git a/Dockerfile b/Dockerfile
+index e1f9892..ab848df 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -181,6 +181,23 @@ RUN mkdir -p /app/data/tmp /app/data/models/whisper /app/data/ms-playwright /app
+   && chmod +x /app/scripts/docker-entrypoint.sh /app/scripts/ensure-pi-packages.mjs /app/scripts/bin/eggent-history /app/scripts/bin/eggent-browser \
+   && chown -R node:node /app/data "${PYTHON_VENV}"
+ 
++# Which build this image is, written inside the image.
++#
++# The settings page shows the build that answers, and the file that says so used
++# to live only in data/ - written by the deployment script. A data volume
++# outlives the image beside it, so a container started by hand or an image
++# rolled back reported the build that used to run there. The image's own copy
++# cannot drift: it is written from build arguments and replaced with the code
++# (src/lib/build-info.ts prefers it over data/).
++ARG EGGENT_UPSTREAM_TAG=""
++ARG EGGENT_PATCH_COUNT=0
++ARG EGGENT_SOURCE_COMMIT=""
++ARG EGGENT_BUILT_AT=""
++RUN printf '{"upstream":"%s","patches":%s,"commit":"%s","builtAt":"%s"}\n' \
++      "$EGGENT_UPSTREAM_TAG" "$EGGENT_PATCH_COUNT" "$EGGENT_SOURCE_COMMIT" "$EGGENT_BUILT_AT" \
++      > /app/build-info.json \
++  && chown node:node /app/build-info.json
++
+ USER node
+ EXPOSE 3000
+ 
+diff --git a/scripts/test-build-info.ts b/scripts/test-build-info.ts
+index 63bb724..5abcfd8 100644
+--- a/scripts/test-build-info.ts
++++ b/scripts/test-build-info.ts
+@@ -10,7 +10,7 @@ import assert from "node:assert/strict";
+ import fs from "node:fs/promises";
+ import os from "node:os";
+ import path from "node:path";
+-import { formatBuildVersion, readBuildInfo } from "../src/lib/build-info.ts";
++import { formatBuildVersion, pickBuildInfo, readBuildInfo } from "../src/lib/build-info.ts";
+ 
+ let failed = 0;
+ let ran = 0;
+@@ -75,6 +75,41 @@ await check("a half-written file is ignored rather than shown", async () => {
+   assert.equal(info, null, "no patch count, no claim");
+ });
+ 
++await check("the image's copy wins over the deployment's", async () => {
++  await fs.writeFile(
++    path.join(work, "build-info.json"),
++    JSON.stringify({ upstream: "v0.8.0", patches: 8, commit: "b51c033aaaa" })
++  );
++  await fs.writeFile(
++    path.join(dataDir, "build-info.json"),
++    JSON.stringify({ upstream: "v0.8.0", patches: 7, commit: "28f93b9bbbb" })
++  );
++  process.chdir(work);
++  const info = await readBuildInfo();
++  process.chdir(cwd);
++  assert.equal(info?.patches, 8, "a stale data file must not answer for the image");
++  assert.equal(info?.version, "0.8.0+plus.8.b51c033");
++  assert.equal(info?.source, "image");
++});
++
++await check("without an image file the deployment's note is used", async () => {
++  await fs.rm(path.join(work, "build-info.json"));
++  process.chdir(work);
++  const info = await readBuildInfo();
++  process.chdir(cwd);
++  assert.equal(info?.patches, 7);
++  assert.equal(info?.source, "data");
++});
++
++await check("choosing between the two is the order, and nothing is null-safe", () => {
++  const image = { upstream: "v0.8.0", patches: 8, version: "0.8.0+plus.8" };
++  const data = { upstream: "v0.8.0", patches: 7, version: "0.8.0+plus.7" };
++  assert.equal(pickBuildInfo(image, data)?.patches, 8);
++  assert.equal(pickBuildInfo(null, data)?.patches, 7);
++  assert.equal(pickBuildInfo(null, data)?.source, "data");
++  assert.equal(pickBuildInfo(null, null), null);
++});
++
+ await fs.rm(work, { recursive: true, force: true });
+ 
+ console.log(`\n${ran} checks, ${failed} failed`);
+diff --git a/src/lib/build-info.ts b/src/lib/build-info.ts
+index 8324df0..24a0c8b 100644
+--- a/src/lib/build-info.ts
++++ b/src/lib/build-info.ts
+@@ -10,9 +10,11 @@ import path from "path";
+  * the patch they are waiting for is in it; the patch count does, and the commit
+  * says exactly which state of the repository produced the image.
+  *
+- * The file is written by the deployment (docker/deploy-test.sh), not at build
+- * time inside the app: the same image can be deployed twice, and what a person
+- * needs to know is what is running now.
++ * The file travels inside the image (`/app/build-info.json`, written by the
++ * Docker build from build arguments), and the deployment may also leave one in
++ * `data/`. The image's copy wins: a file in `data/` outlives the image it was
++ * written beside, so a container started by hand - or an image rolled back -
++ * would otherwise report the build that used to answer here.
+  */
+ 
+ export interface BuildInfo {
+@@ -26,6 +28,8 @@ export interface BuildInfo {
+   builtAt?: string;
+   /** What the settings page shows, e.g. "0.8.0+plus.5.98a76b6". */
+   version: string;
++  /** Where the line was read from; absent when it was read before this field existed. */
++  source?: "image" | "data";
+ }
+ 
+ export function formatBuildVersion(upstream: string, patches: number, commit?: string): string {
+@@ -35,14 +39,31 @@ export function formatBuildVersion(upstream: string, patches: number, commit?: s
+   return `${base}+plus.${count}${short ? `.${short}` : ""}`;
+ }
+ 
+-function buildInfoPath(): string {
++/** The image's own copy: written by the Docker build, travels with the code. */
++function imageBuildInfoPath(): string {
++  return path.join(process.cwd(), "build-info.json");
++}
++
++/** What a deployment left behind: a note about this run, not about the image. */
++function dataBuildInfoPath(): string {
+   return path.join(process.cwd(), "data", "build-info.json");
+ }
+ 
+-/** The build that is running, or null when nobody wrote it (a plain image). */
+-export async function readBuildInfo(): Promise<BuildInfo | null> {
++/**
++ * The one to show: the image's, then the deployment's, then nothing.
++ *
++ * Pure and separated from the reading, so the order can be tested without a
++ * filesystem: the order is the whole point of this file.
++ */
++export function pickBuildInfo(image: BuildInfo | null, data: BuildInfo | null): BuildInfo | null {
++  if (image) return { ...image, source: "image" };
++  if (data) return { ...data, source: "data" };
++  return null;
++}
++
++async function readBuildFile(filePath: string): Promise<BuildInfo | null> {
+   try {
+-    const raw = JSON.parse(await fs.readFile(buildInfoPath(), "utf-8")) as Partial<BuildInfo>;
++    const raw = JSON.parse(await fs.readFile(filePath, "utf-8")) as Partial<BuildInfo>;
+     const upstream = typeof raw.upstream === "string" ? raw.upstream : "";
+     const patches = Number(raw.patches);
+     if (!upstream || !Number.isFinite(patches)) return null;
+@@ -57,3 +78,12 @@ export async function readBuildInfo(): Promise<BuildInfo | null> {
+     return null;
+   }
+ }
++
++/** The build that is running, or null when nobody wrote it (a plain image). */
++export async function readBuildInfo(): Promise<BuildInfo | null> {
++  const [image, data] = await Promise.all([
++    readBuildFile(imageBuildInfoPath()),
++    readBuildFile(dataBuildInfoPath()),
++  ]);
++  return pickBuildInfo(image, data);
++}

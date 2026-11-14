@@ -44,16 +44,28 @@ for p in "${patches[@]}"; do
   echo "  + $p"
 done
 
+# Что именно попадёт в образ: тег, число патчей и коммит. Подставляется в Dockerfile
+# (патч 0015) и остаётся внутри образа, поэтому цифра в настройках не может отстать
+# от кода; файл в data/ ниже — отметка о развёртывании, она вторая.
+commit="$(git -C "$repo" rev-parse --short HEAD 2>/dev/null || echo "")"
+built_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
 echo "сборка образа $image"
 start=$(date +%s)
-docker build -t "$image" "$workdir"
+docker build -t "$image" \
+  --build-arg "EGGENT_UPSTREAM_TAG=$tag" \
+  --build-arg "EGGENT_PATCH_COUNT=${#patches[@]}" \
+  --build-arg "EGGENT_SOURCE_COMMIT=$commit" \
+  --build-arg "EGGENT_BUILT_AT=$built_at" \
+  "$workdir"
 echo "собрано за $(( $(date +%s) - start )) с"
 
 mkdir -p "$data"
-# Что именно развёрнуто: тег, число патчей и коммит. Читает его страница настроек.
-commit="$(git -C "$repo" rev-parse --short HEAD 2>/dev/null || echo "")"
+# Отметка о развёртывании рядом с данными. Страница настроек спрашивает сначала
+# образ и только потом этот файл: он переживает замену образа, поэтому главным быть
+# не может (патч 0015).
 cat > "$data/build-info.json" <<JSON
-{"upstream":"$tag","patches":${#patches[@]},"commit":"$commit","builtAt":"$(date -u +%Y-%m-%dT%H:%M:%SZ)"}
+{"upstream":"$tag","patches":${#patches[@]},"commit":"$commit","builtAt":"$built_at"}
 JSON
 
 # Почта: если рядом лежит настроенный адаптер (mail-data/accounts.json + adapter.env), поднимаем его
