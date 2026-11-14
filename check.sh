@@ -12,6 +12,7 @@ for f in README.md AGENTS.md context.md memory.md TOUCHED.md .gitignore patches/
          scripts/install-skills.sh docs/stage-4-plan.md docs/stage-5-plan.md \
          scripts/check-specialists.py scripts/check-private.py \
          scripts/install-template.py scripts/check-templates.py scripts/memory.py \
+         scripts/export-chat.py scripts/diagnose.py docs/stage-7-plan.md \
          skills/typed-memory/SKILL.md docs/stage-6-plan.md \
          templates/seo/template.json templates/seo/project/check.sh \
          templates/seo/project/AGENTS.md templates/seo/README.md \
@@ -171,6 +172,10 @@ for memory_file in templates/*/project/memory.md; do
   python3 scripts/memory.py check "$memory_file" >/dev/null || { echo "память шаблона: формат нарушен: $memory_file" >&2; exit 1; }
 done
 echo "типизированная память: ok"
+
+# Выгрузка чатов и диагностика: негативные кейсы самих скриптов.
+python3 scripts/export-chat.py --self-test >/dev/null && echo "выгрузка чатов: ok"
+python3 scripts/diagnose.py --self-test >/dev/null && echo "диагностика: ok"
 
 # Шаблоны проектов: формат, установка в пустой каталог, проверка и её падения.
 python3 scripts/check-templates.py --self-test >/dev/null
