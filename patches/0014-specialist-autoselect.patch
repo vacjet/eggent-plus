@@ -324,7 +324,7 @@ index 92a90b1..dc338ce 100644
      </div>
    )
 diff --git a/src/components/chat/chat-panel.tsx b/src/components/chat/chat-panel.tsx
-index d202f95..dbf2ffb 100644
+index d202f95..2737820 100644
 --- a/src/components/chat/chat-panel.tsx
 +++ b/src/components/chat/chat-panel.tsx
 @@ -11,7 +11,9 @@ import type { MailReplyInfo } from "@/lib/mail/types";
@@ -338,7 +338,7 @@ index d202f95..dbf2ffb 100644
  import type { PiRuntimeStats } from "@/lib/pi/types";
  import { sumChatUsageFromParts } from "@/lib/pi/usage-summary";
  import type { PiPendingInteraction } from "@/lib/pi/interaction-types";
-@@ -773,6 +775,69 @@ export function ChatPanel({ initialQuickSkills = [] }: ChatPanelProps) {
+@@ -773,6 +775,77 @@ export function ChatPanel({ initialQuickSkills = [] }: ChatPanelProps) {
      };
    }, [activeProjectId, syncTick]);
  
@@ -350,10 +350,15 @@ index d202f95..dbf2ffb 100644
 +  const [specialistOptions, setSpecialistOptions] = useState<SpecialistOption[]>([]);
 +  const [specialistBusy, setSpecialistBusy] = useState(false);
 +  const specialistLoadedRef = useRef<string | null>(null);
++  // The chat this panel last asked about: a slow answer for a chat the person
++  // has already left must not land on the one they are on now.
++  const specialistRequestRef = useRef<string | null>(null);
 +
 +  const loadSpecialist = useCallback(async (chatId: string) => {
++    specialistRequestRef.current = chatId;
 +    try {
 +      const response = await fetch(`/api/chat/${chatId}/specialist`, { cache: "no-store" });
++      if (specialistRequestRef.current !== chatId) return;
 +      if (!response.ok) return;
 +      const data = (await response.json()) as { current?: ChatSpecialist | null; options?: SpecialistOption[] };
 +      setSpecialist(data.current ?? null);
@@ -391,19 +396,22 @@ index d202f95..dbf2ffb 100644
 +
 +  useEffect(() => () => publishSpecialist(null), [publishSpecialist]);
 +
++  // Only a settled chat has a specialist to read. A chat is registered the moment
++  // a message is sent, while its file is written by the turn a moment later, so
++  // asking straight away would be a 404 per new chat; asking once the turn is
++  // over is when the choice made on the way in is there to be read.
 +  useEffect(() => {
-+    if (!internalChatId || specialistLoadedRef.current === internalChatId) return;
-+    void loadSpecialist(internalChatId);
-+  }, [internalChatId, loadSpecialist]);
++    if (!activeChatId) {
++      setSpecialist(null);
++      setSpecialistOptions([]);
++      specialistRequestRef.current = null;
++      return;
++    }
++    if (status !== "ready") return;
++    if (specialistLoadedRef.current === activeChatId) return;
++    void loadSpecialist(activeChatId);
++  }, [status, activeChatId, loadSpecialist]);
 +
-+  // After a turn, the server may have chosen a specialist on the way in. Asked
-+  // only where there is something to choose from, so a project without
-+  // specialists is not asked about after every answer.
-+  useEffect(() => {
-+    if (status !== "ready" || !internalChatId || specialist) return;
-+    if (specialistOptions.length === 0) return;
-+    void loadSpecialist(internalChatId);
-+  }, [status, internalChatId, specialist, specialistOptions.length, loadSpecialist]);
 +
    // Don't overwrite messages while a request is in flight (avoids "blink" on new chat)
    const statusRef = useRef(status);
