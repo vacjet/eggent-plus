@@ -11,6 +11,9 @@ for f in README.md AGENTS.md context.md memory.md TOUCHED.md .gitignore patches/
          scripts/check-i18n.py scripts/check-touched.py tests/i18n/en-reference.json \
          scripts/install-skills.sh docs/stage-4-plan.md docs/stage-5-plan.md \
          scripts/check-specialists.py scripts/check-private.py \
+         scripts/install-template.py scripts/check-templates.py \
+         templates/seo/template.json templates/seo/project/check.sh \
+         templates/seo/project/AGENTS.md templates/seo/README.md \
          bundled-skills/seo/SKILL.md bundled-skills/seo/specialist.json \
          skills/external-sources/SKILL.md skills/external-sources/common.py \
          skills/external-sources/site_audit.py skills/external-sources/yandex_read.py \
@@ -134,6 +137,10 @@ if [[ -f upstream/scripts/test-specialist-choice.ts ]] && command -v node >/dev/
 else
   echo "специалист чата: тест пропущен (нет патча в upstream/)" >&2
 fi
+
+# Шаблоны проектов: формат, установка в пустой каталог, проверка и её падения.
+python3 scripts/check-templates.py --self-test >/dev/null
+python3 scripts/check-templates.py
 
 # Личные данные: репозиторий публичный, здесь только плейсхолдеры (решение 41).
 python3 scripts/check-private.py --self-test >/dev/null

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "id": "seo",
+  "title": "SEO-проект",
+  "summary": "Рабочее место для сайта: срезы внешних источников, отчёты по датам, проверка на месте.",
+  "project": {
+    "description": "Проект для работы по сайту: доступность страниц, индексация, трафик, правки с приоритетом.",
+    "memoryMode": "isolated"
+  },
+  "specialists": ["seo"],
+  "skills": ["external-sources"],
+  "folders": ["data/external", "reports", "notes"],
+  "check": "check.sh",
+  "variables": {
+    "site": "example.ru"
+  }
+}
