@@ -24,7 +24,7 @@ for f in README.md AGENTS.md context.md memory.md TOUCHED.md .gitignore patches/
          patches/0005-project-usage.patch patches/0006-build-version.patch \
          patches/0007-soft-limit.patch \
          patches/0014-specialist-autoselect.patch patches/0015-build-info-image.patch \
-         patches/0016-card-proof.patch patches/0017-file-review.patch \
+         patches/0016-card-proof.patch patches/0017-file-review.patch patches/0018-command-policy.patch \
          .github/workflows/patches.yml docker/Dockerfile; do
   if [[ ! -f "$f" ]]; then
     echo "нет файла: $f" >&2
@@ -138,6 +138,18 @@ if [[ -f upstream/scripts/test-specialist-choice.ts ]] && command -v node >/dev/
   echo "специалист чата: ok"
 else
   echo "специалист чата: тест пропущен (нет патча в upstream/)" >&2
+fi
+
+# Политика команд: что спрашивать, что отказывать, что пропускать.
+if [[ -f upstream/scripts/test-command-policy.ts ]] && command -v node >/dev/null; then
+  if ! node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types \
+      --import ./upstream/scripts/alias-loader-register.mjs upstream/scripts/test-command-policy.ts >/dev/null; then
+    echo "политика команд: тест упал" >&2
+    exit 1
+  fi
+  echo "политика команд: ok"
+else
+  echo "политика команд: тест пропущен (нет патча в upstream/)" >&2
 fi
 
 # Правки файлов: какую версию предлагать к отмене (без сети и без файлов).

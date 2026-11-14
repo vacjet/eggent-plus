@@ -6,8 +6,8 @@
 | Файл upstream | Зачем | Патч |
 |---|---|---|
 | `src/i18n/locales.ts` | добавить `ru` в `SUPPORTED_LOCALES` | ru-locale |
-| `src/i18n/messages.ru.ts` | новый файл перевода (1773 ключа, включая строки расхода) | ru-locale, chat-usage, project-usage, build-version, specialist-autoselect, card-proof, file-review |
-| `src/i18n/messages.ts` | регистрация русского словаря (`ru: ruMessages`), ключи подписи расхода, подписи специалиста, карточки и правок файлов | ru-locale, chat-usage, specialist-autoselect, card-proof, file-review |
+| `src/i18n/messages.ru.ts` | новый файл перевода (1773 ключа, включая строки расхода) | ru-locale, chat-usage, project-usage, build-version, specialist-autoselect, card-proof, file-review, command-policy |
+| `src/i18n/messages.ts` | регистрация русского словаря (`ru: ruMessages`), ключи подписи расхода, специалиста, карточки, правок файлов и политики команд | ru-locale, chat-usage, specialist-autoselect, card-proof, file-review, command-policy |
 | `src/i18n/vocabulary.ts` | русские намерения и стоп-слова | ru-locale |
 | `src/lib/pi/eggent-tools.ts` | асинхронные картинки (задача → опрос → файл); инструмент `eggent_script_schedules` | image-async, script-schedules |
 | `src/lib/pi/image-tasks.ts` | новый файл: распознать задачу в ответе провайдера и дождаться картинки | image-async |
@@ -43,6 +43,9 @@
 | `src/app/api/files/versions/review/route.ts` | новый маршрут: чтение правок к отмене и решение «принять / отклонить» | file-review |
 | `src/components/chat/files-produced.tsx` | строка «правка агента» с «Отклонить» и «Оставить» под ответом | file-review |
 | `scripts/test-file-review.ts` | новый файл: 7 кейсов выбора версии для отмены | file-review |
+| `src/lib/pi/command-policy.ts` | новый файл: правила deny/ask/allow для команд оболочки и исключения из политики | command-policy |
+| `src/lib/pi/interactive-bash-tool.ts` | проверка команды до запуска: отказ, вопрос человеку, запуск | command-policy |
+| `scripts/test-command-policy.ts` | новый файл: 25 кейсов правил и исключений | command-policy |
 | `src/lib/specialists/choice.ts` | новый файл: правила выбора специалиста, промпт, разбор ответа модели | specialist-autoselect |
 | `src/lib/specialists/catalog.ts` | новый файл: специалисты, установленные в проекте (`specialist.json` рядом со скиллом) | specialist-autoselect |
 | `src/lib/specialists/select.ts` | новый файл: один вызов модели без инструментов, таймаут, выбор модели | specialist-autoselect |
