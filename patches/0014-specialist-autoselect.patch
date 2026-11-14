@@ -1,0 +1,1200 @@
+diff --git a/scripts/test-specialist-choice.ts b/scripts/test-specialist-choice.ts
+new file mode 100644
+index 0000000..37994c0
+--- /dev/null
++++ b/scripts/test-specialist-choice.ts
+@@ -0,0 +1,158 @@
++/**
++ * Checks the rules that pick a chat's specialist: when the question is asked,
++ * what it says, what counts as an answer, and what the turn is told.
++ *
++ * Run with Node 22:
++ *   node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types \
++ *     --import ./scripts/alias-loader-register.mjs scripts/test-specialist-choice.ts
++ *
++ * The one thing not tested here is the model call itself: it needs a provider.
++ * Its answer is a string, and that string is what these rules are tested on.
++ */
++import assert from "node:assert/strict";
++import {
++  parseSpecialistChoice,
++  selectionPrompt,
++  shouldChooseSpecialist,
++  specialistForDisplay,
++  specialistPromptNote,
++  type SpecialistOption,
++} from "../src/lib/specialists/choice.ts";
++
++let failed = 0;
++let ran = 0;
++function check(name: string, fn: () => void): void {
++  ran += 1;
++  try {
++    fn();
++    console.log(`  ok    ${name}`);
++  } catch (error) {
++    failed += 1;
++    console.log(`  FAIL  ${name}: ${error instanceof Error ? error.message : String(error)}`);
++  }
++}
++
++const seo: SpecialistOption = { id: "seo", title: "SEO", summary: "индексация и трафик" };
++const direct: SpecialistOption = {
++  id: "yandex-direct",
++  title: "Контекстная реклама",
++  summary: "расход и кампании",
++};
++const lawyer: SpecialistOption = { id: "legal", title: "Юрист", summary: "риски договора" };
++const catalogue = [seo, direct, lawyer];
++
++console.log("разбор ответа модели:\n");
++
++check("id как есть", () => {
++  assert.equal(parseSpecialistChoice("seo", catalogue), "seo");
++});
++
++check("id в кавычках и с точкой", () => {
++  assert.equal(parseSpecialistChoice('  "legal".  ', catalogue), "legal");
++});
++
++check("id заглавными", () => {
++  assert.equal(parseSpecialistChoice("SEO", catalogue), "seo");
++});
++
++check("«none» — специалиста нет", () => {
++  assert.equal(parseSpecialistChoice("none", catalogue), null);
++});
++
++check("пустой ответ — специалиста нет", () => {
++  assert.equal(parseSpecialistChoice("   ", catalogue), null);
++});
++
++check("id внутри фразы", () => {
++  assert.equal(parseSpecialistChoice("This is legal work.", catalogue), "legal");
++});
++
++check("длинный id побеждает короткий", () => {
++  const both = [
++    { id: "direct", title: "Директ", summary: "" },
++    { id: "yandex-direct", title: "Яндекс.Директ", summary: "" },
++  ];
++  assert.equal(parseSpecialistChoice("yandex-direct", both), "yandex-direct");
++});
++
++check("выдуманный id не принимается", () => {
++  assert.equal(parseSpecialistChoice("маркетинг", catalogue), null);
++});
++
++check("чужой id не принимается", () => {
++  assert.equal(parseSpecialistChoice("content", catalogue), null);
++});
++
++console.log("\nкогда спрашивать:\n");
++
++check("первый ход нового чата — спрашиваем", () => {
++  assert.equal(
++    shouldChooseSpecialist({ hasSpecialist: false, messageCount: 0, candidateCount: 3 }),
++    true
++  );
++});
++
++check("в чате уже есть ответ — не спрашиваем", () => {
++  assert.equal(
++    shouldChooseSpecialist({ hasSpecialist: false, messageCount: 2, candidateCount: 3 }),
++    false
++  );
++});
++
++check("специалист уже выбран — не переспрашиваем", () => {
++  assert.equal(
++    shouldChooseSpecialist({ hasSpecialist: true, messageCount: 0, candidateCount: 3 }),
++    false
++  );
++});
++
++check("в проекте нет специалистов — не спрашиваем", () => {
++  assert.equal(
++    shouldChooseSpecialist({ hasSpecialist: false, messageCount: 0, candidateCount: 0 }),
++    false
++  );
++});
++
++console.log("\nпромпт выбора:\n");
++
++check("перечисляет id, название и назначение", () => {
++  const prompt = selectionPrompt("проверь сайт", catalogue);
++  for (const candidate of catalogue) {
++    assert.ok(prompt.includes(candidate.id), `нет id ${candidate.id}`);
++    assert.ok(prompt.includes(candidate.title), `нет названия ${candidate.title}`);
++  }
++  assert.ok(prompt.includes("проверь сайт"));
++});
++
++check("длинное сообщение обрезается", () => {
++  const prompt = selectionPrompt("x".repeat(5000), catalogue);
++  assert.ok(prompt.length < 2500, `промпт слишком длинный: ${prompt.length}`);
++});
++
++console.log("\nзаметка ходу:\n");
++
++check("называет скилл путём, который агент может открыть", () => {
++  const note = specialistPromptNote(seo);
++  assert.ok(note.includes("skills/seo/SKILL.md"), note);
++  assert.ok(note.includes("SEO"), note);
++});
++
++console.log("\nподпись для экрана:\n");
++
++check("название из каталога важнее сохранённого", () => {
++  const display = specialistForDisplay({ id: "seo", title: "Старое имя", by: "auto" }, catalogue);
++  assert.equal(display?.title, "SEO");
++});
++
++check("без пакета — сохранённое название", () => {
++  const display = specialistForDisplay({ id: "gone", title: "Бывший", by: "person" }, catalogue);
++  assert.equal(display?.title, "Бывший");
++  assert.equal(display?.by, "person");
++});
++
++check("без специалиста — ничего", () => {
++  assert.equal(specialistForDisplay(null, catalogue), null);
++});
++
++console.log(`\n${ran - failed}/${ran} проверок пройдено`);
++if (failed > 0) process.exit(1);
+diff --git a/src/app/api/chat/[chatId]/specialist/route.ts b/src/app/api/chat/[chatId]/specialist/route.ts
+new file mode 100644
+index 0000000..6a66631
+--- /dev/null
++++ b/src/app/api/chat/[chatId]/specialist/route.ts
+@@ -0,0 +1,69 @@
++import { NextRequest, NextResponse } from "next/server";
++import { getChat, setChatSpecialist } from "@/lib/storage/chat-store";
++import { listProjectSpecialists } from "@/lib/specialists/catalog";
++import { specialistForDisplay } from "@/lib/specialists/choice";
++import type { ChatSpecialist } from "@/lib/types";
++
++export const runtime = "nodejs";
++
++/**
++ * The specialist a chat is with, and the ones this project could be with.
++ *
++ * GET reads both in one round trip: a badge needs the current one and the menu
++ * needs the rest, and asking twice per screen would be two reads of the same
++ * project for one answer. PUT is the "switch with one click": the person picks
++ * an id from the catalogue, or `null` to take the specialist away.
++ */
++export async function GET(
++  _req: NextRequest,
++  { params }: { params: Promise<{ chatId: string }> }
++) {
++  const { chatId } = await params;
++  const chat = await getChat(chatId);
++  if (!chat) {
++    return NextResponse.json({ error: "Chat not found" }, { status: 404 });
++  }
++  const options = chat.projectId ? await listProjectSpecialists(chat.projectId) : [];
++  return NextResponse.json({
++    current: specialistForDisplay(chat.specialist, options),
++    options,
++  });
++}
++
++export async function PUT(
++  req: NextRequest,
++  { params }: { params: Promise<{ chatId: string }> }
++) {
++  const { chatId } = await params;
++  const chat = await getChat(chatId);
++  if (!chat) {
++    return NextResponse.json({ error: "Chat not found" }, { status: 404 });
++  }
++
++  let body: unknown;
++  try {
++    body = await req.json();
++  } catch {
++    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
++  }
++  const record = typeof body === "object" && body !== null ? (body as Record<string, unknown>) : {};
++  const wanted = typeof record.id === "string" ? record.id.trim() : "";
++
++  if (!wanted) {
++    await setChatSpecialist(chatId, null);
++    return NextResponse.json({ current: null, options: chat.projectId ? await listProjectSpecialists(chat.projectId) : [] });
++  }
++
++  if (!chat.projectId) {
++    return NextResponse.json({ error: "This chat has no project to take a specialist from" }, { status: 400 });
++  }
++  const options = await listProjectSpecialists(chat.projectId);
++  const picked = options.find((option) => option.id === wanted);
++  if (!picked) {
++    return NextResponse.json({ error: "No such specialist installed in this project" }, { status: 400 });
++  }
++
++  const specialist: ChatSpecialist = { id: picked.id, title: picked.title, by: "person" };
++  await setChatSpecialist(chatId, specialist);
++  return NextResponse.json({ current: specialistForDisplay(specialist, options), options });
++}
+diff --git a/src/app/api/chat/route.ts b/src/app/api/chat/route.ts
+index f648bc3..e527536 100644
+--- a/src/app/api/chat/route.ts
++++ b/src/app/api/chat/route.ts
+@@ -2,7 +2,8 @@ import { createUIMessageStreamResponse } from "ai";
+ import { NextRequest } from "next/server";
+ import { createPiChatUIMessageStream } from "@/lib/pi/chat-runner";
+ import { createChat, getChat } from "@/lib/storage/chat-store";
+-import type { ChatContextMode } from "@/lib/types";
++import type { ChatContextMode, ChatSpecialist } from "@/lib/types";
++import { autoAssignSpecialist } from "@/lib/specialists/assign";
+ import { isRemoteHome, localNode, remoteEnabled } from "@/lib/remote/config";
+ import { ensureChatHomeIsHere, prepareRelayedTurn } from "@/lib/remote/executing";
+ import { recallHandOver, runHandedOverTurn } from "@/lib/remote/proxy-turn";
+@@ -146,6 +147,16 @@ export async function POST(req: NextRequest) {
+       if (stored?.role === "user" && stored.steer && stored.steer.state !== "delivered") resendOf = stored.id;
+     }
+ 
++    // A new chat gets its specialist before the answer starts, so the badge is
++    // there while it is written. Never for a turn that is not this chat's own: a
++    // relayed one runs beside another screen, a steer belongs to a turn already
++    // working, a resend is an old message, and a plain chat is offered no tools
++    // for a specialist to use.
++    let specialist: ChatSpecialist | undefined = existing?.specialist;
++    if (!specialist && !relayedFrom && !steer && !resendOf && contextMode !== "plain") {
++      specialist = (await autoAssignSpecialist({ chatId: resolvedChatId, projectId, message })) ?? undefined;
++    }
++
+     if (handOverTo) {
+       return await runHandedOverTurn({
+         chatId: resolvedChatId,
+@@ -176,6 +187,7 @@ export async function POST(req: NextRequest) {
+         chatContextMode: contextMode,
+         cwd: resolvedCurrentPath,
+         ...(openFileNote ? { openFileNote } : {}),
++        ...(specialist ? { specialist: { id: specialist.id, title: specialist.title } } : {}),
+         ...(steer ? { steer } : {}),
+         ...(resendOf ? { userMessageId: resendOf } : {}),
+         ...(relayedFrom ? { remote: { servedFor: relayedFrom } } : {}),
+diff --git a/src/app/dashboard/(chat)/layout.tsx b/src/app/dashboard/(chat)/layout.tsx
+index 92a90b1..dc338ce 100644
+--- a/src/app/dashboard/(chat)/layout.tsx
++++ b/src/app/dashboard/(chat)/layout.tsx
+@@ -1,6 +1,7 @@
+ import { AppSidebar } from "@/components/app-sidebar"
+ import { SiteHeader } from "@/components/site-header"
+ import { ChatPanel } from "@/components/chat/chat-panel"
++import { ChatSpecialistProvider, ChatSpecialistSlot } from "@/components/chat/chat-specialist-slot"
+ import { SidePanels } from "@/components/side-panels"
+ import {
+   SidebarInset,
+@@ -34,18 +35,22 @@ export default async function ChatLayout({
+ 
+   return (
+     <div className="[--header-height:calc(--spacing(14))] h-svh overflow-hidden">
+-      <SidebarProvider className="flex h-full flex-col">
+-        <SiteHeader title={title} />
+-        <div className="flex min-h-0 flex-1">
+-          <AppSidebar />
+-          <SidebarInset className="min-h-0">
+-            <div className="flex min-h-0 flex-1 flex-col">
+-              <ChatPanel initialQuickSkills={quickSkills} />
+-            </div>
+-          </SidebarInset>
+-          <SidePanels />
+-        </div>
+-      </SidebarProvider>
++      <ChatSpecialistProvider>
++        <SidebarProvider className="flex h-full flex-col">
++          <SiteHeader title={title}>
++            <ChatSpecialistSlot />
++          </SiteHeader>
++          <div className="flex min-h-0 flex-1">
++            <AppSidebar />
++            <SidebarInset className="min-h-0">
++              <div className="flex min-h-0 flex-1 flex-col">
++                <ChatPanel initialQuickSkills={quickSkills} />
++              </div>
++            </SidebarInset>
++            <SidePanels />
++          </div>
++        </SidebarProvider>
++      </ChatSpecialistProvider>
+       {children}
+     </div>
+   )
+diff --git a/src/components/chat/chat-panel.tsx b/src/components/chat/chat-panel.tsx
+index d202f95..dbf2ffb 100644
+--- a/src/components/chat/chat-panel.tsx
++++ b/src/components/chat/chat-panel.tsx
+@@ -11,7 +11,9 @@ import type { MailReplyInfo } from "@/lib/mail/types";
+ import { ChatInput } from "./chat-input";
+ import { openFileForAgent, useAppStore } from "@/store/app-store";
+ import { useState, useCallback, useEffect, useRef, useMemo } from "react";
+-import type { ChatContextMode, ChatMessage, ChatMessagePart } from "@/lib/types";
++import type { ChatContextMode, ChatMessage, ChatMessagePart, ChatSpecialist } from "@/lib/types";
++import type { SpecialistOption } from "@/lib/specialists/choice";
++import { useChatSpecialistPublisher } from "@/components/chat/chat-specialist-slot";
+ import type { PiRuntimeStats } from "@/lib/pi/types";
+ import { sumChatUsageFromParts } from "@/lib/pi/usage-summary";
+ import type { PiPendingInteraction } from "@/lib/pi/interaction-types";
+@@ -773,6 +775,69 @@ export function ChatPanel({ initialQuickSkills = [] }: ChatPanelProps) {
+     };
+   }, [activeProjectId, syncTick]);
+ 
++  // The specialist this chat is with, and the ones the project has. Read once per
++  // chat and again after a turn that may have chosen one: the choice is made on
++  // the server, on the way into the first turn, so this side learns it by asking.
++  const publishSpecialist = useChatSpecialistPublisher();
++  const [specialist, setSpecialist] = useState<ChatSpecialist | null>(null);
++  const [specialistOptions, setSpecialistOptions] = useState<SpecialistOption[]>([]);
++  const [specialistBusy, setSpecialistBusy] = useState(false);
++  const specialistLoadedRef = useRef<string | null>(null);
++
++  const loadSpecialist = useCallback(async (chatId: string) => {
++    try {
++      const response = await fetch(`/api/chat/${chatId}/specialist`, { cache: "no-store" });
++      if (!response.ok) return;
++      const data = (await response.json()) as { current?: ChatSpecialist | null; options?: SpecialistOption[] };
++      setSpecialist(data.current ?? null);
++      setSpecialistOptions(Array.isArray(data.options) ? data.options : []);
++      specialistLoadedRef.current = chatId;
++    } catch {
++      // A badge that cannot be read is not worth an error over the chat.
++    }
++  }, []);
++
++  const pickSpecialist = useCallback(async (id: string | null) => {
++    const chatId = internalChatIdRef.current;
++    if (!chatId) return;
++    setSpecialistBusy(true);
++    try {
++      const response = await fetch(`/api/chat/${chatId}/specialist`, {
++        method: "PUT",
++        headers: { "Content-Type": "application/json" },
++        body: JSON.stringify({ id }),
++      });
++      if (!response.ok) return;
++      const data = (await response.json()) as { current?: ChatSpecialist | null; options?: SpecialistOption[] };
++      setSpecialist(data.current ?? null);
++      if (Array.isArray(data.options)) setSpecialistOptions(data.options);
++    } catch {
++      // The menu stays as it was: the chat is still with the specialist it had.
++    } finally {
++      setSpecialistBusy(false);
++    }
++  }, []);
++
++  useEffect(() => {
++    publishSpecialist({ current: specialist, options: specialistOptions, onPick: pickSpecialist, busy: specialistBusy });
++  }, [publishSpecialist, specialist, specialistOptions, pickSpecialist, specialistBusy]);
++
++  useEffect(() => () => publishSpecialist(null), [publishSpecialist]);
++
++  useEffect(() => {
++    if (!internalChatId || specialistLoadedRef.current === internalChatId) return;
++    void loadSpecialist(internalChatId);
++  }, [internalChatId, loadSpecialist]);
++
++  // After a turn, the server may have chosen a specialist on the way in. Asked
++  // only where there is something to choose from, so a project without
++  // specialists is not asked about after every answer.
++  useEffect(() => {
++    if (status !== "ready" || !internalChatId || specialist) return;
++    if (specialistOptions.length === 0) return;
++    void loadSpecialist(internalChatId);
++  }, [status, internalChatId, specialist, specialistOptions.length, loadSpecialist]);
++
+   // Don't overwrite messages while a request is in flight (avoids "blink" on new chat)
+   const statusRef = useRef(status);
+   statusRef.current = status;
+diff --git a/src/components/chat/chat-specialist-slot.tsx b/src/components/chat/chat-specialist-slot.tsx
+new file mode 100644
+index 0000000..2c92322
+--- /dev/null
++++ b/src/components/chat/chat-specialist-slot.tsx
+@@ -0,0 +1,58 @@
++"use client";
++
++/**
++ * The specialist badge, carried from the chat to the header it belongs in.
++ *
++ * The header is part of the dashboard shell: it is rendered by the layout, not
++ * by the chat, and the chat is the only thing that knows which specialist the
++ * conversation is with. So the chat publishes here and the header reads - one
++ * small context rather than a second copy of the chat's state in the layout, and
++ * nothing at all on a screen that is not a chat.
++ */
++
++import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
++import { SpecialistBadge } from "@/components/chat/specialist-badge";
++import type { ChatSpecialist } from "@/lib/types";
++import type { SpecialistOption } from "@/lib/specialists/choice";
++
++export interface ChatSpecialistView {
++  current: ChatSpecialist | null;
++  options: SpecialistOption[];
++  onPick: (id: string | null) => void;
++  busy: boolean;
++}
++
++interface ChatSpecialistContextValue {
++  view: ChatSpecialistView | null;
++  publish: (view: ChatSpecialistView | null) => void;
++}
++
++const ChatSpecialistContext = createContext<ChatSpecialistContextValue | null>(null);
++
++export function ChatSpecialistProvider({ children }: { children: ReactNode }) {
++  const [view, setView] = useState<ChatSpecialistView | null>(null);
++  const publish = useCallback((next: ChatSpecialistView | null) => setView(next), []);
++  const value = useMemo(() => ({ view, publish }), [view, publish]);
++  return <ChatSpecialistContext.Provider value={value}>{children}</ChatSpecialistContext.Provider>;
++}
++
++/** For the chat: publish what it knows, and take it back when it unmounts. */
++export function useChatSpecialistPublisher(): (view: ChatSpecialistView | null) => void {
++  const context = useContext(ChatSpecialistContext);
++  return context?.publish ?? (() => undefined);
++}
++
++/** For the header: the badge, or nothing on a screen without a chat. */
++export function ChatSpecialistSlot() {
++  const context = useContext(ChatSpecialistContext);
++  const view = context?.view;
++  if (!view) return null;
++  return (
++    <SpecialistBadge
++      current={view.current}
++      options={view.options}
++      onPick={view.onPick}
++      busy={view.busy}
++    />
++  );
++}
+diff --git a/src/components/chat/specialist-badge.tsx b/src/components/chat/specialist-badge.tsx
+new file mode 100644
+index 0000000..be2fd7b
+--- /dev/null
++++ b/src/components/chat/specialist-badge.tsx
+@@ -0,0 +1,97 @@
++"use client";
++
++/**
++ * Which specialist this chat is with, and the menu that changes it.
++ *
++ * It sits in the chat's header, beside the name of the screen: the specialist is
++ * a property of the conversation, and the first thing worth seeing when a chat
++ * is opened again weeks later. Switching is one click - the same click that
++ * opens the menu - because a specialist is a lens, not a setting: it is changed
++ * mid-thought and changed back.
++ */
++
++import { Check, ChevronDown, Loader2, UserRound } from "lucide-react";
++import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
++import { useI18n } from "@/i18n/provider";
++import type { ChatSpecialist } from "@/lib/types";
++import type { SpecialistOption } from "@/lib/specialists/choice";
++
++export interface SpecialistBadgeProps {
++  /** The specialist this chat is with; absent when it has none. */
++  current: ChatSpecialist | null;
++  /** What this project could be with. An empty list hides the badge entirely. */
++  options: SpecialistOption[];
++  /** `null` takes the specialist away. */
++  onPick: (id: string | null) => void;
++  /** A switch is being saved: the menu shows it and cannot start another. */
++  busy?: boolean;
++}
++
++export function SpecialistBadge({ current, options, onPick, busy }: SpecialistBadgeProps) {
++  const { t } = useI18n();
++
++  if (options.length === 0) return null;
++
++  return (
++    <Popover>
++      <PopoverTrigger asChild>
++        <button
++          type="button"
++          data-testid="chat-specialist"
++          title={current ? t("chat.specialist.hint", { title: current.title }) : t("chat.specialist.noneHint")}
++          className="inline-flex max-w-[14rem] shrink-0 items-center gap-1.5 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none"
++        >
++          {busy ? (
++            <Loader2 className="size-3.5 shrink-0 animate-spin" aria-hidden />
++          ) : (
++            <UserRound className="size-3.5 shrink-0" aria-hidden />
++          )}
++          <span className="truncate">
++            {current ? current.title : t("chat.specialist.none")}
++          </span>
++          <ChevronDown className="size-3 shrink-0 opacity-60" aria-hidden />
++        </button>
++      </PopoverTrigger>
++      <PopoverContent align="start" className="w-72 p-1">
++        <p className="px-2 py-1.5 text-xs text-muted-foreground">{t("chat.specialist.choose")}</p>
++        <ul className="max-h-72 overflow-y-auto">
++          {options.map((option) => {
++            const selected = current?.id === option.id;
++            return (
++              <li key={option.id}>
++                <button
++                  type="button"
++                  disabled={busy}
++                  onClick={() => {
++                    if (!selected) onPick(option.id);
++                  }}
++                  className="flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-accent disabled:opacity-50"
++                >
++                  <Check
++                    className={`mt-0.5 size-3.5 shrink-0 ${selected ? "opacity-100" : "opacity-0"}`}
++                    aria-hidden
++                  />
++                  <span className="min-w-0">
++                    <span className="block truncate text-sm">{option.title}</span>
++                    <span className="block truncate text-xs text-muted-foreground">{option.summary}</span>
++                  </span>
++                </button>
++              </li>
++            );
++          })}
++        </ul>
++        {current ? (
++          <button
++            type="button"
++            disabled={busy}
++            onClick={() => onPick(null)}
++            className="mt-1 flex w-full items-center gap-2 rounded-md border-t px-2 py-1.5 text-left text-xs text-muted-foreground transition-colors hover:bg-accent disabled:opacity-50"
++          >
++            <UserRound className="size-3.5 shrink-0" aria-hidden />
++            {t("chat.specialist.clear")}
++          </button>
++        ) : null}
++      </PopoverContent>
++    </Popover>
++  );
++}
+diff --git a/src/components/site-header.tsx b/src/components/site-header.tsx
+index 50bdce3..70495a8 100644
+--- a/src/components/site-header.tsx
++++ b/src/components/site-header.tsx
+@@ -8,7 +8,7 @@ import { FilesPanelTrigger } from "@/components/files-panel"
+ import { TerminalPanelTrigger } from "@/components/terminal-panel"
+ import { BrowserPanelTrigger } from "@/components/browser-panel"
+ 
+-export function SiteHeader({ title }: { title?: string }) {
++export function SiteHeader({ title, children }: { title?: string; children?: React.ReactNode }) {
+   const { toggleSidebar } = useSidebar()
+ 
+   return (
+@@ -26,6 +26,9 @@ export function SiteHeader({ title }: { title?: string }) {
+         <h1 className="text-sm font-medium tracking-tight">
+           {title || "Eggent"}
+         </h1>
++        {/* The screen's own controls: what a chat is with, for the chat screen,
++            and nothing for a screen that has nothing to add. */}
++        {children ? <div className="flex min-w-0 items-center gap-1">{children}</div> : null}
+         {/* Right corner, opposite the sidebar toggle: the two are the same
+             kind of control, one for each side of the screen. */}
+         <div className="ml-auto flex items-center gap-1">
+diff --git a/src/i18n/messages.ru.ts b/src/i18n/messages.ru.ts
+index b6f4a61..44fb7e1 100644
+--- a/src/i18n/messages.ru.ts
++++ b/src/i18n/messages.ru.ts
+@@ -393,6 +393,11 @@ export const ruMessages: Record<string, string> = {
+   "chat.helpers.meta.tokens": "Токены: {count}",
+   "chat.usage.chat": "за чат {count}",
+   "chat.usage.hint": "Сколько токенов потратил весь чат, по всем ответам.",
++  "chat.specialist.none": "без специалиста",
++  "chat.specialist.hint": "Этот чат — со специалистом «{title}»",
++  "chat.specialist.noneHint": "Выбери специалиста для этого чата",
++  "chat.specialist.choose": "Специалист для этого чата",
++  "chat.specialist.clear": "Без специалиста",
+   "settings.usage.project": "Этот проект потратил {count} токенов; чатов: {chats}.",
+   "settings.build": "Сборка {version}",
+   "settings.softLimit.title": "Расход",
+diff --git a/src/i18n/messages.ts b/src/i18n/messages.ts
+index ecf4b50..f8c4944 100644
+--- a/src/i18n/messages.ts
++++ b/src/i18n/messages.ts
+@@ -399,6 +399,11 @@ const enMessages = {
+   // eggent-plus: what the whole chat has spent, next to this turn's own counters.
+   "chat.usage.chat": "chat {count}",
+   "chat.usage.hint": "Tokens this whole chat has spent, across every answer.",
++  "chat.specialist.none": "no specialist",
++  "chat.specialist.hint": "This chat is with {title}",
++  "chat.specialist.noneHint": "Choose the specialist this chat is with",
++  "chat.specialist.choose": "Specialist for this chat",
++  "chat.specialist.clear": "No specialist",
+   "settings.usage.project": "This project has spent {count} tokens across {chats} chats.",
+   "settings.build": "Build {version}",
+   "settings.softLimit.title": "Spending",
+diff --git a/src/lib/pi/chat-runner.ts b/src/lib/pi/chat-runner.ts
+index 13b4a2e..74fe327 100644
+--- a/src/lib/pi/chat-runner.ts
++++ b/src/lib/pi/chat-runner.ts
+@@ -25,6 +25,7 @@ import { isEngineProviderId } from "@/lib/engines/types";
+ import { collectProducedFiles, mergeProducedGroups, type ProducedGroup } from "@/lib/files/produced";
+ import { SubagentProgressTracker } from "@/lib/pi/subagent-progress";
+ import type { AgentProgressEvent, PiChatRunOptions, PiRuntimeStats, PiToolRecord, SubagentSnapshot } from "@/lib/pi/types";
++import { specialistPromptNote } from "@/lib/specialists/choice";
+ import { getChat, saveChat } from "@/lib/storage/chat-store";
+ import { clearUsageSnapshotCache } from "@/lib/usage/usage-provider";
+ import type { ChatMessagePart } from "@/lib/types";
+@@ -1730,7 +1731,14 @@ export function createPiChatUIMessageStream(options: PiChatRunOptions) {
+         disabled: options.enableEggentTools === false || Boolean(options.visit) || !chatAllowsVisits(options.chatContextMode) || onEngine,
+         currentProjectId: options.projectId,
+       });
+-      const promptFor = promptForMessage(options.userMessage, "", mention, options.openFileNote);
++      const promptFor = promptForMessage(
++        options.userMessage,
++        "",
++        mention,
++        [options.openFileNote, options.specialist ? specialistPromptNote(options.specialist) : ""]
++          .filter(Boolean)
++          .join("\n\n")
++      );
+ 
+       // A question the agent asks is put on this response's stream, and saved with the turn so far.
+       // A turn nobody is watching - a messenger handed it over - has no one to put one to.
+diff --git a/src/lib/pi/types.ts b/src/lib/pi/types.ts
+index 2f12c55..a5d8ec5 100644
+--- a/src/lib/pi/types.ts
++++ b/src/lib/pi/types.ts
+@@ -66,6 +66,12 @@ export interface PiChatRunOptions extends PiSessionOptions {
+   projectId?: string;
+   /** The file open beside the chat, told to the model after the message for this turn (lib/files/open-file-context). */
+   openFileNote?: string;
++  /**
++   * The specialist this chat is with, told to the model with the message: the
++   * skill is installed in the project, but a skill the model may open and a
++   * chat that is *with* this specialist are two different things.
++   */
++  specialist?: { id: string; title: string };
+   /**
+    * The id the person's message is stored under, when it has one already: a
+    * message said to a turn that ended before reading it, now sent as a turn of
+diff --git a/src/lib/specialists/assign.ts b/src/lib/specialists/assign.ts
+new file mode 100644
+index 0000000..17ed766
+--- /dev/null
++++ b/src/lib/specialists/assign.ts
+@@ -0,0 +1,51 @@
++import { getChat, setChatSpecialist } from "@/lib/storage/chat-store";
++import { listProjectSpecialists } from "@/lib/specialists/catalog";
++import { chooseSpecialist } from "@/lib/specialists/select";
++import { shouldChooseSpecialist, type ChatSpecialist } from "@/lib/specialists/choice";
++
++/**
++ * Give a chat its specialist on the first message, once.
++ *
++ * Called on the way in to a turn, before the answer starts: the badge is then
++ * there while the answer is written, not after it. Every reason not to decide -
++ * a chat that already has an answer, a project with no specialists, a model that
++ * is unavailable or slow - ends with the turn running exactly as it would have
++ * without this, which is why nothing here throws.
++ */
++export async function autoAssignSpecialist(params: {
++  chatId: string;
++  projectId?: string | null;
++  message: string;
++  timeoutMs?: number;
++}): Promise<ChatSpecialist | null> {
++  if (!params.projectId) return null;
++  try {
++    const chat = await getChat(params.chatId);
++    if (!chat) return null;
++
++    const candidates = await listProjectSpecialists(params.projectId);
++    if (
++      !shouldChooseSpecialist({
++        hasSpecialist: Boolean(chat.specialist),
++        messageCount: chat.messages.length,
++        candidateCount: candidates.length,
++      })
++    ) {
++      return null;
++    }
++
++    const picked = await chooseSpecialist({
++      projectId: params.projectId,
++      message: params.message,
++      candidates,
++      ...(params.timeoutMs !== undefined ? { timeoutMs: params.timeoutMs } : {}),
++    });
++    if (!picked) return null;
++
++    const specialist: ChatSpecialist = { id: picked.id, title: picked.title, by: "auto" };
++    await setChatSpecialist(params.chatId, specialist);
++    return specialist;
++  } catch {
++    return null;
++  }
++}
+diff --git a/src/lib/specialists/catalog.ts b/src/lib/specialists/catalog.ts
+new file mode 100644
+index 0000000..9978eda
+--- /dev/null
++++ b/src/lib/specialists/catalog.ts
+@@ -0,0 +1,68 @@
++import fs from "fs/promises";
++import path from "path";
++import { loadProjectSkillsMetadata } from "@/lib/storage/project-store";
++import type { SpecialistOption } from "@/lib/specialists/choice";
++
++/** The file that makes a skill a specialist; the runtime copies it with the skill. */
++export const SPECIALIST_FILE = "specialist.json";
++
++/**
++ * The specialists installed in a project.
++ *
++ * A specialist is a skill - installed from the catalogue into
++ * `data/projects/<id>/skills/<name>/` - that also carries `specialist.json`.
++ * The file is the whole difference: the runtime copies the package as it is and
++ * ignores the extra file, so nothing here is another registry to keep in step.
++ */
++export async function listProjectSpecialists(projectId: string): Promise<SpecialistOption[]> {
++  const skills = await loadProjectSkillsMetadata(projectId);
++  const found: SpecialistOption[] = [];
++
++  for (const skill of skills) {
++    const option = await readSpecialist(skill.skillDir, skill.name, skill.description);
++    if (option) found.push(option);
++  }
++
++  return found.sort((left, right) => left.title.localeCompare(right.title, "ru"));
++}
++
++/**
++ * One package, read as a specialist. A package whose id is not its folder is not
++ * one: the runtime loads skills by folder name, and a catalogue entry that
++ * answers to another name would never be the skill that runs.
++ */
++async function readSpecialist(
++  skillDir: string,
++  folderName: string,
++  skillDescription: string
++): Promise<SpecialistOption | null> {
++  let raw: string;
++  try {
++    raw = await fs.readFile(path.join(skillDir, SPECIALIST_FILE), "utf-8");
++  } catch {
++    return null;
++  }
++
++  let parsed: unknown;
++  try {
++    parsed = JSON.parse(raw);
++  } catch {
++    return null;
++  }
++  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return null;
++
++  const record = parsed as Record<string, unknown>;
++  const id = typeof record.id === "string" ? record.id.trim().toLowerCase() : "";
++  if (!id || id !== folderName.toLowerCase()) return null;
++
++  const title =
++    typeof record.title === "string" && record.title.trim()
++      ? record.title.trim()
++      : folderName;
++  const summary =
++    typeof record.summary === "string" && record.summary.trim()
++      ? record.summary.trim()
++      : skillDescription;
++
++  return { id: folderName, title, summary };
++}
+diff --git a/src/lib/specialists/choice.ts b/src/lib/specialists/choice.ts
+new file mode 100644
+index 0000000..404b5f3
+--- /dev/null
++++ b/src/lib/specialists/choice.ts
+@@ -0,0 +1,127 @@
++/**
++ * Which specialist answers in a chat: the rules, and the words around the one
++ * small model call that picks one.
++ *
++ * Everything here is pure - no disk, no network, no runtime - so the rules can
++ * be tested on their own. The caller reads the catalogue from the project's
++ * skills, asks a model with the prompt built here, and hands the answer back to
++ * `parseSpecialistChoice`.
++ */
++
++export interface SpecialistOption {
++  /** The skill's name, which is also the folder it was installed into. */
++  id: string;
++  /** How the catalogue names it, in the person's language. */
++  title: string;
++  /** One line: what this specialist is for. */
++  summary: string;
++}
++
++/** Where a chat's specialist came from: chosen by the model or by the person. */
++export type SpecialistSource = "auto" | "person";
++
++/** The specialist a chat is with, as it is stored on the chat. */
++export interface ChatSpecialist {
++  id: string;
++  title: string;
++  by: SpecialistSource;
++}
++
++export const SPECIALIST_SYSTEM_PROMPT = [
++  "You choose which specialist should answer a person's first message.",
++  "You are given the specialists installed in this project and the message.",
++  "Answer with exactly one specialist id from the list, and nothing else.",
++  "If no specialist fits, answer exactly: none",
++].join("\n");
++
++/**
++ * The one user message the chooser sees: the list, then the request.
++ *
++ * The message is cut: the first few hundred characters say what the work is,
++ * and a long pasted document would only make the call expensive.
++ */
++export function selectionPrompt(message: string, candidates: SpecialistOption[]): string {
++  const list = candidates
++    .map((candidate) => `- ${candidate.id}: ${candidate.title} - ${candidate.summary}`)
++    .join("\n");
++  const said = message.replace(/\s+/g, " ").trim().slice(0, 1200);
++  return `Specialists installed in this project:\n${list}\n\nFirst message:\n${said}\n\nAnswer with one id from the list, or none.`;
++}
++
++/**
++ * The id the model named, or nothing.
++ *
++ * A model that is told to answer with one id mostly does; the rest of this is
++ * tolerance for the ways they fail - quotes, a trailing sentence, the id inside
++ * a sentence - without letting a guess through: an id that is not in the
++ * catalogue is not a choice.
++ */
++export function parseSpecialistChoice(answer: string, candidates: SpecialistOption[]): string | null {
++  const text = answer.trim().replace(/^["'`]+|["'`.]+$/g, "").trim();
++  if (!text) return null;
++  const lowered = text.toLowerCase();
++  if (lowered === "none" || lowered === "-" || lowered === "нет") return null;
++
++  const byId = candidates.find((candidate) => candidate.id.toLowerCase() === lowered);
++  if (byId) return byId.id;
++
++  // The longest id that appears as a whole word wins, so "direct" does not
++  // answer for "yandex-direct".
++  const named = candidates
++    .filter((candidate) => new RegExp(`(^|[^a-z0-9_-])${escapeRegExp(candidate.id.toLowerCase())}([^a-z0-9_-]|$)`).test(lowered))
++    .sort((a, b) => b.id.length - a.id.length)[0];
++  return named?.id ?? null;
++}
++
++/**
++ * Whether this turn is the moment to choose.
++ *
++ * Once per chat, on the first message, and only when there is something to
++ * choose between: a chat that already has an answer, or a project with no
++ * specialists installed, has nothing for a model to decide.
++ */
++export function shouldChooseSpecialist(params: {
++  hasSpecialist: boolean;
++  /** Messages already in the chat, before this turn. */
++  messageCount: number;
++  candidateCount: number;
++}): boolean {
++  return !params.hasSpecialist && params.messageCount === 0 && params.candidateCount > 0;
++}
++
++/**
++ * What the turn is told about its specialist.
++ *
++ * The skill itself is installed in the project and the runtime lists it; this
++ * line is what makes the choice hold for the turn - a skill the model may open
++ * and a chat that is with this specialist are different things.
++ */
++export function specialistPromptNote(option: Pick<SpecialistOption, "id" | "title">): string {
++  return [
++    `This chat is with the specialist "${option.title}" (skill "${option.id}").`,
++    `Read skills/${option.id}/SKILL.md before answering and follow it.`,
++    "If the request is outside what this specialist does, say so in one line and then answer as usual.",
++  ].join(" ");
++}
++
++/**
++ * The title to show for a stored specialist, preferring the catalogue's current
++ * one: a package renamed between turns keeps the id and changes the label.
++ */
++export function specialistForDisplay(
++  stored: { id: string; title?: string; by?: SpecialistSource } | null | undefined,
++  candidates: SpecialistOption[]
++): ChatSpecialist | null {
++  if (!stored) return null;
++  const current = candidates.find((candidate) => candidate.id === stored.id);
++  const title = current?.title || stored.title || stored.id;
++  return {
++    id: stored.id,
++    title,
++    by: stored.by === "person" ? "person" : "auto",
++  };
++}
++
++function escapeRegExp(value: string): string {
++  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
++}
+diff --git a/src/lib/specialists/select.ts b/src/lib/specialists/select.ts
+new file mode 100644
+index 0000000..4b3008e
+--- /dev/null
++++ b/src/lib/specialists/select.ts
+@@ -0,0 +1,182 @@
++import "@/lib/pi/env";
++import {
++  createAgentSession,
++  DefaultResourceLoader,
++  SessionManager,
++} from "@earendil-works/pi-coding-agent";
++import {
++  fallbackRuntimeModel,
++  getPiAgentDir,
++  getPiModelRegistry,
++  getPiModelRuntime,
++  getResolvedPiRuntimeModel,
++} from "@/lib/pi/config-store";
++import { getWorkDir } from "@/lib/storage/project-store";
++import { getSettings } from "@/lib/storage/settings-store";
++import {
++  parseSpecialistChoice,
++  selectionPrompt,
++  SPECIALIST_SYSTEM_PROMPT,
++  type SpecialistOption,
++} from "@/lib/specialists/choice";
++
++/** A model the runtime can serve right now. */
++type AvailableModel = ReturnType<Awaited<ReturnType<typeof getPiModelRegistry>>["getAvailable"]>[number];
++
++/**
++ * The one small call that picks a chat's specialist.
++ *
++ * It is a turn with no tools: a system line saying "answer with one id" and the
++ * person's first message, which is all a classifier needs. Nothing of the chat
++ * itself is loaded - no history, no MCP, no project files - so the cost is a few
++ * hundred tokens and cannot pull the workspace into the prompt.
++ *
++ * The model is the workspace's utility model when it is one the runtime can
++ * serve, and the chat's own model otherwise: `utilityModel` is a setting with a
++ * default of `openai/gpt-4o-mini`, and a workspace that never configured one
++ * must still get a choice rather than a silent nothing.
++ */
++
++export interface SpecialistCallInput {
++  system: string;
++  prompt: string;
++  signal?: AbortSignal;
++}
++
++/** One question answered by a model. Injectable so the rules can be tested without one. */
++export type SpecialistCompleter = (input: SpecialistCallInput) => Promise<string>;
++
++export interface ChooseSpecialistParams {
++  projectId?: string | null;
++  message: string;
++  candidates: SpecialistOption[];
++  /** How long the turn is willing to wait for the answer. */
++  timeoutMs?: number;
++  complete?: SpecialistCompleter;
++}
++
++/**
++ * The specialist this message belongs to, or nothing.
++ *
++ * Nothing is a normal answer: no specialist fits, the model is unavailable, the
++ * call ran long. None of those may hold up the turn that the person is waiting
++ * for, so every failure here ends the same way and quietly.
++ */
++export async function chooseSpecialist(params: ChooseSpecialistParams): Promise<SpecialistOption | null> {
++  const { candidates } = params;
++  if (candidates.length === 0) return null;
++  // One installed specialist is not a choice, and asking a model to confirm it
++  // would be a call per chat for an answer that is already known.
++  if (candidates.length === 1) return candidates[0];
++
++  const complete = params.complete ?? piCompleter(params.projectId);
++  const timeoutMs = params.timeoutMs ?? 10_000;
++  const controller = new AbortController();
++  const timer = setTimeout(() => controller.abort(), timeoutMs);
++
++  try {
++    const answer = await complete({
++      system: SPECIALIST_SYSTEM_PROMPT,
++      prompt: selectionPrompt(params.message, candidates),
++      signal: controller.signal,
++    });
++    const id = parseSpecialistChoice(answer, candidates);
++    return candidates.find((candidate) => candidate.id === id) ?? null;
++  } catch {
++    return null;
++  } finally {
++    clearTimeout(timer);
++  }
++}
++
++/**
++ * One question, answered by the runtime's model, in a session that can do
++ * nothing else.
++ */
++function piCompleter(projectId?: string | null): SpecialistCompleter {
++  return async (input) => {
++    const picked = await resolveModel(projectId);
++    if (!picked) throw new Error("no model is available for the specialist choice");
++
++    const cwd = getWorkDir(projectId ?? undefined);
++    const agentDir = getPiAgentDir();
++    const resourceLoader = new DefaultResourceLoader({
++      cwd,
++      agentDir,
++      noExtensions: true,
++      noSkills: true,
++      noPromptTemplates: true,
++      noThemes: true,
++      systemPromptOverride: () => input.system,
++      agentsFilesOverride: () => ({ agentsFiles: [] }),
++    });
++    await resourceLoader.reload();
++
++    const { session } = await createAgentSession({
++      cwd,
++      agentDir,
++      model: picked.model,
++      modelRuntime: picked.runtime,
++      thinkingLevel: "off",
++      // Nothing to call: the answer is one word, and a tool loop would be a
++      // second way for this to cost money or write something.
++      noTools: "all",
++      resourceLoader,
++      sessionManager: SessionManager.inMemory(cwd),
++    });
++
++    const abort = () => {
++      void session.abort().catch(() => undefined);
++    };
++    if (input.signal?.aborted) abort();
++    else input.signal?.addEventListener("abort", abort, { once: true });
++
++    try {
++      await session.prompt(input.prompt);
++      return session.getLastAssistantText() ?? "";
++    } finally {
++      input.signal?.removeEventListener("abort", abort);
++      session.dispose();
++    }
++  };
++}
++
++/**
++ * Which model answers the choice.
++ *
++ * The utility model when the runtime has that exact provider and model with a
++ * credential; otherwise the model the chat itself will run on, so a workspace
++ * that never touched `utilityModel` is not left without a choice. A project
++ * running on a program of this computer is skipped: there are no tokens there
++ * and nothing to spend them on.
++ */
++async function resolveModel(projectId?: string | null): Promise<{ model: AvailableModel; runtime: Awaited<ReturnType<typeof getPiModelRuntime>> } | null> {
++  const runtime = await getPiModelRuntime();
++  const registry = await getPiModelRegistry(runtime);
++  await registry.refresh();
++  const available = registry.getAvailable();
++  if (available.length === 0) return null;
++
++  const settings = await getSettings();
++  const utility = settings.utilityModel;
++  if (utility) {
++    const served = available.find(
++      (model) => model.provider === utility.provider && model.id === utility.model
++    );
++    if (served) return { model: served, runtime };
++  }
++
++  try {
++    const chatModel = await getResolvedPiRuntimeModel(projectId);
++    if (chatModel.engine) return null;
++    const same = available.find(
++      (model) => model.provider === chatModel.model?.provider && model.id === chatModel.model?.id
++    );
++    if (same) return { model: same, runtime };
++  } catch {
++    // No model resolved for the chat: the fallback below is the last word.
++  }
++
++  const fallback = await fallbackRuntimeModel(available);
++  return fallback ? { model: fallback, runtime } : null;
++}
+diff --git a/src/lib/storage/chat-store.ts b/src/lib/storage/chat-store.ts
+index ee91eda..e04f61e 100644
+--- a/src/lib/storage/chat-store.ts
++++ b/src/lib/storage/chat-store.ts
+@@ -1,6 +1,6 @@
+ import fs from "fs/promises";
+ import path from "path";
+-import type { Chat, ChatContextMode, ChatListItem } from "@/lib/types";
++import type { Chat, ChatContextMode, ChatListItem, ChatSpecialist } from "@/lib/types";
+ import type { ChatHome } from "@/lib/remote/types";
+ import { publishUiSyncEvent } from "@/lib/realtime/event-bus";
+ import { withoutInlineImages } from "@/lib/storage/chat-media";
+@@ -123,6 +123,25 @@ export async function saveChat(chat: Chat): Promise<void> {
+   });
+ }
+ 
++/**
++ * Give a chat its specialist, or take it away with `null`.
++ *
++ * Kept apart from `saveChat` so a caller that only decides this cannot write
++ * a whole chat it read a moment ago over one that a turn is writing now.
++ */
++export async function setChatSpecialist(
++  chatId: string,
++  specialist: ChatSpecialist | null
++): Promise<Chat | null> {
++  const chat = await getChat(chatId);
++  if (!chat) return null;
++  if (specialist) chat.specialist = specialist;
++  else delete chat.specialist;
++  chat.updatedAt = new Date().toISOString();
++  await saveChat(chat);
++  return chat;
++}
++
+ export async function deleteChat(chatId: string): Promise<boolean> {
+   const existing = await getChat(chatId);
+   const filePath = path.join(CHATS_DIR, `${chatId}.json`);
+diff --git a/src/lib/types.ts b/src/lib/types.ts
+index 40d4a52..a56192b 100644
+--- a/src/lib/types.ts
++++ b/src/lib/types.ts
+@@ -160,10 +160,28 @@ export interface Attachment {
+  */
+ export type ChatContextMode = "full" | "plain" | "files";
+ 
++/**
++ * The specialist a chat is with: one of the project's installed specialist
++ * skills, chosen for the first message or picked by the person afterwards.
++ *
++ * `title` is kept beside the id so a chat still says which specialist it was
++ * with after the package behind it is gone; the catalogue's current title wins
++ * whenever the id is still installed (see lib/specialists/choice).
++ */
++export interface ChatSpecialist {
++  /** The skill's name, and the folder it was installed into. */
++  id: string;
++  title: string;
++  /** Chosen for the first message, or picked by the person. */
++  by: "auto" | "person";
++}
++
+ export interface Chat {
+   id: string;
+   title: string;
+   projectId?: string;
++  /** The specialist this chat is with: absent on a chat that never got one. */
++  specialist?: ChatSpecialist;
+   /** Absent on every chat made before light modes existed, and read as "full". */
+   contextMode?: ChatContextMode;
+   /** Set on a chat a scheduled task wrote its report into. */

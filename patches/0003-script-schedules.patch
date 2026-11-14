@@ -938,10 +938,10 @@ index 0000000..61a8ce8
 +}
 diff --git a/src/lib/scripts/schedules.ts b/src/lib/scripts/schedules.ts
 new file mode 100644
-index 0000000..869ada4
+index 0000000..d8a546d
 --- /dev/null
 +++ b/src/lib/scripts/schedules.ts
-@@ -0,0 +1,234 @@
+@@ -0,0 +1,233 @@
 +/**
 + * Script schedules: a task that runs a shell command with no model behind it.
 + *
@@ -997,7 +997,6 @@ index 0000000..869ada4
 +  d: 86_400_000,
 +};
 +
-+const MINUTE_MS = 60_000;
 +const MAX_CRON_SCAN_MINUTES = 366 * 24 * 60;
 +
 +/** "5m", "every 2h", "30s", "1d" — a duration people actually type. */

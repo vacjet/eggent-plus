@@ -1662,6 +1662,28 @@
   "en": "Tokens this whole chat has spent, across every answer.",
   "ph": []
  },
+ "chat.specialist.none": {
+  "en": "no specialist",
+  "ph": []
+ },
+ "chat.specialist.hint": {
+  "en": "This chat is with {title}",
+  "ph": [
+   "title"
+  ]
+ },
+ "chat.specialist.noneHint": {
+  "en": "Choose the specialist this chat is with",
+  "ph": []
+ },
+ "chat.specialist.choose": {
+  "en": "Specialist for this chat",
+  "ph": []
+ },
+ "chat.specialist.clear": {
+  "en": "No specialist",
+  "ph": []
+ },
  "settings.usage.project": {
   "en": "This project has spent {count} tokens across {chats} chats.",
   "ph": [

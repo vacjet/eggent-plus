@@ -19,6 +19,7 @@ for f in README.md AGENTS.md context.md memory.md TOUCHED.md .gitignore patches/
          patches/0003-script-schedules.patch patches/0004-chat-usage.patch \
          patches/0005-project-usage.patch patches/0006-build-version.patch \
          patches/0007-soft-limit.patch \
+         patches/0014-specialist-autoselect.patch \
          .github/workflows/patches.yml docker/Dockerfile; do
   if [[ ! -f "$f" ]]; then
     echo "нет файла: $f" >&2
@@ -120,6 +121,18 @@ if [[ -f upstream/scripts/test-build-info.ts ]] && command -v node >/dev/null; t
   echo "номер сборки: ok"
 else
   echo "номер сборки: тест пропущен (нет патча в upstream/)" >&2
+fi
+
+# Специалист чата: правила выбора лежат в патче, сети не требуют.
+if [[ -f upstream/scripts/test-specialist-choice.ts ]] && command -v node >/dev/null; then
+  if ! node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types \
+      --import ./upstream/scripts/alias-loader-register.mjs upstream/scripts/test-specialist-choice.ts >/dev/null; then
+    echo "специалист чата: тест упал" >&2
+    exit 1
+  fi
+  echo "специалист чата: ok"
+else
+  echo "специалист чата: тест пропущен (нет патча в upstream/)" >&2
 fi
 
 # Личные данные: репозиторий публичный, здесь только плейсхолдеры (решение 41).
