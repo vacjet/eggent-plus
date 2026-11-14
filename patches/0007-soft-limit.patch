@@ -1,0 +1,263 @@
+diff --git a/scripts/test-usage-summary.ts b/scripts/test-usage-summary.ts
+index 076b8ec..a9f081b 100644
+--- a/scripts/test-usage-summary.ts
++++ b/scripts/test-usage-summary.ts
+@@ -6,7 +6,7 @@
+  *     --import ./scripts/alias-loader-register.mjs scripts/test-usage-summary.ts
+  */
+ import assert from "node:assert/strict";
+-import { hasChatUsage, sumChatUsage, sumChatUsageFromParts } from "../src/lib/pi/usage-summary.ts";
++import { exceedsSoftLimit, hasChatUsage, sumChatUsage, sumChatUsageFromParts } from "../src/lib/pi/usage-summary.ts";
+ 
+ let failed = 0;
+ let ran = 0;
+@@ -86,5 +86,25 @@ check("nothing worth showing when the total is zero", () => {
+   assert.equal(hasChatUsage({ turns: 1, input: 5, output: 0, cacheRead: 0, cacheWrite: 0, total: 5 }), true);
+ });
+ 
++console.log("\nsoft limit:\n");
++
++const usage = (total: number) => ({ turns: 1, input: total, output: 0, cacheRead: 0, cacheWrite: 0, total });
++
++check("zero means no limit at all", () => {
++  assert.equal(exceedsSoftLimit(usage(10_000_000), 0), false);
++  assert.equal(exceedsSoftLimit(usage(10_000_000), undefined), false);
++  assert.equal(exceedsSoftLimit(usage(10_000_000), null), false);
++});
++
++check("the limit is passed, not reached", () => {
++  assert.equal(exceedsSoftLimit(usage(1000), 1000), false, "exactly at the limit is still inside it");
++  assert.equal(exceedsSoftLimit(usage(1001), 1000), true);
++});
++
++check("nonsense limits never warn", () => {
++  assert.equal(exceedsSoftLimit(usage(5), -1), false);
++  assert.equal(exceedsSoftLimit(usage(5), Number.NaN), false);
++});
++
+ console.log(`\n${ran} checks, ${failed} failed`);
+ process.exit(failed > 0 ? 1 : 0);
+diff --git a/src/app/api/chat/history/route.ts b/src/app/api/chat/history/route.ts
+index 36a871f..d2da070 100644
+--- a/src/app/api/chat/history/route.ts
++++ b/src/app/api/chat/history/route.ts
+@@ -1,5 +1,6 @@
+ import type { NextRequest } from "next/server";
+ import { getAllChats, getChat, deleteChat } from "@/lib/storage/chat-store";
++import { getSettings } from "@/lib/storage/settings-store";
+ import { matchesIfNoneMatch, weakEtag } from "@/lib/etag";
+ 
+ export async function GET(req: NextRequest) {
+@@ -14,7 +15,13 @@ export async function GET(req: NextRequest) {
+     // seconds and whenever the window regains focus - and almost every time
+     // nothing has changed. With a validator the browser asks whether it has,
+     // and an unchanged conversation costs a 304 instead of all of it again.
+-    const body = JSON.stringify(chat);
++    // The soft limit travels with the chat the panel already fetches, so the
++    // footer can warn without a second request on every sync.
++    const settings = await getSettings().catch(() => null);
++    const body = JSON.stringify({
++      ...chat,
++      softLimitTokens: Number(settings?.general?.usageSoftLimitTokens) || 0,
++    });
+     const etag = weakEtag(body);
+     const headers = {
+       "Content-Type": "application/json",
+diff --git a/src/app/dashboard/settings/general/page.tsx b/src/app/dashboard/settings/general/page.tsx
+index 1a7d192..7772f85 100644
+--- a/src/app/dashboard/settings/general/page.tsx
++++ b/src/app/dashboard/settings/general/page.tsx
+@@ -204,6 +204,30 @@ export default function GeneralSettingsPage() {
+             </div>
+           </section>
+ 
++          <section className="space-y-4 rounded-xl border bg-card p-5">
++            <h3 className="text-lg font-semibold">{t("settings.softLimit.title")}</h3>
++            <div className="flex items-center justify-between gap-4 rounded-lg border p-3">
++              <div>
++                <p className="text-sm font-medium">{t("settings.softLimit.label")}</p>
++                <p className="text-sm text-muted-foreground">{t("settings.softLimit.description")}</p>
++              </div>
++              <Input
++                id="usage-soft-limit"
++                type="number"
++                min={0}
++                step={1000}
++                inputMode="numeric"
++                className="w-[160px]"
++                aria-label={t("settings.softLimit.label")}
++                value={Number(settings.general.usageSoftLimitTokens) || 0}
++                onChange={(event) => {
++                  const value = Math.max(0, Math.trunc(Number(event.target.value) || 0));
++                  change("general.usageSoftLimitTokens", value);
++                }}
++              />
++            </div>
++          </section>
++
+           <FileHistorySettings
+             enabled={settings.fileHistory?.enabled !== false}
+             onToggle={(enabled) => change("fileHistory.enabled", enabled)}
+diff --git a/src/components/chat/chat-input.tsx b/src/components/chat/chat-input.tsx
+index c24999b..72fbc9e 100644
+--- a/src/components/chat/chat-input.tsx
++++ b/src/components/chat/chat-input.tsx
+@@ -13,7 +13,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
+ import { ModelPicker } from "@/components/chat/model-picker";
+ import { DictationButton, DictationStatus, useDictation } from "@/components/chat/dictation";
+ import { useI18n } from "@/i18n/provider";
+-import { hasChatUsage, type ChatUsage } from "@/lib/pi/usage-summary";
++import { exceedsSoftLimit, hasChatUsage, type ChatUsage } from "@/lib/pi/usage-summary";
+ import { formatUploadSize, MAX_UPLOAD_BYTES, MAX_UPLOAD_LABEL } from "@/lib/files/upload-limits";
+ import type { MessageKey } from "@/i18n/messages";
+ import type { ChatContextMode, ChatFile } from "@/lib/types";
+@@ -202,6 +202,8 @@ interface ChatInputProps {
+   runtimeStats?: PiRuntimeStats | null;
+   /** What the whole chat has spent so far; nothing is shown while it is zero. */
+   chatUsage?: ChatUsage | null;
++  /** Soft limit in tokens; past it the figure warns, and nothing is blocked. */
++  softLimitTokens?: number;
+   /** The program of this computer the chat runs on, when it runs on one: it replaces the line about tokens. */
+   engineLabel?: string | null;
+   contextMode?: ChatContextMode;
+@@ -226,6 +228,7 @@ export function ChatInput({
+   focusSignal,
+   runtimeStats,
+   chatUsage,
++  softLimitTokens = 0,
+   engineLabel,
+   contextMode = "full",
+   onContextModeChange,
+@@ -1125,7 +1128,14 @@ export function ChatInput({
+               <span className="font-mono">out {formatTokenCount(runtimeStats?.session?.output ?? runtimeStats?.lastTurn?.output)}</span>
+               <span className="font-mono">{formatContextUsage(runtimeStats)}</span>
+               {chatUsage && hasChatUsage(chatUsage) ? (
+-                <span className="font-mono" title={t("chat.usage.hint")}>
++                <span
++                  className={`font-mono ${exceedsSoftLimit(chatUsage, softLimitTokens) ? "text-warning" : ""}`}
++                  title={
++                    exceedsSoftLimit(chatUsage, softLimitTokens)
++                      ? t("chat.usage.overSoftLimit", { limit: formatTokenCount(softLimitTokens) })
++                      : t("chat.usage.hint")
++                  }
++                >
+                   {t("chat.usage.chat", { count: formatTokenCount(chatUsage.total) })}
+                 </span>
+               ) : null}
+diff --git a/src/components/chat/chat-panel.tsx b/src/components/chat/chat-panel.tsx
+index 536ce41..d202f95 100644
+--- a/src/components/chat/chat-panel.tsx
++++ b/src/components/chat/chat-panel.tsx
+@@ -523,6 +523,8 @@ export function ChatPanel({ initialQuickSkills = [] }: ChatPanelProps) {
+   // chat and answers from there, so this is only what a not-yet-created chat
+   // will be created with, plus what the footer shows for one that exists.
+   const [contextMode, setContextMode] = useState<ChatContextMode>("full");
++  /** Мягкий порог расхода чата из настроек; 0 — не предупреждать. */
++  const [softLimitTokens, setSoftLimitTokens] = useState(0);
+   // A chat opened to answer a colleague's message: which message, from the stored chat.
+   const [mailReply, setMailReply] = useState<MailReplyInfo | null>(null);
+   // The chat is a card on the task board.
+@@ -820,7 +822,7 @@ export function ChatPanel({ initialQuickSkills = [] }: ChatPanelProps) {
+           return null;
+         }
+         if (!r.ok) throw new Error("Failed to load chat");
+-        return r.json() as Promise<{ messages?: ChatMessage[]; contextMode?: ChatContextMode; home?: string; mailReply?: MailReplyInfo; boardCard?: boolean }>;
++        return r.json() as Promise<{ messages?: ChatMessage[]; contextMode?: ChatContextMode; home?: string; mailReply?: MailReplyInfo; boardCard?: boolean; softLimitTokens?: number }>;
+       })
+       .then((chat) => {
+         if (cancelled) return;
+@@ -831,6 +833,7 @@ export function ChatPanel({ initialQuickSkills = [] }: ChatPanelProps) {
+         if (stopSettlingRef.current) return;
+ 
+         setContextMode(chat?.contextMode ?? "full");
++        setSoftLimitTokens(Number(chat?.softLimitTokens) || 0);
+         // Only a chat that exists says where it lives: for one that does not yet,
+         // the choice made on this screen is all there is.
+         if (chat?.messages) setChatHome(parseHome(chat.home) ?? null);
+@@ -1555,6 +1558,7 @@ export function ChatPanel({ initialQuickSkills = [] }: ChatPanelProps) {
+         focusSignal={inputFocusSignal}
+         runtimeStats={displayRuntimeStats}
+         chatUsage={chatUsage}
++        softLimitTokens={softLimitTokens}
+         engineLabel={engineLabel}
+         contextMode={contextMode}
+         onContextModeChange={setContextMode}
+diff --git a/src/i18n/messages.ru.ts b/src/i18n/messages.ru.ts
+index ad4e783..b6f4a61 100644
+--- a/src/i18n/messages.ru.ts
++++ b/src/i18n/messages.ru.ts
+@@ -395,6 +395,10 @@ export const ruMessages: Record<string, string> = {
+   "chat.usage.hint": "Сколько токенов потратил весь чат, по всем ответам.",
+   "settings.usage.project": "Этот проект потратил {count} токенов; чатов: {chats}.",
+   "settings.build": "Сборка {version}",
++  "settings.softLimit.title": "Расход",
++  "settings.softLimit.label": "Предупреждать после стольких токенов на чат",
++  "settings.softLimit.description": "Ноль выключает предупреждение. Оно только подсвечивает сумму чата и никогда не останавливает ход.",
++  "chat.usage.overSoftLimit": "Чат перешёл мягкий порог: {limit} токенов.",
+   "chat.helpers.step.search": "Поиск",
+   "chat.helpers.step.page": "Чтение страницы",
+   "chat.helpers.step.files": "Файлы",
+diff --git a/src/i18n/messages.ts b/src/i18n/messages.ts
+index 8420e70..ecf4b50 100644
+--- a/src/i18n/messages.ts
++++ b/src/i18n/messages.ts
+@@ -401,6 +401,10 @@ const enMessages = {
+   "chat.usage.hint": "Tokens this whole chat has spent, across every answer.",
+   "settings.usage.project": "This project has spent {count} tokens across {chats} chats.",
+   "settings.build": "Build {version}",
++  "settings.softLimit.title": "Spending",
++  "settings.softLimit.label": "Warn past this many tokens per chat",
++  "settings.softLimit.description": "Zero turns the warning off. It only colours the chat's total and never stops a turn.",
++  "chat.usage.overSoftLimit": "This chat has passed the soft limit: {limit} tokens.",
+   "chat.helpers.step.search": "Searched",
+   "chat.helpers.step.page": "Read page",
+   "chat.helpers.step.files": "Files",
+diff --git a/src/lib/pi/usage-summary.ts b/src/lib/pi/usage-summary.ts
+index 3eb2e61..5aaf198 100644
+--- a/src/lib/pi/usage-summary.ts
++++ b/src/lib/pi/usage-summary.ts
+@@ -86,6 +86,19 @@ export function sumChatUsageFromParts(
+   return sumChatUsage(items);
+ }
+ 
++/**
++ * Whether a chat has gone past the soft limit.
++ *
++ * Zero means "no limit", which is the default: a warning nobody asked for is
++ * noise. The limit warns and never blocks — blocking a spend is billing, and
++ * billing is outside this build (`docs/boundaries.md`).
++ */
++export function exceedsSoftLimit(usage: ChatUsage, softLimitTokens: number | null | undefined): boolean {
++  const limit = Number(softLimitTokens);
++  if (!Number.isFinite(limit) || limit <= 0) return false;
++  return usage.total > limit;
++}
++
+ /** Whether there is anything worth showing: one turn with no tokens is not. */
+ export function hasChatUsage(usage: ChatUsage): boolean {
+   return usage.turns > 0 && usage.total > 0;
+diff --git a/src/lib/storage/settings-store.ts b/src/lib/storage/settings-store.ts
+index cf745ab..8372e39 100644
+--- a/src/lib/storage/settings-store.ts
++++ b/src/lib/storage/settings-store.ts
+@@ -51,6 +51,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
+   },
+   general: {
+     darkMode: false,
++    usageSoftLimitTokens: 0,
+     language: normalizeLocalePreference(process.env.EGGENT_DEFAULT_LANGUAGE),
+   },
+   learning: {
+diff --git a/src/lib/types.ts b/src/lib/types.ts
+index 0ca0fb8..40d4a52 100644
+--- a/src/lib/types.ts
++++ b/src/lib/types.ts
+@@ -59,6 +59,8 @@ export interface AppSettings {
+   };
+   general: {
+     darkMode: boolean;
++    /** Мягкий порог расхода одного чата в токенах; 0 — предупреждать не о чем. */
++    usageSoftLimitTokens?: number;
+     language: string;
+   };
+   /** Whether the agent keeps notes and skills from what it is told and does. On unless false. */

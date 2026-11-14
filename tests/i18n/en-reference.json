@@ -1,0 +1,7865 @@
+{
+ "app.tagline": {
+  "en": "Agent Terminal",
+  "ph": []
+ },
+ "login.title": {
+  "en": "Sign in",
+  "ph": []
+ },
+ "login.username": {
+  "en": "Username",
+  "ph": []
+ },
+ "login.password": {
+  "en": "Password",
+  "ph": []
+ },
+ "login.submit": {
+  "en": "Sign in",
+  "ph": []
+ },
+ "login.submitting": {
+  "en": "Signing in…",
+  "ph": []
+ },
+ "login.failed": {
+  "en": "That username and password did not match. Check both and try again.",
+  "ph": []
+ },
+ "login.sessionExpired": {
+  "en": "Your session expired. Sign in to continue.",
+  "ph": []
+ },
+ "login.handoffSigningIn": {
+  "en": "Signing you in…",
+  "ph": []
+ },
+ "login.handoffExpired": {
+  "en": "That sign-in link has already been used or has expired. Sign in with your username and password.",
+  "ph": []
+ },
+ "login.showPassword": {
+  "en": "Show",
+  "ph": []
+ },
+ "login.hidePassword": {
+  "en": "Hide",
+  "ph": []
+ },
+ "login.noReset": {
+  "en": "There is no password reset here. On a self-hosted workspace it is changed on the server; on a hosted one, support can help.",
+  "ph": []
+ },
+ "login.forgotPassword": {
+  "en": "Forgot your password?",
+  "ph": []
+ },
+ "schedules.emptyAction": {
+  "en": "Ask for one in chat",
+  "ph": []
+ },
+ "schedules.emptyPrompt": {
+  "en": "Set up a recurring task for me: what should run, and when.",
+  "ph": []
+ },
+ "schedules.rowActions": {
+  "en": "Actions for {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "schedules.delete": {
+  "en": "Delete",
+  "ph": []
+ },
+ "schedules.deleting": {
+  "en": "Deleting…",
+  "ph": []
+ },
+ "schedules.deleteConfirm": {
+  "en": "Delete the scheduled task \"{name}\"? It stops firing immediately.",
+  "ph": [
+   "name"
+  ]
+ },
+ "schedules.retime": {
+  "en": "Change time",
+  "ph": []
+ },
+ "schedules.retimePrompt": {
+  "en": "New schedule for \"{name}\" (cron, for example 0 9 * * *):",
+  "ph": [
+   "name"
+  ]
+ },
+ "schedules.changeFailed": {
+  "en": "Could not change that schedule.",
+  "ph": []
+ },
+ "nav.newChat": {
+  "en": "New Chat",
+  "ph": []
+ },
+ "nav.project": {
+  "en": "Project",
+  "ph": []
+ },
+ "nav.orchestrator": {
+  "en": "Orchestrator",
+  "ph": []
+ },
+ "nav.noProjects": {
+  "en": "No projects yet",
+  "ph": []
+ },
+ "nav.files": {
+  "en": "Files",
+  "ph": []
+ },
+ "nav.chats": {
+  "en": "Chats",
+  "ph": []
+ },
+ "nav.noChats": {
+  "en": "No chats yet",
+  "ph": []
+ },
+ "nav.scheduledChat": {
+  "en": "Report from the scheduled task “{job}”",
+  "ph": [
+   "job"
+  ]
+ },
+ "nav.visitChat": {
+  "en": "Work done when “{chat}” asked this project",
+  "ph": [
+   "chat"
+  ]
+ },
+ "nav.chatWorking": {
+  "en": "Still working",
+  "ph": []
+ },
+ "nav.settings": {
+  "en": "Settings",
+  "ph": []
+ },
+ "nav.documentation": {
+  "en": "Documentation",
+  "ph": []
+ },
+ "nav.documentationUrl": {
+  "en": "https://eggent.ai/docs/",
+  "ph": []
+ },
+ "nav.logout": {
+  "en": "Logout",
+  "ph": []
+ },
+ "settings.saved": {
+  "en": "Saved",
+  "ph": []
+ },
+ "settings.models.title": {
+  "en": "Models",
+  "ph": []
+ },
+ "settings.models.description": {
+  "en": "Which model the agent answers with. Choose a project to give it a model of its own.",
+  "ph": []
+ },
+ "settings.workspaceModel.title": {
+  "en": "Workspace model",
+  "ph": []
+ },
+ "settings.workspaceModel.description": {
+  "en": "The orchestrator answers with it, and so does every project without a model of its own.",
+  "ph": []
+ },
+ "settings.scope.label": {
+  "en": "Project",
+  "ph": []
+ },
+ "settings.scope.loading": {
+  "en": "Loading projects…",
+  "ph": []
+ },
+ "settings.general.description": {
+  "en": "Theme, language and signing in to this dashboard.",
+  "ph": []
+ },
+ "settings.advanced.summary": {
+  "en": "Advanced",
+  "ph": []
+ },
+ "settings.thinkingDescription": {
+  "en": "How much the model reasons before it answers. Saved together with the model.",
+  "ph": []
+ },
+ "settings.providerConnected": {
+  "en": "Connected",
+  "ph": []
+ },
+ "settings.modelUnavailable": {
+  "en": "{model} (unavailable)",
+  "ph": [
+   "model"
+  ]
+ },
+ "settings.savedModelUnavailable": {
+  "en": "The saved model {model} is not on this provider's list any more, and nothing else can answer. Pick a model below.",
+  "ph": [
+   "model"
+  ]
+ },
+ "settings.savedModelUnavailableAnswering": {
+  "en": "The saved model {model} is not on this provider's list any more, so {provider} · {runtime} is answering instead. Pick a model below.",
+  "ph": [
+   "model",
+   "provider",
+   "runtime"
+  ]
+ },
+ "settings.logoutConfirm": {
+  "en": "Disconnect {provider}? Its saved key or sign-in will be removed.",
+  "ph": [
+   "provider"
+  ]
+ },
+ "settings.retry": {
+  "en": "Try again",
+  "ph": []
+ },
+ "settings.errors.loadSettings": {
+  "en": "Couldn't load the settings.",
+  "ph": []
+ },
+ "settings.errors.saveSettings": {
+  "en": "Couldn't save the change.",
+  "ph": []
+ },
+ "skills.projectRouting.heading": {
+  "en": "Projects in this workspace",
+  "ph": []
+ },
+ "skills.projectRouting.intro": {
+  "en": "Each row is a separate project with its own files and memory. When a message belongs to one of them, switch to that project and work there; otherwise stay here.",
+  "ph": []
+ },
+ "skills.projectRouting.columnProject": {
+  "en": "Project",
+  "ph": []
+ },
+ "skills.projectRouting.columnId": {
+  "en": "Id",
+  "ph": []
+ },
+ "skills.projectRouting.columnWhat": {
+  "en": "What it is for",
+  "ph": []
+ },
+ "settings.models.keySavedSwitched": {
+  "en": "Key saved. This workspace now answers on {model}.",
+  "ph": [
+   "model"
+  ]
+ },
+ "settings.models.keySavedNoModel": {
+  "en": "Key saved, but {provider} did not offer a model to switch to, so this workspace still answers on the model it used before. Pick a model below once the provider lists one.",
+  "ph": [
+   "provider"
+  ]
+ },
+ "settings.models.keySavedStillOnIncluded": {
+  "en": "Key saved, but this workspace is still set to the included model and keeps spending its credits. Switch to your own model below to start using this key.",
+  "ph": []
+ },
+ "settings.appearance.title": {
+  "en": "Appearance",
+  "ph": []
+ },
+ "settings.fileHistory.title": {
+  "en": "File history",
+  "ph": []
+ },
+ "settings.fileHistory.switch": {
+  "en": "Keep versions of files",
+  "ph": []
+ },
+ "settings.fileHistory.description": {
+  "en": "Every change to a document or text file is kept as a version you can compare and restore.",
+  "ph": []
+ },
+ "settings.fileHistory.retention": {
+  "en": "Every version is kept for {keep} days after it is replaced, then one a day up to {daily} days.",
+  "ph": [
+   "daily",
+   "keep"
+  ]
+ },
+ "settings.fileHistory.usage": {
+  "en": "History takes {size} of up to {cap} · versions: {versions} · files: {files}",
+  "ph": [
+   "cap",
+   "files",
+   "size",
+   "versions"
+  ]
+ },
+ "settings.fileHistory.ceiling": {
+  "en": "It never grows past {cap}: the versions replaced longest ago go first, and when the disk is nearly full it shrinks to make room for the files themselves.",
+  "ph": [
+   "cap"
+  ]
+ },
+ "settings.fileHistory.usageEmpty": {
+  "en": "Nothing is kept yet.",
+  "ph": []
+ },
+ "settings.fileHistory.usageFailed": {
+  "en": "Could not read how much space the history takes.",
+  "ph": []
+ },
+ "settings.fileHistory.countsToDisk": {
+  "en": "File history counts toward the workspace's disk space.",
+  "ph": []
+ },
+ "settings.fileHistory.clearOld": {
+  "en": "Delete versions older than {days} days",
+  "ph": [
+   "days"
+  ]
+ },
+ "settings.fileHistory.clearAll": {
+  "en": "Delete all history",
+  "ph": []
+ },
+ "settings.fileHistory.clearOldConfirm": {
+  "en": "Delete every version replaced more than {days} days ago? The current text of every file stays.",
+  "ph": [
+   "days"
+  ]
+ },
+ "settings.fileHistory.clearAllConfirm": {
+  "en": "Delete the whole history of every file? The files themselves stay as they are.",
+  "ph": []
+ },
+ "settings.fileHistory.cleared": {
+  "en": "Done: {size} freed.",
+  "ph": [
+   "size"
+  ]
+ },
+ "settings.fileHistory.unavailable": {
+  "en": "File history is turned off on this server.",
+  "ph": []
+ },
+ "settings.darkMode.title": {
+  "en": "Dark mode",
+  "ph": []
+ },
+ "settings.darkMode.description": {
+  "en": "Switch between light and dark theme.",
+  "ph": []
+ },
+ "settings.language.title": {
+  "en": "Language",
+  "ph": []
+ },
+ "settings.language.description": {
+  "en": "Choose the interface language for this Eggent workspace.",
+  "ph": []
+ },
+ "settings.errors.pollProviderLogin": {
+  "en": "Failed to poll provider login",
+  "ph": []
+ },
+ "settings.errors.loadModels": {
+  "en": "Failed to load models",
+  "ph": []
+ },
+ "settings.errors.loadModelConnections": {
+  "en": "Failed to load model connections",
+  "ph": []
+ },
+ "settings.errors.providerEnvJson": {
+  "en": "Provider env must be a JSON object, for example {\"CLOUDFLARE_ACCOUNT_ID\":\"...\"}.",
+  "ph": []
+ },
+ "settings.errors.saveProviderKey": {
+  "en": "Failed to save provider key",
+  "ph": []
+ },
+ "settings.errors.logoutProvider": {
+  "en": "Failed to logout provider",
+  "ph": []
+ },
+ "settings.errors.startProviderLogin": {
+  "en": "Failed to start provider login",
+  "ph": []
+ },
+ "settings.errors.answerLoginPrompt": {
+  "en": "Failed to answer login prompt",
+  "ph": []
+ },
+ "settings.errors.saveDefaultModel": {
+  "en": "Failed to save default model",
+  "ph": []
+ },
+ "settings.errors.saveModelsJson": {
+  "en": "Failed to save models.json",
+  "ph": []
+ },
+ "settings.errors.updateCredentials": {
+  "en": "Failed to update credentials.",
+  "ph": []
+ },
+ "settings.logoutEggentAiConfirm": {
+  "en": "Switch from Eggent AI to your own provider? Images, voice and memory stop using Eggent AI too, and projects on its models follow your new model. Any of them can be turned back on under Advanced.",
+  "ph": []
+ },
+ "usage.left": {
+  "en": "left",
+  "ph": []
+ },
+ "usage.openAction": {
+  "en": "Open",
+  "ph": []
+ },
+ "settings.modelLock.enforcedDescription": {
+  "en": "This workspace runs on {label} and the model cannot be changed here. Eggent is open source — run it yourself to use your own provider, API key or a local model.",
+  "ph": [
+   "label"
+  ]
+ },
+ "settings.modelLock.selfHostedCta": {
+  "en": "Run Eggent self-hosted",
+  "ph": []
+ },
+ "settings.services.title": {
+  "en": "Images, voice and memory",
+  "ph": []
+ },
+ "settings.services.description": {
+  "en": "While this workspace runs on your own model, {label} does none of these. Turn it on for any one of them, or point images and voice at a provider of your own. Leaving {label} again turns it off for all of them.",
+  "ph": [
+   "label",
+   "label"
+  ]
+ },
+ "settings.services.descriptionOwnOnly": {
+  "en": "Images and voice can use a provider of your own. Without one there are no images, and voice is transcribed on this server.",
+  "ph": []
+ },
+ "settings.services.managedNote": {
+  "en": "Uses the {label} balance.",
+  "ph": [
+   "label"
+  ]
+ },
+ "settings.services.ownProvider": {
+  "en": "Your own provider",
+  "ph": []
+ },
+ "settings.services.selectProvider": {
+  "en": "Provider",
+  "ph": []
+ },
+ "settings.services.noProviders": {
+  "en": "No provider with an API key yet",
+  "ph": []
+ },
+ "settings.services.noProvidersHint": {
+  "en": "Only a provider connected with an API key can do this. A subscription sign-in has no key to send.",
+  "ph": []
+ },
+ "settings.services.saveFailed": {
+  "en": "Failed to save the choice",
+  "ph": []
+ },
+ "settings.services.images.title": {
+  "en": "Images",
+  "ph": []
+ },
+ "settings.services.images.off": {
+  "en": "Off",
+  "ph": []
+ },
+ "settings.services.images.modelPlaceholder": {
+  "en": "Image model id from your provider",
+  "ph": []
+ },
+ "settings.services.images.managedUnavailable": {
+  "en": "{label} cannot draw for this workspace right now.",
+  "ph": [
+   "label"
+  ]
+ },
+ "settings.services.images.providerUnusable": {
+  "en": "{provider} cannot be used right now: connect it with an API key again, or choose another provider.",
+  "ph": [
+   "provider"
+  ]
+ },
+ "settings.services.speech.title": {
+  "en": "Voice to text",
+  "ph": []
+ },
+ "settings.services.speech.local": {
+  "en": "Whisper on this server",
+  "ph": []
+ },
+ "settings.services.speech.modelPlaceholder": {
+  "en": "Transcription model id from your provider",
+  "ph": []
+ },
+ "settings.services.speech.managedUnavailable": {
+  "en": "{label} cannot take recordings from this workspace right now, so Whisper on this server transcribes them.",
+  "ph": [
+   "label"
+  ]
+ },
+ "settings.services.speech.providerUnusable": {
+  "en": "{provider} cannot transcribe right now, so Whisper on this server does. Connect it with an API key, or choose another provider.",
+  "ph": [
+   "provider"
+  ]
+ },
+ "settings.services.learning.title": {
+  "en": "Memory",
+  "ph": []
+ },
+ "settings.services.learning.description": {
+  "en": "The short look back after a reply, where the agent keeps notes and skills.",
+  "ph": []
+ },
+ "settings.services.learning.chat": {
+  "en": "The chat's own model",
+  "ph": []
+ },
+ "settings.chooseModelLabel": {
+  "en": "Model",
+  "ph": []
+ },
+ "settings.selectProviderFirst": {
+  "en": "Connect a provider first",
+  "ph": []
+ },
+ "settings.unsavedModel": {
+  "en": "Not saved yet",
+  "ph": []
+ },
+ "settings.activeNow": {
+  "en": "Answering now",
+  "ph": []
+ },
+ "settings.disconnect": {
+  "en": "Disconnect",
+  "ph": []
+ },
+ "settings.loginWithSubscription": {
+  "en": "Sign in with subscription",
+  "ph": []
+ },
+ "settings.apiKeyLabel": {
+  "en": "{provider} API key",
+  "ph": [
+   "provider"
+  ]
+ },
+ "settings.apiKeyPlaceholder": {
+  "en": "Paste the {provider} API key",
+  "ph": [
+   "provider"
+  ]
+ },
+ "settings.replaceKeyLabel": {
+  "en": "A key is already saved. Paste a new one to replace it.",
+  "ph": []
+ },
+ "settings.providerEnvSummary": {
+  "en": "Extra provider environment variables (optional)",
+  "ph": []
+ },
+ "settings.managedReturn.description": {
+  "en": "Your {label} access is still here. Switching back takes one click and does not need a key.",
+  "ph": [
+   "label"
+  ]
+ },
+ "settings.managedReturn.cta": {
+  "en": "Use {label} again",
+  "ph": [
+   "label"
+  ]
+ },
+ "settings.modelLock.includedCredits": {
+  "en": "Included with this workspace",
+  "ph": []
+ },
+ "projectSub.settings.lockedChoiceNote": {
+  "en": "This workspace runs on {label}. A project can answer with a different {label} model - a cheaper one for bulk work, a stronger one where it pays off.",
+  "ph": [
+   "label",
+   "label"
+  ]
+ },
+ "files.panel.toggle": {
+  "en": "Files",
+  "ph": []
+ },
+ "files.panel.close": {
+  "en": "Close files",
+  "ph": []
+ },
+ "files.panel.back": {
+  "en": "Back to files",
+  "ph": []
+ },
+ "files.panel.fullPage": {
+  "en": "Open full page",
+  "ph": []
+ },
+ "files.panel.resize": {
+  "en": "Resize the files panel",
+  "ph": []
+ },
+ "files.panel.discardChanges": {
+  "en": "This file has unsaved changes. Leave without saving?",
+  "ph": []
+ },
+ "files.updatedElsewhere": {
+  "en": "The file changed and has been reloaded.",
+  "ph": []
+ },
+ "files.changedWhileEditing": {
+  "en": "This file was changed while you were editing it - by the agent, a restore or the sync.",
+  "ph": []
+ },
+ "files.takeTheirs": {
+  "en": "Load the new version",
+  "ph": []
+ },
+ "files.keepMine": {
+  "en": "Keep my edits",
+  "ph": []
+ },
+ "files.history.toggle": {
+  "en": "File history",
+  "ph": []
+ },
+ "files.history.title": {
+  "en": "History",
+  "ph": []
+ },
+ "files.history.slide": {
+  "en": "Slide",
+  "ph": []
+ },
+ "files.history.versionMissing": {
+  "en": "This version is not available any more.",
+  "ph": []
+ },
+ "files.history.off": {
+  "en": "File history is turned off for this workspace.",
+  "ph": []
+ },
+ "files.history.openSettings": {
+  "en": "Turn it on in Settings",
+  "ph": []
+ },
+ "files.history.restoreFailed": {
+  "en": "Could not restore this version.",
+  "ph": []
+ },
+ "files.history.restoreWouldLose": {
+  "en": "The file as it is now cannot be kept in its history (it has grown too large to keep, or cannot be read), so restoring would lose it. Download it first if you need it.",
+  "ph": []
+ },
+ "files.history.restoreAnyway": {
+  "en": "The file as it is now cannot be kept in its history, so restoring will replace it for good. Restore anyway?",
+  "ph": []
+ },
+ "files.history.saveWouldLose": {
+  "en": "This file was changed while it was open and is now too large to keep in its history, so saving would lose that change. Reload it before saving.",
+  "ph": []
+ },
+ "files.history.clearFailed": {
+  "en": "Could not clear the history.",
+  "ph": []
+ },
+ "files.history.loadFailed": {
+  "en": "Could not load the history of this file.",
+  "ph": []
+ },
+ "files.history.notVersioned": {
+  "en": "This kind of file has no history. It is kept for text files and documents, not for pictures, recordings, archives or PDFs.",
+  "ph": []
+ },
+ "files.history.empty": {
+  "en": "No history yet. Versions appear here as the file changes: when you save it, when the agent writes it, or when the sync brings a new copy.",
+  "ph": []
+ },
+ "files.history.summary": {
+  "en": "Versions: {count} · {size}",
+  "ph": [
+   "count",
+   "size"
+  ]
+ },
+ "files.history.listLabel": {
+  "en": "Versions of this file",
+  "ph": []
+ },
+ "files.history.versionShort": {
+  "en": "v{n}",
+  "ph": [
+   "n"
+  ]
+ },
+ "files.history.current": {
+  "en": "current",
+  "ph": []
+ },
+ "files.history.yesterday": {
+  "en": "yesterday, {time}",
+  "ph": [
+   "time"
+  ]
+ },
+ "files.history.pair": {
+  "en": "v{from} → v{to}",
+  "ph": [
+   "from",
+   "to"
+  ]
+ },
+ "files.history.chat": {
+  "en": "the chat",
+  "ph": []
+ },
+ "files.history.compare.label": {
+  "en": "Compare with",
+  "ph": []
+ },
+ "files.history.compare.previous": {
+  "en": "with the version before",
+  "ph": []
+ },
+ "files.history.compare.current": {
+  "en": "with the file now",
+  "ph": []
+ },
+ "files.history.compare.version": {
+  "en": "with v{n}",
+  "ph": [
+   "n"
+  ]
+ },
+ "files.history.mode.label": {
+  "en": "How to show the changes",
+  "ph": []
+ },
+ "files.history.mode.text": {
+  "en": "Text",
+  "ph": []
+ },
+ "files.history.mode.lines": {
+  "en": "Lines",
+  "ph": []
+ },
+ "files.history.changeOf": {
+  "en": "Change {index} of {total}",
+  "ph": [
+   "index",
+   "total"
+  ]
+ },
+ "files.history.previousChange": {
+  "en": "Previous change",
+  "ph": []
+ },
+ "files.history.nextChange": {
+  "en": "Next change",
+  "ph": []
+ },
+ "files.history.noComparison": {
+  "en": "Versions of this kind of file cannot be compared here, but any of them can be downloaded or restored.",
+  "ph": []
+ },
+ "files.history.comparing": {
+  "en": "Comparing...",
+  "ph": []
+ },
+ "files.history.tooLarge": {
+  "en": "These versions differ too much to compare here. Download both to compare them.",
+  "ph": []
+ },
+ "files.history.firstVersion": {
+  "en": "This is the first version kept: there is nothing before it to compare with.",
+  "ph": []
+ },
+ "files.history.compareWithNow": {
+  "en": "Compare with the file now",
+  "ph": []
+ },
+ "files.history.same": {
+  "en": "No difference in the text.",
+  "ph": []
+ },
+ "files.history.sameTextDocument": {
+  "en": "The text is the same. What changed is the formatting or something else inside the document.",
+  "ph": []
+ },
+ "files.history.extractedNote": {
+  "en": "Compared by the text inside the document; formatting is not compared.",
+  "ph": []
+ },
+ "files.history.restore": {
+  "en": "Restore v{n}",
+  "ph": [
+   "n"
+  ]
+ },
+ "files.history.restoreConfirm": {
+  "en": "Bring back version {n}? What the file holds now stays in the history, so this can be undone.",
+  "ph": [
+   "n"
+  ]
+ },
+ "files.history.restored": {
+  "en": "Version {n} is back. The text it replaced is kept in the history.",
+  "ph": [
+   "n"
+  ]
+ },
+ "files.history.restoredLost": {
+  "en": "Version {n} is back. What it replaced could not be kept in the history.",
+  "ph": [
+   "n"
+  ]
+ },
+ "files.history.isCurrent": {
+  "en": "This is what the file holds now.",
+  "ph": []
+ },
+ "files.history.nowTooLarge": {
+  "en": "The file has since grown too large to keep in its history, so what it holds now is not here. Restoring a version replaces it for good.",
+  "ph": []
+ },
+ "files.history.nowUnreadable": {
+  "en": "What the file holds now cannot be read, so it is not in its history. Restoring a version replaces it for good.",
+  "ph": []
+ },
+ "files.history.fileTime": {
+  "en": "The file's own date: {date}",
+  "ph": [
+   "date"
+  ]
+ },
+ "files.history.download": {
+  "en": "Download",
+  "ph": []
+ },
+ "files.history.forget": {
+  "en": "Delete history",
+  "ph": []
+ },
+ "files.history.forgetConfirm": {
+  "en": "Delete every saved version of this file? The file itself stays as it is.",
+  "ph": []
+ },
+ "files.history.forgetFailed": {
+  "en": "Could not delete the history.",
+  "ph": []
+ },
+ "files.history.unchangedLines": {
+  "en": "Unchanged lines: {count}",
+  "ph": [
+   "count"
+  ]
+ },
+ "files.print": {
+  "en": "Save as PDF",
+  "ph": []
+ },
+ "files.page.views": {
+  "en": "How to show the page",
+  "ph": []
+ },
+ "files.page.page": {
+  "en": "Page",
+  "ph": []
+ },
+ "files.page.code": {
+  "en": "Code",
+  "ph": []
+ },
+ "files.page.select": {
+  "en": "Select",
+  "ph": []
+ },
+ "files.page.selectHelp": {
+  "en": "Pick a block on the page: the agent sees it. Double-click a block to change its words.",
+  "ph": []
+ },
+ "files.page.selectHint": {
+  "en": "Click a block to pick it; double-click to change its words, Enter to save.",
+  "ph": []
+ },
+ "files.page.saveFirst": {
+  "en": "Save the code first: the page shows the saved file.",
+  "ph": []
+ },
+ "files.page.unsavedNotShown": {
+  "en": "Unsaved changes in the code are not on the page yet.",
+  "ph": []
+ },
+ "files.page.line": {
+  "en": "line {line}",
+  "ph": [
+   "line"
+  ]
+ },
+ "files.page.lines": {
+  "en": "lines {start}–{end}",
+  "ph": [
+   "end",
+   "start"
+  ]
+ },
+ "files.page.agentSees": {
+  "en": "the agent sees this block",
+  "ph": []
+ },
+ "files.page.showInCode": {
+  "en": "Show in code",
+  "ph": []
+ },
+ "files.page.clearPick": {
+  "en": "Clear the selection",
+  "ph": []
+ },
+ "files.page.loadFailed": {
+  "en": "The page could not be shown.",
+  "ph": []
+ },
+ "files.page.changedReloaded": {
+  "en": "The file changed, so the page was shown again.",
+  "ph": []
+ },
+ "files.page.onlyText": {
+  "en": "Only words can be changed on the page. For anything else, ask the agent or change the code.",
+  "ph": []
+ },
+ "files.page.noText": {
+  "en": "There are no words to change in this block.",
+  "ph": []
+ },
+ "files.page.cannotEdit": {
+  "en": "This part of the page cannot be changed here. Ask the agent or change the code.",
+  "ph": []
+ },
+ "files.page.saving": {
+  "en": "Saving…",
+  "ph": []
+ },
+ "files.page.saved": {
+  "en": "Saved.",
+  "ph": []
+ },
+ "files.page.notWritten": {
+  "en": "Not saved: the page was shown again, try once more.",
+  "ph": []
+ },
+ "files.history.by.person": {
+  "en": "You",
+  "ph": []
+ },
+ "files.history.by.agent": {
+  "en": "The agent",
+  "ph": []
+ },
+ "files.history.by.helper": {
+  "en": "The agent's helper",
+  "ph": []
+ },
+ "files.history.by.upload": {
+  "en": "Uploaded",
+  "ph": []
+ },
+ "files.history.by.restore": {
+  "en": "Restored from v{n}",
+  "ph": [
+   "n"
+  ]
+ },
+ "files.history.by.earlier": {
+  "en": "As it was before the first change",
+  "ph": []
+ },
+ "files.history.by.outside": {
+  "en": "Changed outside the editor",
+  "ph": []
+ },
+ "files.history.by.deleted": {
+  "en": "File deleted",
+  "ph": []
+ },
+ "files.history.by.colleague": {
+  "en": "{name}, through sharing",
+  "ph": [
+   "name"
+  ]
+ },
+ "chat.modelPicker.trigger": {
+  "en": "Change the model",
+  "ph": []
+ },
+ "chat.modelPicker.search": {
+  "en": "Search models",
+  "ph": []
+ },
+ "chat.modelPicker.noMatch": {
+  "en": "No model matches that.",
+  "ph": []
+ },
+ "chat.modelPicker.none": {
+  "en": "no model",
+  "ph": []
+ },
+ "chat.modelPicker.saveFailed": {
+  "en": "The model could not be changed.",
+  "ph": []
+ },
+ "chat.modelPicker.scopeProject": {
+  "en": "Applies to this project. Change it any time in Settings.",
+  "ph": []
+ },
+ "chat.modelPicker.scopeWorkspace": {
+  "en": "Applies to the whole workspace, and to every project without its own model.",
+  "ph": []
+ },
+ "settings.modelLock.chooseModelHint": {
+  "en": "Every model here is covered by the same balance. A cheaper one makes it last longer.",
+  "ph": []
+ },
+ "settings.modelLock.perMillion": {
+  "en": "{input} in / {output} out per 1M tokens",
+  "ph": [
+   "input",
+   "output"
+  ]
+ },
+ "settings.modelLock.useOwnProvider": {
+  "en": "Use my own provider",
+  "ph": []
+ },
+ "settings.errors.returnToManaged": {
+  "en": "Failed to switch back to the included model",
+  "ph": []
+ },
+ "settings.chooseProvider": {
+  "en": "Choose provider",
+  "ph": []
+ },
+ "settings.selectProvider": {
+  "en": "Select provider...",
+  "ph": []
+ },
+ "settings.providerDisconnectedDescription": {
+  "en": "After this provider is connected, its available models will appear here.",
+  "ph": []
+ },
+ "settings.replaceKey": {
+  "en": "Replace key",
+  "ph": []
+ },
+ "settings.saveKey": {
+  "en": "Save key",
+  "ph": []
+ },
+ "settings.providerEnvPlaceholder": {
+  "en": "Optional provider-scoped env JSON, e.g. {\"CLOUDFLARE_ACCOUNT_ID\":\"...\"}",
+  "ph": []
+ },
+ "settings.noLoginMethod": {
+  "en": "This provider does not expose a login method here.",
+  "ph": []
+ },
+ "settings.status": {
+  "en": "Status:",
+  "ph": []
+ },
+ "settings.openAuthUrlInstruction": {
+  "en": "Open this URL to authenticate:",
+  "ph": []
+ },
+ "settings.openAuthUrl": {
+  "en": "Open auth URL",
+  "ph": []
+ },
+ "settings.deviceCodeInstruction": {
+  "en": "Open {url} and enter code:",
+  "ph": [
+   "url"
+  ]
+ },
+ "settings.send": {
+  "en": "Send",
+  "ph": []
+ },
+ "settings.loginCompleted": {
+  "en": "Login completed. Credentials were updated.",
+  "ph": []
+ },
+ "settings.selectModel": {
+  "en": "Select model",
+  "ph": []
+ },
+ "settings.thinking": {
+  "en": "Thinking",
+  "ph": []
+ },
+ "settings.saveModel": {
+  "en": "Save model",
+  "ph": []
+ },
+ "settings.logoutFromProvider": {
+  "en": "Logout from {provider}",
+  "ph": [
+   "provider"
+  ]
+ },
+ "settings.customProvidersTitle": {
+  "en": "Custom providers and models",
+  "ph": []
+ },
+ "settings.customProvidersDescription": {
+  "en": "Add a custom provider here, save models.json, and it will appear in the provider list above.",
+  "ph": []
+ },
+ "settings.saveModelsJson": {
+  "en": "Save models.json",
+  "ph": []
+ },
+ "settings.managedRepaired": {
+  "en": "The included model was missing from models.json and has been added back. Providers you added yourself were left as they were.",
+  "ph": []
+ },
+ "settings.managedRepairedFromBroken": {
+  "en": "models.json could not be read, so it was kept as {path} and written again with the included model.",
+  "ph": [
+   "path"
+  ]
+ },
+ "settings.auth.title": {
+  "en": "Dashboard authentication",
+  "ph": []
+ },
+ "settings.auth.username": {
+  "en": "Username",
+  "ph": []
+ },
+ "settings.auth.newPassword": {
+  "en": "New password",
+  "ph": []
+ },
+ "settings.auth.confirmPassword": {
+  "en": "Confirm password",
+  "ph": []
+ },
+ "settings.auth.credentialsUpdated": {
+  "en": "Credentials updated",
+  "ph": []
+ },
+ "settings.auth.updateCredentials": {
+  "en": "Update credentials",
+  "ph": []
+ },
+ "settings.nav.general": {
+  "en": "General",
+  "ph": []
+ },
+ "settings.nav.models": {
+  "en": "Models",
+  "ph": []
+ },
+ "settings.nav.projects": {
+  "en": "Projects",
+  "ph": []
+ },
+ "settings.nav.context": {
+  "en": "Context",
+  "ph": []
+ },
+ "settings.nav.memory": {
+  "en": "Memory",
+  "ph": []
+ },
+ "settings.nav.schedules": {
+  "en": "Schedules",
+  "ph": []
+ },
+ "settings.nav.skills": {
+  "en": "Skills",
+  "ph": []
+ },
+ "settings.nav.messengers": {
+  "en": "Messengers",
+  "ph": []
+ },
+ "settings.nav.api": {
+  "en": "API",
+  "ph": []
+ },
+ "settings.nav.mcp": {
+  "en": "MCP",
+  "ph": []
+ },
+ "chat.contextMode.trigger": {
+  "en": "How much context this chat carries",
+  "ph": []
+ },
+ "chat.contextMode.hint": {
+  "en": "How much of the workspace goes into every message. The full mode sends every tool, skill and workspace instruction — about 12 000 tokens before you have typed anything. Chosen when a chat starts and kept for its whole life.",
+  "ph": []
+ },
+ "chat.contextMode.locked": {
+  "en": "The mode is chosen when a chat starts and does not change. Open a new chat for a different one.",
+  "ph": []
+ },
+ "chat.contextMode.fullLabel": {
+  "en": "full context",
+  "ph": []
+ },
+ "chat.contextMode.fullDescription": {
+  "en": "Everything: files, web, images, Telegram, schedules, skills and the workspace instructions. ~12 000 tokens per message.",
+  "ph": []
+ },
+ "chat.contextMode.plainLabel": {
+  "en": "plain chat",
+  "ph": []
+ },
+ "chat.contextMode.plainDescription": {
+  "en": "Your question and this chat's history, nothing else. No tools at all. ~250 tokens per message.",
+  "ph": []
+ },
+ "chat.contextMode.filesLabel": {
+  "en": "chat + files",
+  "ph": []
+ },
+ "chat.contextMode.filesDescription": {
+  "en": "Plus reading files and switching between projects. No writing, commands or web. ~700 tokens per message.",
+  "ph": []
+ },
+ "chat.attachFiles": {
+  "en": "Attach files",
+  "ph": []
+ },
+ "chat.attachFilesDisabled": {
+  "en": "Send a message first to attach files",
+  "ph": []
+ },
+ "chat.dictate": {
+  "en": "Dictate with microphone",
+  "ph": []
+ },
+ "chat.stopDictation": {
+  "en": "Stop dictation",
+  "ph": []
+ },
+ "chat.stopTurn": {
+  "en": "Stop",
+  "ph": []
+ },
+ "chat.placeholderWhileRunning": {
+  "en": "Add to the task...",
+  "ph": []
+ },
+ "chat.steer.send": {
+  "en": "Add to the turn",
+  "ph": []
+ },
+ "chat.steer.sending": {
+  "en": "Sending...",
+  "ph": []
+ },
+ "chat.steer.queued": {
+  "en": "Waiting: the agent reads it after the step it is on",
+  "ph": []
+ },
+ "chat.steer.afterTurn": {
+  "en": "Goes out when the agent finishes",
+  "ph": []
+ },
+ "chat.steer.undelivered": {
+  "en": "The agent did not get to this: the turn ended first.",
+  "ph": []
+ },
+ "chat.steer.resend": {
+  "en": "Send",
+  "ph": []
+ },
+ "chat.steer.command": {
+  "en": "A command can be sent once the agent has finished.",
+  "ph": []
+ },
+ "chat.steer.failed": {
+  "en": "The message could not be added to the turn. It is back in the field.",
+  "ph": []
+ },
+ "chat.placeholder": {
+  "en": "Send a message or paste an image...",
+  "ph": []
+ },
+ "chat.dropFiles": {
+  "en": "Drop files here",
+  "ph": []
+ },
+ "chat.dropFilesPlaceholder": {
+  "en": "Drop files here...",
+  "ph": []
+ },
+ "chat.confirmPlaceholder": {
+  "en": "Answer yes/no…",
+  "ph": []
+ },
+ "chat.waitingToolPlaceholder": {
+  "en": "Send input to the waiting tool…",
+  "ph": []
+ },
+ "chat.loadingCommands": {
+  "en": "Loading commands…",
+  "ph": []
+ },
+ "chat.slashCommands": {
+  "en": "Slash commands",
+  "ph": []
+ },
+ "chat.noMatchingCommands": {
+  "en": "No matching commands.",
+  "ph": []
+ },
+ "chat.skill": {
+  "en": "Skill",
+  "ph": []
+ },
+ "chat.prompt": {
+  "en": "Prompt",
+  "ph": []
+ },
+ "chat.commandHelp": {
+  "en": "↑/↓ select · Enter/Tab insert · then send normally",
+  "ph": []
+ },
+ "chat.recording": {
+  "en": "Recording… press the microphone again to transcribe.",
+  "ph": []
+ },
+ "chat.transcribing": {
+  "en": "Transcribing audio locally…",
+  "ph": []
+ },
+ "chat.voiceHttpsRequired": {
+  "en": "Voice input requires HTTPS. Open Eggent via a secure domain or use localhost; browsers block microphone access on public HTTP addresses.",
+  "ph": []
+ },
+ "chat.voiceUnsupportedBrowser": {
+  "en": "Voice input is not supported by this browser.",
+  "ph": []
+ },
+ "chat.audioUnsupportedBrowser": {
+  "en": "Audio recording is not supported by this browser.",
+  "ph": []
+ },
+ "chat.microphoneBlocked": {
+  "en": "Microphone access was blocked. Allow microphone permissions and make sure Eggent is opened over HTTPS.",
+  "ph": []
+ },
+ "chat.microphoneMissing": {
+  "en": "No microphone was found on this device.",
+  "ph": []
+ },
+ "chat.microphoneBusy": {
+  "en": "The microphone is already in use by another app or cannot be read.",
+  "ph": []
+ },
+ "chat.recordingFailed": {
+  "en": "Failed to start recording",
+  "ph": []
+ },
+ "chat.attachmentOnlyPrompt": {
+  "en": "Look at the attached image.",
+  "ph": []
+ },
+ "chat.waitForUpload": {
+  "en": "Wait until the file has uploaded",
+  "ph": []
+ },
+ "chat.card.attachedOnly": {
+  "en": "Attached the file.",
+  "ph": []
+ },
+ "chat.emptyTitle": {
+  "en": "What should we start with?",
+  "ph": []
+ },
+ "chat.emptyDescription": {
+  "en": "Write in the box below — a question, a file, a link. Or take one of the ready paths: Eggent asks what it needs and sets it up itself.",
+  "ph": []
+ },
+ "chat.emptyDescriptionPlain": {
+  "en": "Write in the box below — a question, a task, a file, a link.",
+  "ph": []
+ },
+ "chat.bundledSkills": {
+  "en": "Bundled skills",
+  "ph": []
+ },
+ "chat.tools.group": {
+  "en": "Tools",
+  "ph": []
+ },
+ "chat.tools.running": {
+  "en": "running…",
+  "ph": []
+ },
+ "chat.helpers.title": {
+  "en": "Helpers",
+  "ph": []
+ },
+ "chat.projects.title": {
+  "en": "Projects",
+  "ph": []
+ },
+ "chat.projects.open": {
+  "en": "Open in {project}",
+  "ph": [
+   "project"
+  ]
+ },
+ "chat.projects.mentionTitle": {
+  "en": "Ask a project",
+  "ph": []
+ },
+ "chat.projects.mentionHelp": {
+  "en": "Tab or Enter to choose. The project does the task in a chat of its own and the answer comes back here.",
+  "ph": []
+ },
+ "chat.projects.willAsk": {
+  "en": "Will ask the project “{project}” and bring the answer back here.",
+  "ph": [
+   "project"
+  ]
+ },
+ "chat.openFile.sees": {
+  "en": "The agent sees the open file {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "chat.openFile.seesLine": {
+  "en": "The agent sees {name}, line {line}",
+  "ph": [
+   "line",
+   "name"
+  ]
+ },
+ "chat.openFile.seesLines": {
+  "en": "The agent sees {name}, lines {from}-{to}",
+  "ph": [
+   "from",
+   "name",
+   "to"
+  ]
+ },
+ "chat.openFile.stop": {
+  "en": "Do not tell the agent about this file",
+  "ph": []
+ },
+ "composer.secret.title": {
+  "en": "This looks like a secret",
+  "ph": []
+ },
+ "composer.secret.botToken": {
+  "en": "A Telegram bot token. What you send here stays in this chat's history; connect the bot in Settings instead.",
+  "ph": []
+ },
+ "composer.secret.apiKey": {
+  "en": "A key for a model provider. What you send here stays in this chat's history; add it in Settings instead.",
+  "ph": []
+ },
+ "composer.secret.generic": {
+  "en": "A password, key or token. What you send here stays in this chat's history. Send it only if the agent has to use it right now.",
+  "ph": []
+ },
+ "composer.secret.openMessengers": {
+  "en": "Open Messengers",
+  "ph": []
+ },
+ "composer.secret.openModels": {
+  "en": "Open Models",
+  "ph": []
+ },
+ "composer.secret.send": {
+  "en": "Send anyway",
+  "ph": []
+ },
+ "composer.secret.edit": {
+  "en": "Edit",
+  "ph": []
+ },
+ "chat.helpers.summary.working": {
+  "en": "{done} of {total} done",
+  "ph": [
+   "done",
+   "total"
+  ]
+ },
+ "chat.helpers.summary.finished": {
+  "en": "Finished",
+  "ph": []
+ },
+ "chat.helpers.summary.failed": {
+  "en": "failed: {count}",
+  "ph": [
+   "count"
+  ]
+ },
+ "chat.helpers.summary.stopped": {
+  "en": "stopped: {count}",
+  "ph": [
+   "count"
+  ]
+ },
+ "chat.helpers.status.running": {
+  "en": "Working",
+  "ph": []
+ },
+ "chat.helpers.status.done": {
+  "en": "Done",
+  "ph": []
+ },
+ "chat.helpers.status.failed": {
+  "en": "Failed",
+  "ph": []
+ },
+ "chat.helpers.status.stopped": {
+  "en": "Stopped",
+  "ph": []
+ },
+ "chat.helpers.status.detached": {
+  "en": "Ran detached",
+  "ph": []
+ },
+ "chat.helpers.now.thinking": {
+  "en": "Thinking…",
+  "ph": []
+ },
+ "chat.helpers.now.queued": {
+  "en": "Waiting for a free slot…",
+  "ph": []
+ },
+ "chat.helpers.now.writing": {
+  "en": "Writing up the result…",
+  "ph": []
+ },
+ "chat.helpers.now.search": {
+  "en": "Searching the web…",
+  "ph": []
+ },
+ "chat.helpers.now.page": {
+  "en": "Reading a page…",
+  "ph": []
+ },
+ "chat.helpers.now.files": {
+  "en": "Working with files…",
+  "ph": []
+ },
+ "chat.helpers.now.command": {
+  "en": "Running a command…",
+  "ph": []
+ },
+ "chat.helpers.now.helper": {
+  "en": "Starting a helper of its own…",
+  "ph": []
+ },
+ "chat.helpers.now.service": {
+  "en": "Using a connected service…",
+  "ph": []
+ },
+ "chat.helpers.now.image": {
+  "en": "Drawing a picture…",
+  "ph": []
+ },
+ "chat.helpers.now.send": {
+  "en": "Sending a message…",
+  "ph": []
+ },
+ "chat.helpers.now.work": {
+  "en": "Using {tool}…",
+  "ph": [
+   "tool"
+  ]
+ },
+ "chat.helpers.steps": {
+  "en": "Steps: {count}",
+  "ph": [
+   "count"
+  ]
+ },
+ "chat.helpers.detachedNote": {
+  "en": "This helper ran detached, and its result never came back to this chat.",
+  "ph": []
+ },
+ "chat.helpers.task": {
+  "en": "Task",
+  "ph": []
+ },
+ "chat.helpers.whatItDid": {
+  "en": "What it did",
+  "ph": []
+ },
+ "chat.helpers.earlierSteps": {
+  "en": "…and {count} earlier",
+  "ph": [
+   "count"
+  ]
+ },
+ "chat.helpers.noSteps": {
+  "en": "No steps recorded.",
+  "ph": []
+ },
+ "chat.helpers.result": {
+  "en": "Result",
+  "ph": []
+ },
+ "chat.helpers.noResult": {
+  "en": "It returned nothing.",
+  "ph": []
+ },
+ "chat.helpers.meta.model": {
+  "en": "Model: {model}",
+  "ph": [
+   "model"
+  ]
+ },
+ "chat.helpers.meta.tokens": {
+  "en": "Tokens: {count}",
+  "ph": [
+   "count"
+  ]
+ },
+ "chat.usage.chat": {
+  "en": "chat {count}",
+  "ph": [
+   "count"
+  ]
+ },
+ "chat.usage.hint": {
+  "en": "Tokens this whole chat has spent, across every answer.",
+  "ph": []
+ },
+ "settings.usage.project": {
+  "en": "This project has spent {count} tokens across {chats} chats.",
+  "ph": [
+   "chats",
+   "count"
+  ]
+ },
+ "settings.build": {
+  "en": "Build {version}",
+  "ph": [
+   "version"
+  ]
+ },
+ "settings.softLimit.title": {
+  "en": "Spending",
+  "ph": []
+ },
+ "settings.softLimit.label": {
+  "en": "Warn past this many tokens per chat",
+  "ph": []
+ },
+ "settings.softLimit.description": {
+  "en": "Zero turns the warning off. It only colours the chat's total and never stops a turn.",
+  "ph": []
+ },
+ "chat.usage.overSoftLimit": {
+  "en": "This chat has passed the soft limit: {limit} tokens.",
+  "ph": [
+   "limit"
+  ]
+ },
+ "chat.helpers.step.search": {
+  "en": "Searched",
+  "ph": []
+ },
+ "chat.helpers.step.page": {
+  "en": "Read page",
+  "ph": []
+ },
+ "chat.helpers.step.files": {
+  "en": "Files",
+  "ph": []
+ },
+ "chat.helpers.step.read": {
+  "en": "Read file",
+  "ph": []
+ },
+ "chat.helpers.step.write": {
+  "en": "Wrote",
+  "ph": []
+ },
+ "chat.helpers.step.edit": {
+  "en": "Edited",
+  "ph": []
+ },
+ "chat.helpers.step.grep": {
+  "en": "Searched files",
+  "ph": []
+ },
+ "chat.helpers.step.list": {
+  "en": "Listed",
+  "ph": []
+ },
+ "chat.helpers.step.command": {
+  "en": "Ran",
+  "ph": []
+ },
+ "chat.helpers.step.helper": {
+  "en": "Helper",
+  "ph": []
+ },
+ "chat.helpers.step.service": {
+  "en": "Service",
+  "ph": []
+ },
+ "chat.helpers.step.image": {
+  "en": "Picture",
+  "ph": []
+ },
+ "chat.helpers.step.send": {
+  "en": "Sent",
+  "ph": []
+ },
+ "chat.helpers.step.work": {
+  "en": "Used",
+  "ph": []
+ },
+ "chat.helpers.stepFailed": {
+  "en": "failed",
+  "ph": []
+ },
+ "chat.quickStartTitle": {
+  "en": "Quick start",
+  "ph": []
+ },
+ "chat.quickStartHint": {
+  "en": "Pick one — Eggent walks you through it",
+  "ph": []
+ },
+ "chat.startHere": {
+  "en": "Start here",
+  "ph": []
+ },
+ "chat.startingSkill": {
+  "en": "Starting…",
+  "ph": []
+ },
+ "chat.setUp": {
+  "en": "Set up",
+  "ph": []
+ },
+ "chat.interaction.choose": {
+  "en": "Choose",
+  "ph": []
+ },
+ "chat.interaction.confirm": {
+  "en": "Confirm",
+  "ph": []
+ },
+ "chat.interaction.secret": {
+  "en": "Secret",
+  "ph": []
+ },
+ "chat.interaction.oauth": {
+  "en": "OAuth",
+  "ph": []
+ },
+ "chat.interaction.deviceCode": {
+  "en": "Device code",
+  "ph": []
+ },
+ "chat.interaction.terminalInput": {
+  "en": "Terminal input",
+  "ph": []
+ },
+ "chat.interaction.input": {
+  "en": "Input",
+  "ph": []
+ },
+ "chat.yes": {
+  "en": "Yes",
+  "ph": []
+ },
+ "chat.no": {
+  "en": "No",
+  "ph": []
+ },
+ "chat.interaction.answerPlaceholder": {
+  "en": "Type your answer",
+  "ph": []
+ },
+ "chat.interaction.orTypeYourOwn": {
+  "en": "Or type your own answer",
+  "ph": []
+ },
+ "chat.interaction.send": {
+  "en": "Answer",
+  "ph": []
+ },
+ "chat.interaction.decideForMe": {
+  "en": "Decide for me",
+  "ph": []
+ },
+ "chat.interaction.skip": {
+  "en": "Skip",
+  "ph": []
+ },
+ "chat.thinking": {
+  "en": "Thinking...",
+  "ph": []
+ },
+ "chat.thinkingSeconds": {
+  "en": "{seconds} s",
+  "ph": [
+   "seconds"
+  ]
+ },
+ "chat.thinkingMinutes": {
+  "en": "{minutes}:{seconds}",
+  "ph": [
+   "minutes",
+   "seconds"
+  ]
+ },
+ "chat.thinkingLong": {
+  "en": "On a big task the model can think for several minutes before its first word. It is still working: the answer will appear here.",
+  "ph": []
+ },
+ "chat.errors.generationFailed": {
+  "en": "Generation failed: {details}",
+  "ph": [
+   "details"
+  ]
+ },
+ "chat.errors.stoppedEarly": {
+  "en": "The model stopped before producing a final response.",
+  "ph": []
+ },
+ "chat.errors.emptyResponse": {
+  "en": "The model returned an empty response (0 tokens). The provider may be rate-limiting or out of quota, or the API key may be wrong — check the key in Settings.",
+  "ph": []
+ },
+ "chat.errors.noModelSelected": {
+  "en": "No model is selected for this workspace. Open Settings, pick a provider you have connected, and choose its model.",
+  "ph": []
+ },
+ "chat.errors.providerNoCredential": {
+  "en": "{provider} is the default provider, but this workspace has no credential for it, so nothing can run. Open Settings and connect {provider} — check that the API key is correct — or switch to a provider that is already connected.",
+  "ph": [
+   "provider",
+   "provider"
+  ]
+ },
+ "chat.errors.providerUnreachable": {
+  "en": "{provider} did not respond at all, so nothing can run. Check the provider's address in Settings → Models and login, and that the service is up.",
+  "ph": [
+   "provider"
+  ]
+ },
+ "chat.errors.providerLocalOnly": {
+  "en": "{provider} points at an address that only exists on the machine Eggent runs on, so a model running on your own computer cannot be reached from here. Use a provider available over the internet.",
+  "ph": [
+   "provider"
+  ]
+ },
+ "external.run.stopped": {
+  "en": "Stopped. Whatever was finished is saved — tell me what to do instead.",
+  "ph": []
+ },
+ "external.run.steered": {
+  "en": "Got it, I am taking that into account in what I am doing right now.",
+  "ph": []
+ },
+ "external.run.commandWhileRunning": {
+  "en": "That is a command: I can run it once I have finished what I am doing now. Send it again then.",
+  "ph": []
+ },
+ "external.run.reset": {
+  "en": "Stopped it. Your messages and what was finished are saved - write again to carry on, or send /new for a fresh start.",
+  "ph": []
+ },
+ "external.run.resetQuestion": {
+  "en": "Stopped it and dropped the question it was waiting on. Your messages and what was finished are saved - write again to carry on, or send /new for a fresh start.",
+  "ph": []
+ },
+ "external.run.resetIdle": {
+  "en": "Nothing is running here right now. Send /new if you want a fresh conversation.",
+  "ph": []
+ },
+ "external.run.resetFreed": {
+  "en": "It did not stop by itself, so I let go of it: you can write again. Whatever it was doing may finish quietly on its own.",
+  "ph": []
+ },
+ "external.files.none": {
+  "en": "There are no files from the last answer. Ask for something to be made, and then send /files.",
+  "ph": []
+ },
+ "external.files.hint": {
+  "en": "Files from this answer: {names}. Send /files to get them here.",
+  "ph": [
+   "names"
+  ]
+ },
+ "external.files.more": {
+  "en": "and {count} more",
+  "ph": [
+   "count"
+  ]
+ },
+ "external.files.sent": {
+  "en": "Sent: {names}.",
+  "ph": [
+   "names"
+  ]
+ },
+ "external.files.sentArchive": {
+  "en": "Sent {count} files as one archive.",
+  "ph": [
+   "count"
+  ]
+ },
+ "external.files.sentArchivePart": {
+  "en": "Sent {count} of {total} files as one archive. The rest are in the Files panel.",
+  "ph": [
+   "count",
+   "total"
+  ]
+ },
+ "external.files.tooLarge": {
+  "en": "These files are too large for Telegram. Open the Files panel in the browser to download them.",
+  "ph": []
+ },
+ "external.files.gone": {
+  "en": "Those files are no longer there.",
+  "ph": []
+ },
+ "external.run.stalled": {
+  "en": "I stopped this: nothing had happened for {minutes} min, and a model that has gone quiet this long is not coming back. Your messages are saved - write again to carry on, or send /new for a fresh start.",
+  "ph": [
+   "minutes"
+  ]
+ },
+ "external.run.stalledStart": {
+  "en": "I stopped this: the workspace had not finished getting ready after {minutes} min. Your messages are saved - write again to try once more.",
+  "ph": [
+   "minutes"
+  ]
+ },
+ "external.run.stalledTool": {
+  "en": "I stopped this: a command had been running for {minutes} min without a word. Whatever it finished is saved - write again to carry on, ideally in smaller steps.",
+  "ph": [
+   "minutes"
+  ]
+ },
+ "external.run.stalledQuestion": {
+  "en": "I stopped here: the question above waited {hours} h without an answer. Answer it in this chat whenever you are ready, and I will carry on from there.",
+  "ph": [
+   "hours"
+  ]
+ },
+ "external.run.stalledQuestionMinutes": {
+  "en": "I stopped here: the question above waited {minutes} min without an answer. Answer it in this chat whenever you are ready, and I will carry on from there.",
+  "ph": [
+   "minutes"
+  ]
+ },
+ "chat.compaction.runningManual": {
+  "en": "Compacting the chat history…",
+  "ph": []
+ },
+ "chat.compaction.runningAuto": {
+  "en": "Compacting the context so the conversation can continue…",
+  "ph": []
+ },
+ "chat.compaction.done": {
+  "en": "Context compacted: {before} tokens before, about {after} after.",
+  "ph": [
+   "after",
+   "before"
+  ]
+ },
+ "chat.compaction.failed": {
+  "en": "Could not compact the context.",
+  "ph": []
+ },
+ "chat.compaction.failedWithReason": {
+  "en": "Could not compact the context: {details}",
+  "ph": [
+   "details"
+  ]
+ },
+ "chat.voice.comment": {
+  "en": "Comment on the voice message: {text}",
+  "ph": [
+   "text"
+  ]
+ },
+ "chat.voice.transcript": {
+  "en": "🎙 Voice message:\n{text}",
+  "ph": [
+   "text"
+  ]
+ },
+ "chat.audio.play": {
+  "en": "Play {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "chat.audio.pause": {
+  "en": "Pause {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "chat.errors.providerRefused": {
+  "en": "{provider} refused the request: {details}",
+  "ph": [
+   "details",
+   "provider"
+  ]
+ },
+ "chat.errors.providerRefusedWithStatus": {
+  "en": "{provider} refused the request ({status}): {details}",
+  "ph": [
+   "details",
+   "provider",
+   "status"
+  ]
+ },
+ "chat.errors.providerRejectedKey": {
+  "en": "{provider} rejected the API key, so nothing can run. Open Settings → Models and login and paste a valid key.",
+  "ph": [
+   "provider"
+  ]
+ },
+ "chat.errors.providerModelMissing": {
+  "en": "{provider} answered, but does not offer the model \"{model}\", so every request comes back empty. It offers: {models}. Pick one of those in Settings → Models and login.",
+  "ph": [
+   "model",
+   "models",
+   "provider"
+  ]
+ },
+ "chat.errors.theProvider": {
+  "en": "The provider",
+  "ph": []
+ },
+ "chat.errors.turnFailed": {
+  "en": "The model stopped with an error before it finished. What was done above is saved - send the message again to carry on.",
+  "ph": []
+ },
+ "chat.errors.returnToIncluded": {
+  "en": "You can also go back to the included Eggent AI model in Settings → Models and login and keep working straight away.",
+  "ph": []
+ },
+ "chat.errors.emptyFinal": {
+  "en": "The model stopped before producing a final response. Please retry.",
+  "ph": []
+ },
+ "chat.errors.noFinalAfterTools": {
+  "en": "Tools completed, but the final answer was not produced. Send `continue`, and I will finish the response.",
+  "ph": []
+ },
+ "chat.errors.loadBundledSkills": {
+  "en": "Failed to load bundled skills",
+  "ph": []
+ },
+ "chat.errors.sendResponse": {
+  "en": "Failed to send response",
+  "ph": []
+ },
+ "chat.errors.launchSkill": {
+  "en": "Failed to launch skill",
+  "ph": []
+ },
+ "common.loading": {
+  "en": "Loading...",
+  "ph": []
+ },
+ "common.loadingFile": {
+  "en": "Loading file...",
+  "ph": []
+ },
+ "common.save": {
+  "en": "Save",
+  "ph": []
+ },
+ "common.saving": {
+  "en": "Saving...",
+  "ph": []
+ },
+ "common.reset": {
+  "en": "Reset",
+  "ph": []
+ },
+ "common.cancel": {
+  "en": "Cancel",
+  "ph": []
+ },
+ "common.close": {
+  "en": "Close",
+  "ph": []
+ },
+ "common.create": {
+  "en": "Create",
+  "ph": []
+ },
+ "common.creating": {
+  "en": "Creating...",
+  "ph": []
+ },
+ "common.download": {
+  "en": "Download",
+  "ph": []
+ },
+ "common.updated": {
+  "en": "Updated {date}",
+  "ph": [
+   "date"
+  ]
+ },
+ "common.created": {
+  "en": "Created: {date}",
+  "ph": [
+   "date"
+  ]
+ },
+ "common.orchestrator": {
+  "en": "Orchestrator",
+  "ph": []
+ },
+ "common.projectWithId": {
+  "en": "Project {id}",
+  "ph": [
+   "id"
+  ]
+ },
+ "projects.title": {
+  "en": "Projects",
+  "ph": []
+ },
+ "projects.description": {
+  "en": "Manage project workspaces and run onboarding for first setup.",
+  "ph": []
+ },
+ "projects.new": {
+  "en": "New Project",
+  "ph": []
+ },
+ "projects.deleteConfirm": {
+  "en": "Delete this project? This cannot be undone.",
+  "ph": []
+ },
+ "onboarding.title": {
+  "en": "Set your login",
+  "ph": []
+ },
+ "onboarding.description": {
+  "en": "Eggent starts with a default admin login. Replace it now — then you pick a model and you are done.",
+  "ph": []
+ },
+ "onboarding.submit": {
+  "en": "Save and choose a model",
+  "ph": []
+ },
+ "projects.username": {
+  "en": "Username",
+  "ph": []
+ },
+ "projects.newPassword": {
+  "en": "New password",
+  "ph": []
+ },
+ "projects.confirmPassword": {
+  "en": "Confirm password",
+  "ph": []
+ },
+ "projects.passwordMinPlaceholder": {
+  "en": "At least 8 characters",
+  "ph": []
+ },
+ "projects.repeatPasswordPlaceholder": {
+  "en": "Repeat password",
+  "ph": []
+ },
+ "projects.saveAndOpenSettings": {
+  "en": "Save and Open Settings",
+  "ph": []
+ },
+ "projects.createTitle": {
+  "en": "Create Project",
+  "ph": []
+ },
+ "projects.projectName": {
+  "en": "Project Name",
+  "ph": []
+ },
+ "projects.projectNamePlaceholder": {
+  "en": "My Project",
+  "ph": []
+ },
+ "projects.descriptionLabel": {
+  "en": "Description",
+  "ph": []
+ },
+ "projects.descriptionPlaceholder": {
+  "en": "Brief description of the project",
+  "ph": []
+ },
+ "projects.instructions": {
+  "en": "Instructions for AI Agent",
+  "ph": []
+ },
+ "projects.instructionsPlaceholder": {
+  "en": "Special instructions for the AI when working on this project...",
+  "ph": []
+ },
+ "projects.noProjectsTitle": {
+  "en": "No projects yet",
+  "ph": []
+ },
+ "projects.noProjectsDescription": {
+  "en": "You can work in Orchestrator or create a dedicated project when needed.",
+  "ph": []
+ },
+ "projects.errors.loadAuth": {
+  "en": "Failed to load auth status",
+  "ph": []
+ },
+ "projects.errors.create": {
+  "en": "Failed to create project",
+  "ph": []
+ },
+ "projects.errors.reservedName": {
+  "en": "Project name \"{name}\" is reserved for the orchestrator.",
+  "ph": [
+   "name"
+  ]
+ },
+ "projects.errors.usernameRequired": {
+  "en": "Username is required.",
+  "ph": []
+ },
+ "projects.errors.passwordMin": {
+  "en": "Password must be at least 8 characters.",
+  "ph": []
+ },
+ "projects.errors.passwordMismatch": {
+  "en": "Password confirmation does not match.",
+  "ph": []
+ },
+ "projects.errors.updateCredentials": {
+  "en": "Failed to update credentials",
+  "ph": []
+ },
+ "projects.credentialsUpdated": {
+  "en": "Credentials updated.",
+  "ph": []
+ },
+ "files.previewTitle": {
+  "en": "File Preview",
+  "ph": []
+ },
+ "files.open": {
+  "en": "Open",
+  "ph": []
+ },
+ "files.openInEditor": {
+  "en": "Open in the editor",
+  "ph": []
+ },
+ "files.defaultTitle": {
+  "en": "File",
+  "ph": []
+ },
+ "files.noFileSelected": {
+  "en": "No file selected.",
+  "ph": []
+ },
+ "files.loadFailed": {
+  "en": "Failed to load file",
+  "ph": []
+ },
+ "files.saveFailed": {
+  "en": "Failed to save file",
+  "ph": []
+ },
+ "files.saved": {
+  "en": "File saved.",
+  "ph": []
+ },
+ "files.textPreview": {
+  "en": "Text preview",
+  "ph": []
+ },
+ "files.upload": {
+  "en": "Upload files",
+  "ph": []
+ },
+ "files.uploadInto": {
+  "en": "Upload files into {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "files.uploadFolder": {
+  "en": "Upload folder",
+  "ph": []
+ },
+ "files.downloadZipOf": {
+  "en": "Download {name} as .zip",
+  "ph": [
+   "name"
+  ]
+ },
+ "files.downloadAllZip": {
+  "en": "Download everything as .zip",
+  "ph": []
+ },
+ "files.produced.title": {
+  "en": "Files from this answer",
+  "ph": []
+ },
+ "files.produced.more": {
+  "en": "+{count} more",
+  "ph": [
+   "count"
+  ]
+ },
+ "files.produced.zipAll": {
+  "en": "Download all as .zip",
+  "ph": []
+ },
+ "files.produced.sendToTelegram": {
+  "en": "Send to Telegram",
+  "ph": []
+ },
+ "files.produced.sent": {
+  "en": "Sent to Telegram",
+  "ph": []
+ },
+ "files.produced.sendFailed": {
+  "en": "Telegram did not take the file.",
+  "ph": []
+ },
+ "files.produced.skippedSecrets": {
+  "en": "Left out of the archive: {count} with secrets in them.",
+  "ph": [
+   "count"
+  ]
+ },
+ "files.uploadFolderInto": {
+  "en": "Upload folder into {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "files.uploading": {
+  "en": "Uploading {percent}%",
+  "ph": [
+   "percent"
+  ]
+ },
+ "files.uploadFailed": {
+  "en": "Failed to upload files",
+  "ph": []
+ },
+ "files.uploadReplacePrompt": {
+  "en": "{count} file(s) already exist here. Replace them?",
+  "ph": [
+   "count"
+  ]
+ },
+ "context.title": {
+  "en": "Context",
+  "ph": []
+ },
+ "context.description": {
+  "en": "Instructions the agent gets in every chat. The orchestrator and each project have their own.",
+  "ph": []
+ },
+ "memory.title": {
+  "en": "Memory",
+  "ph": []
+ },
+ "memory.description": {
+  "en": "Notes the agent keeps between chats: it searches, adds to and deletes from them itself. The orchestrator and each project have their own.",
+  "ph": []
+ },
+ "learning.notice.user.added": {
+  "en": "Noted about you: {text}",
+  "ph": [
+   "text"
+  ]
+ },
+ "learning.notice.user.updated": {
+  "en": "Updated a note about you: {text}",
+  "ph": [
+   "text"
+  ]
+ },
+ "learning.notice.user.removed": {
+  "en": "Forgot a note about you: {text}",
+  "ph": [
+   "text"
+  ]
+ },
+ "learning.notice.note.added": {
+  "en": "Noted: {text}",
+  "ph": [
+   "text"
+  ]
+ },
+ "learning.notice.note.updated": {
+  "en": "Updated a note: {text}",
+  "ph": [
+   "text"
+  ]
+ },
+ "learning.notice.note.removed": {
+  "en": "Forgot a note: {text}",
+  "ph": [
+   "text"
+  ]
+ },
+ "learning.notice.skill.created": {
+  "en": "Learned a new skill: {text}",
+  "ph": [
+   "text"
+  ]
+ },
+ "learning.notice.skill.patched": {
+  "en": "Improved the skill: {text}",
+  "ph": [
+   "text"
+  ]
+ },
+ "learning.notice.open": {
+  "en": "Memory",
+  "ph": []
+ },
+ "learning.notice.more": {
+  "en": "and {count} more",
+  "ph": [
+   "count"
+  ]
+ },
+ "learning.telegram.header": {
+  "en": "Saved to memory:",
+  "ph": []
+ },
+ "learning.settings.title": {
+  "en": "What the agent has learned",
+  "ph": []
+ },
+ "learning.settings.description": {
+  "en": "After a conversation the agent may keep a short note about you or the work, or write a skill for a task it will meet again. These are read at the start of every chat, and you can change or remove anything here.",
+  "ph": []
+ },
+ "learning.settings.enabled": {
+  "en": "Learn from conversations",
+  "ph": []
+ },
+ "learning.settings.enabledHint": {
+  "en": "When off, nothing new is saved. What is already here keeps being used.",
+  "ph": []
+ },
+ "learning.settings.unavailable": {
+  "en": "Learning is switched off for this workspace by whoever runs it.",
+  "ph": []
+ },
+ "learning.settings.aboutYou": {
+  "en": "About you",
+  "ph": []
+ },
+ "learning.settings.aboutWork": {
+  "en": "About the work",
+  "ph": []
+ },
+ "learning.settings.empty": {
+  "en": "Nothing yet.",
+  "ph": []
+ },
+ "learning.settings.used": {
+  "en": "{used} of {limit} characters",
+  "ph": [
+   "limit",
+   "used"
+  ]
+ },
+ "learning.settings.remove": {
+  "en": "Remove this note",
+  "ph": []
+ },
+ "learning.settings.add": {
+  "en": "Add",
+  "ph": []
+ },
+ "learning.settings.addPlaceholder": {
+  "en": "One short sentence",
+  "ph": []
+ },
+ "learning.settings.addFailed": {
+  "en": "That note could not be saved: {reason}",
+  "ph": [
+   "reason"
+  ]
+ },
+ "learning.settings.loadFailed": {
+  "en": "Could not load what the agent has learned.",
+  "ph": []
+ },
+ "learning.settings.saveFailed": {
+  "en": "Could not save that change.",
+  "ph": []
+ },
+ "learning.settings.skillsTitle": {
+  "en": "Skills it wrote",
+  "ph": []
+ },
+ "learning.settings.skillsEmpty": {
+  "en": "No skills yet.",
+  "ph": []
+ },
+ "learning.settings.skillsHint": {
+  "en": "They live in the skills folder. A skill that goes unused for a long time is marked, and later moved to skills/.archive. Nothing is ever deleted.",
+  "ph": []
+ },
+ "learning.settings.stale": {
+  "en": "Not used for a while",
+  "ph": []
+ },
+ "learning.settings.archived": {
+  "en": "{count} moved to the archive",
+  "ph": [
+   "count"
+  ]
+ },
+ "learning.settings.uses": {
+  "en": "Uses: {count}",
+  "ph": [
+   "count"
+  ]
+ },
+ "learning.reason.secret": {
+  "en": "it looks like a password, key or token, and those are never saved",
+  "ph": []
+ },
+ "learning.reason.override": {
+  "en": "it tries to override the assistant's instructions",
+  "ph": []
+ },
+ "learning.reason.role": {
+  "en": "it is worded as an instruction rather than as a fact",
+  "ph": []
+ },
+ "learning.reason.invisible": {
+  "en": "it contains hidden characters",
+  "ph": []
+ },
+ "learning.reason.too_long": {
+  "en": "it is too long - one short sentence is enough",
+  "ph": []
+ },
+ "learning.reason.empty": {
+  "en": "it is empty",
+  "ph": []
+ },
+ "learning.reason.heading": {
+  "en": "it cannot start with a heading mark",
+  "ph": []
+ },
+ "learning.reason.credential_url": {
+  "en": "it contains a web address with a login and password",
+  "ph": []
+ },
+ "learning.reason.url_send": {
+  "en": "it combines a web address with an instruction to send something",
+  "ph": []
+ },
+ "learning.reason.similar": {
+  "en": "a very similar note is already saved",
+  "ph": []
+ },
+ "learning.reason.full": {
+  "en": "that list is full - remove a note first",
+  "ph": []
+ },
+ "learning.reason.too_many_entries": {
+  "en": "that list already holds as many notes as it can",
+  "ph": []
+ },
+ "google.card.title": {
+  "en": "Google Docs, Sheets and Slides",
+  "ph": []
+ },
+ "google.card.titleWithCalendar": {
+  "en": "Google Docs, Sheets, Slides and Calendar",
+  "ph": []
+ },
+ "google.card.explain": {
+  "en": "Connect your Google account and the agent can make documents, spreadsheets and presentations in your Drive. It opens only the files it made and the ones you pick - never your other files. Changing a file you picked, or sharing one by link, waits for your yes; it never deletes anything.",
+  "ph": []
+ },
+ "google.card.explainWithCalendar": {
+  "en": "Connect your Google account and the agent can make documents, spreadsheets and presentations in your Drive and add events to a calendar called Eggent. It opens only the files it made and the ones you pick - never your other files. Changing a file you picked, or sharing one by link, waits for your yes; it never deletes anything.",
+  "ph": []
+ },
+ "google.card.pick": {
+  "en": "Choose from Google Drive",
+  "ph": []
+ },
+ "google.card.pickMore": {
+  "en": "Choose more",
+  "ph": []
+ },
+ "google.card.pickedNow": {
+  "en": "Files chosen: {count}. Tell the agent to carry on.",
+  "ph": [
+   "count"
+  ]
+ },
+ "google.card.connect": {
+  "en": "Connect Google",
+  "ph": []
+ },
+ "google.card.reconnect": {
+  "en": "Connect again",
+  "ph": []
+ },
+ "google.card.connectedAs": {
+  "en": "Connected as {email}",
+  "ph": [
+   "email"
+  ]
+ },
+ "google.card.connectedNow": {
+  "en": "Google is connected.",
+  "ph": []
+ },
+ "google.card.connectedNowChat": {
+  "en": "Google is connected. Tell the agent to carry on.",
+  "ph": []
+ },
+ "google.card.cancelled": {
+  "en": "Google was not connected.",
+  "ph": []
+ },
+ "google.card.returnFailed": {
+  "en": "Connecting Google did not finish. Try again from this page.",
+  "ph": []
+ },
+ "google.card.calendarConsent": {
+  "en": "Adding events needs one more permission: connect again and allow the calendar.",
+  "ph": []
+ },
+ "google.card.disconnect": {
+  "en": "Disconnect",
+  "ph": []
+ },
+ "google.card.disconnecting": {
+  "en": "Disconnecting…",
+  "ph": []
+ },
+ "google.card.disconnectConfirm": {
+  "en": "Disconnect {email}? The agent will no longer reach your Google files; the files stay in your Drive.",
+  "ph": [
+   "email"
+  ]
+ },
+ "google.card.failed": {
+  "en": "Could not change the Google connection. Try again in a minute.",
+  "ph": []
+ },
+ "messengers.title": {
+  "en": "Messengers",
+  "ph": []
+ },
+ "messengers.heading": {
+  "en": "Messenger Integrations",
+  "ph": []
+ },
+ "messengers.description": {
+  "en": "Connect external messengers to the agent. Telegram is available now.",
+  "ph": []
+ },
+ "messengers.telegramCommands": {
+  "en": "Telegram Commands",
+  "ph": []
+ },
+ "messengers.availableCommands": {
+  "en": "Available commands in Telegram private chat:",
+  "ph": []
+ },
+ "messengers.command.start": {
+  "en": "show help and connection status",
+  "ph": []
+ },
+ "messengers.command.help": {
+  "en": "show help",
+  "ph": []
+ },
+ "messengers.command.code": {
+  "en": "activate access for your Telegram user_id",
+  "ph": []
+ },
+ "messengers.command.new": {
+  "en": "start a new conversation and reset context",
+  "ph": []
+ },
+ "messengers.command.reset": {
+  "en": "stop a stuck answer, keep the conversation",
+  "ph": []
+ },
+ "messengers.command.files": {
+  "en": "send the files the last answer made",
+  "ph": []
+ },
+ "messengers.notes": {
+  "en": "Notes: only private chats are supported. Uploaded files are saved into chat files, and you can ask the agent to send a local file back to Telegram.",
+  "ph": []
+ },
+ "externalApiToken.description": {
+  "en": "Create a token for {header} and rotate it when needed.",
+  "ph": [
+   "header"
+  ]
+ },
+ "externalApiToken.envDetected": {
+  "en": "Env token detected. Generate to create and use an app-managed token.",
+  "ph": []
+ },
+ "externalApiToken.loading": {
+  "en": "Loading token status...",
+  "ph": []
+ },
+ "externalApiToken.status": {
+  "en": "Status:",
+  "ph": []
+ },
+ "externalApiToken.configured": {
+  "en": "configured",
+  "ph": []
+ },
+ "externalApiToken.notConfigured": {
+  "en": "not configured",
+  "ph": []
+ },
+ "externalApiToken.current": {
+  "en": "Current token:",
+  "ph": []
+ },
+ "externalApiToken.updated": {
+  "en": "Updated: {date}",
+  "ph": [
+   "date"
+  ]
+ },
+ "externalApiToken.processing": {
+  "en": "Processing...",
+  "ph": []
+ },
+ "externalApiToken.generate": {
+  "en": "Generate Token",
+  "ph": []
+ },
+ "externalApiToken.regenerate": {
+  "en": "Regenerate Token",
+  "ph": []
+ },
+ "externalApiToken.newShownOnce": {
+  "en": "New token (shown once):",
+  "ph": []
+ },
+ "externalApiToken.copied": {
+  "en": "Copied",
+  "ph": []
+ },
+ "externalApiToken.copy": {
+  "en": "Copy token",
+  "ph": []
+ },
+ "externalApiToken.errors.load": {
+  "en": "Failed to load token status",
+  "ph": []
+ },
+ "externalApiToken.errors.rotate": {
+  "en": "Failed to rotate token",
+  "ph": []
+ },
+ "externalApiToken.errors.copy": {
+  "en": "Failed to copy token",
+  "ph": []
+ },
+ "dashboard.chatTitle": {
+  "en": "Chat",
+  "ph": []
+ },
+ "apiDocs.title": {
+  "en": "API",
+  "ph": []
+ },
+ "apiDocs.heading": {
+  "en": "External Message API",
+  "ph": []
+ },
+ "apiDocs.description": {
+  "en": "Send messages to Eggent from your app, workflow, bot, or webhook. Eggent keeps session state by sessionId, so follow-up calls can continue the same project/chat context.",
+  "ph": []
+ },
+ "apiDocs.generateToken": {
+  "en": "1. Generate an API token",
+  "ph": []
+ },
+ "apiDocs.connectEndpoint": {
+  "en": "2. Connect to the endpoint",
+  "ph": []
+ },
+ "apiDocs.authHeader": {
+  "en": "Auth header:",
+  "ph": []
+ },
+ "apiDocs.requiredFields": {
+  "en": "Required body fields: sessionId and message.",
+  "ph": []
+ },
+ "apiDocs.requestFields": {
+  "en": "Request fields",
+  "ph": []
+ },
+ "apiDocs.field": {
+  "en": "Field",
+  "ph": []
+ },
+ "apiDocs.required": {
+  "en": "Required",
+  "ph": []
+ },
+ "apiDocs.purpose": {
+  "en": "Purpose",
+  "ph": []
+ },
+ "apiDocs.yes": {
+  "en": "Yes",
+  "ph": []
+ },
+ "apiDocs.no": {
+  "en": "No",
+  "ph": []
+ },
+ "apiDocs.field.sessionId": {
+  "en": "Stable external user/thread id. Used to remember context.",
+  "ph": []
+ },
+ "apiDocs.field.message": {
+  "en": "Text to send to the Eggent agent.",
+  "ph": []
+ },
+ "apiDocs.field.projectId": {
+  "en": "Pin or switch this external session to a project by id. Also accepts an exact unique project name.",
+  "ph": []
+ },
+ "apiDocs.field.projectName": {
+  "en": "Pin or switch by exact project name when you do not know the id.",
+  "ph": []
+ },
+ "apiDocs.field.chatId": {
+  "en": "Reuse a specific Eggent chat instead of auto-created session chat.",
+  "ph": []
+ },
+ "apiDocs.field.currentPath": {
+  "en": "Optional relative path hint inside the selected project.",
+  "ph": []
+ },
+ "apiDocs.useCases": {
+  "en": "Main use cases",
+  "ph": []
+ },
+ "apiDocs.useCase.project": {
+  "en": "Ask inside a project",
+  "ph": []
+ },
+ "apiDocs.useCase.thread": {
+  "en": "Continue the same external thread",
+  "ph": []
+ },
+ "apiDocs.useCase.fixedChat": {
+  "en": "Use a fixed Eggent chat",
+  "ph": []
+ },
+ "apiDocs.useCase.path": {
+  "en": "Send path context",
+  "ph": []
+ },
+ "apiDocs.omittedProjectNote": {
+  "en": "If projectId / projectName is omitted, Eggent uses the session's last active project. If there is no active project and multiple projects exist, the API returns 409 with available projects.",
+  "ph": []
+ },
+ "apiDocs.jsExample": {
+  "en": "JavaScript example",
+  "ph": []
+ },
+ "apiDocs.successResponse": {
+  "en": "Successful response",
+  "ph": []
+ },
+ "nav.platform": {
+  "en": "Platform",
+  "ph": []
+ },
+ "nav.projects": {
+  "en": "Projects",
+  "ph": []
+ },
+ "nav.more": {
+  "en": "More",
+  "ph": []
+ },
+ "nav.toggle": {
+  "en": "Toggle",
+  "ph": []
+ },
+ "nav.viewProject": {
+  "en": "View Project",
+  "ph": []
+ },
+ "nav.shareProject": {
+  "en": "Share Project",
+  "ph": []
+ },
+ "nav.deleteProject": {
+  "en": "Delete Project",
+  "ph": []
+ },
+ "nav.search": {
+  "en": "Search",
+  "ph": []
+ },
+ "nav.searchPlaceholder": {
+  "en": "Type to search...",
+  "ph": []
+ },
+ "projectContext.mcpServers": {
+  "en": "MCP Servers",
+  "ph": []
+ },
+ "projectContext.loadingMcp": {
+  "en": "Loading MCP config...",
+  "ph": []
+ },
+ "projectContext.noMcp": {
+  "en": "No `.mcp.json` found for this project. Save to create it.",
+  "ph": []
+ },
+ "projectContext.mcpSaved": {
+  "en": "MCP configuration saved.",
+  "ph": []
+ },
+ "projectContext.saveMcpFailed": {
+  "en": "Failed to save MCP config",
+  "ph": []
+ },
+ "projectContext.projectSkills": {
+  "en": "Project Skills",
+  "ph": []
+ },
+ "projectContext.loadingSkills": {
+  "en": "Loading skills...",
+  "ph": []
+ },
+ "projectContext.noSkillsTitle": {
+  "en": "No skills configured",
+  "ph": []
+ },
+ "projectContext.noSkillsDescription": {
+  "en": "Project skills will appear here after installation.",
+  "ph": []
+ },
+ "projectContext.skillTitle": {
+  "en": "Skill: {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "projectContext.skillInstructions": {
+  "en": "Skill instructions",
+  "ph": []
+ },
+ "projectContext.noSkillContent": {
+  "en": "No skill content.",
+  "ph": []
+ },
+ "knowledge.title": {
+  "en": "Knowledge Base",
+  "ph": []
+ },
+ "knowledge.uploading": {
+  "en": "Uploading...",
+  "ph": []
+ },
+ "knowledge.uploadFile": {
+  "en": "Upload File",
+  "ph": []
+ },
+ "knowledge.filesMemory": {
+  "en": "Files Memory",
+  "ph": []
+ },
+ "knowledge.loadingFiles": {
+  "en": "Loading files...",
+  "ph": []
+ },
+ "knowledge.noFilesTitle": {
+  "en": "No files in knowledge base yet.",
+  "ph": []
+ },
+ "knowledge.noFilesDescription": {
+  "en": "Upload PDF, Word, text, or images to give the agent context.",
+  "ph": []
+ },
+ "knowledge.chatMemory": {
+  "en": "Chat Memory",
+  "ph": []
+ },
+ "knowledge.loadingMemory": {
+  "en": "Loading memory...",
+  "ph": []
+ },
+ "knowledge.noChatMemory": {
+  "en": "No chat memory saved for this project yet.",
+  "ph": []
+ },
+ "knowledge.delete": {
+  "en": "Delete",
+  "ph": []
+ },
+ "knowledge.deleteMemory": {
+  "en": "Delete memory",
+  "ph": []
+ },
+ "knowledge.confirmDeleteFile": {
+  "en": "Are you sure you want to delete \"{filename}\"?",
+  "ph": [
+   "filename"
+  ]
+ },
+ "knowledge.confirmDeleteMemory": {
+  "en": "Are you sure you want to delete this memory?",
+  "ph": []
+ },
+ "knowledge.uploadFailed": {
+  "en": "Failed to upload file",
+  "ph": []
+ },
+ "knowledge.deleteFailed": {
+  "en": "Failed to delete file",
+  "ph": []
+ },
+ "knowledge.deleteMemoryFailed": {
+  "en": "Failed to delete memory",
+  "ph": []
+ },
+ "knowledge.memory": {
+  "en": "Memory",
+  "ph": []
+ },
+ "knowledge.chunksTitle": {
+  "en": "Chunks: {file}",
+  "ph": [
+   "file"
+  ]
+ },
+ "knowledge.chunksDescription": {
+  "en": "{count} vectorized text chunks",
+  "ph": [
+   "count"
+  ]
+ },
+ "knowledge.loadingChunks": {
+  "en": "Loading chunks...",
+  "ph": []
+ },
+ "knowledge.noChunks": {
+  "en": "No chunks for this file.",
+  "ph": []
+ },
+ "knowledge.chunk": {
+  "en": "Chunk {index}",
+  "ph": [
+   "index"
+  ]
+ },
+ "knowledge.chunkCount": {
+  "en": "{count} chunks",
+  "ph": [
+   "count"
+  ]
+ },
+ "modelWizard.loadingModels": {
+  "en": "Loading models...",
+  "ph": []
+ },
+ "modelWizard.selectModel": {
+  "en": "Select model",
+  "ph": []
+ },
+ "modelWizard.fetchModelsFailed": {
+  "en": "Failed to fetch models",
+  "ph": []
+ },
+ "modelWizard.loadModelsFailed": {
+  "en": "Failed to load models",
+  "ph": []
+ },
+ "modelWizard.checkConnectionFailed": {
+  "en": "Failed to check connection",
+  "ph": []
+ },
+ "modelWizard.statusUpdated": {
+  "en": "Status updated",
+  "ph": []
+ },
+ "modelWizard.chatModel": {
+  "en": "Chat Model",
+  "ph": []
+ },
+ "modelWizard.embeddingsModel": {
+  "en": "Embeddings Model",
+  "ph": []
+ },
+ "modelWizard.provider": {
+  "en": "Provider",
+  "ph": []
+ },
+ "modelWizard.method": {
+  "en": "Method",
+  "ph": []
+ },
+ "modelWizard.connect": {
+  "en": "Connect",
+  "ph": []
+ },
+ "modelWizard.model": {
+  "en": "Model",
+  "ph": []
+ },
+ "modelWizard.apiKey": {
+  "en": "API Key",
+  "ph": []
+ },
+ "modelWizard.stepProvider": {
+  "en": "Step 1 — Provider",
+  "ph": []
+ },
+ "modelWizard.stepMethod": {
+  "en": "Step 2 — Connection Method",
+  "ph": []
+ },
+ "modelWizard.stepConnection": {
+  "en": "Step 3 — Connection",
+  "ph": []
+ },
+ "modelWizard.stepModel": {
+  "en": "Step 4 — Model",
+  "ph": []
+ },
+ "modelWizard.selectProvider": {
+  "en": "Select provider...",
+  "ph": []
+ },
+ "modelWizard.customProvider": {
+  "en": "Custom (OpenAI-compatible)",
+  "ph": []
+ },
+ "modelWizard.oauth": {
+  "en": "OAuth",
+  "ph": []
+ },
+ "modelWizard.apiKeyAuth": {
+  "en": "API key",
+  "ph": []
+ },
+ "modelWizard.enterKeyOrEnv": {
+  "en": "Enter key or set {envKey} in .env",
+  "ph": [
+   "envKey"
+  ]
+ },
+ "modelWizard.optionalToken": {
+  "en": "Optional token (leave empty for local servers)",
+  "ph": []
+ },
+ "modelWizard.envHint": {
+  "en": "Or set {envKey} as an environment variable",
+  "ph": [
+   "envKey"
+  ]
+ },
+ "modelWizard.noApiKeyRequiredMode": {
+  "en": "API key input is not required for this connection mode.",
+  "ph": []
+ },
+ "modelWizard.command": {
+  "en": "Command:",
+  "ph": []
+ },
+ "modelWizard.cliTokens": {
+  "en": "OAuth tokens are read from local CLI auth files.",
+  "ph": []
+ },
+ "modelWizard.checkConnection": {
+  "en": "Check connection",
+  "ph": []
+ },
+ "modelWizard.ollamaNoKey": {
+  "en": "API Key not required — connecting to local Ollama",
+  "ph": []
+ },
+ "modelWizard.customNoKey": {
+  "en": "API Key optional — works for local OpenAI-compatible servers (LM Studio, etc.)",
+  "ph": []
+ },
+ "modelWizard.baseUrl": {
+  "en": "Base URL",
+  "ph": []
+ },
+ "modelWizard.temperature": {
+  "en": "Temperature",
+  "ph": []
+ },
+ "modelWizard.stepApiKeyOptional": {
+  "en": "Step 2 — API Key (optional)",
+  "ph": []
+ },
+ "modelWizard.stepApiKey": {
+  "en": "Step 2 — API Key",
+  "ph": []
+ },
+ "modelWizard.step2": {
+  "en": "Step 2",
+  "ph": []
+ },
+ "modelWizard.step3": {
+  "en": "Step 3",
+  "ph": []
+ },
+ "modelWizard.stepDynamicModel": {
+  "en": "{step} — Model",
+  "ph": [
+   "step"
+  ]
+ },
+ "modelWizard.selectEmbeddingModel": {
+  "en": "Select embedding model...",
+  "ph": []
+ },
+ "modelWizard.dims": {
+  "en": "Dims",
+  "ph": []
+ },
+ "modelWizard.embeddingDimensions": {
+  "en": "Embedding Dimensions",
+  "ph": []
+ },
+ "modelWizard.dimensionsHint": {
+  "en": "Dimensions are auto-detected for known models. Adjust if necessary.",
+  "ph": []
+ },
+ "mcp.title": {
+  "en": "MCP",
+  "ph": []
+ },
+ "mcp.heading": {
+  "en": "MCP Servers",
+  "ph": []
+ },
+ "mcp.description": {
+  "en": "View and edit the MCP servers configured in {file} for the orchestrator or for a project, and switch between them. Runtime access is provided by Eggent.",
+  "ph": [
+   "file"
+  ]
+ },
+ "mcp.searchPlaceholder": {
+  "en": "Search MCP servers...",
+  "ph": []
+ },
+ "mcp.serversInWorkspace": {
+  "en": "Servers In Workspace",
+  "ph": []
+ },
+ "mcp.total": {
+  "en": "{count} total",
+  "ph": [
+   "count"
+  ]
+ },
+ "mcp.noServersTitle": {
+  "en": "No MCP servers",
+  "ph": []
+ },
+ "mcp.noServersDescription": {
+  "en": "Servers configured in .mcp.json will appear here.",
+  "ph": []
+ },
+ "mcp.command": {
+  "en": "Command:",
+  "ph": []
+ },
+ "mcp.args": {
+  "en": "Args:",
+  "ph": []
+ },
+ "mcp.environment": {
+  "en": "Environment ({count})",
+  "ph": [
+   "count"
+  ]
+ },
+ "mcp.headers": {
+  "en": "Headers ({count})",
+  "ph": [
+   "count"
+  ]
+ },
+ "mcp.raw": {
+  "en": "Raw .mcp.json",
+  "ph": []
+ },
+ "mcp.editJson": {
+  "en": "Edit JSON directly",
+  "ph": []
+ },
+ "mcp.createHint": {
+  "en": "`.mcp.json` does not exist yet for this project. Save to create it.",
+  "ph": []
+ },
+ "mcp.save": {
+  "en": "Save .mcp.json",
+  "ph": []
+ },
+ "mcp.reset": {
+  "en": "Reset",
+  "ph": []
+ },
+ "mcp.saved": {
+  "en": "MCP configuration saved.",
+  "ph": []
+ },
+ "mcp.errors.load": {
+  "en": "Failed to load MCP servers",
+  "ph": []
+ },
+ "mcp.errors.save": {
+  "en": "Failed to save MCP servers",
+  "ph": []
+ },
+ "schedules.title": {
+  "en": "Schedules",
+  "ph": []
+ },
+ "schedules.heading": {
+  "en": "Scheduled Tasks",
+  "ph": []
+ },
+ "schedules.description": {
+  "en": "View scheduled work managed by Eggent.",
+  "ph": []
+ },
+ "schedules.refresh": {
+  "en": "Refresh",
+  "ph": []
+ },
+ "schedules.total": {
+  "en": "{count} total",
+  "ph": [
+   "count"
+  ]
+ },
+ "schedules.hint": {
+  "en": "Create or change schedules from chat. Eggent uses the Agent tool with a schedule value.",
+  "ph": []
+ },
+ "schedules.elsewhere": {
+  "en": "Also elsewhere:",
+  "ph": []
+ },
+ "schedules.loading": {
+  "en": "Loading schedules...",
+  "ph": []
+ },
+ "schedules.emptyTitle": {
+  "en": "No scheduled tasks found",
+  "ph": []
+ },
+ "schedules.emptyDescription": {
+  "en": "Schedules will appear here after they are created from an Eggent chat/session.",
+  "ph": []
+ },
+ "schedules.table.task": {
+  "en": "Task",
+  "ph": []
+ },
+ "schedules.table.schedule": {
+  "en": "Schedule",
+  "ph": []
+ },
+ "schedules.table.nextRun": {
+  "en": "Next Run",
+  "ph": []
+ },
+ "schedules.table.lastRun": {
+  "en": "Last Run",
+  "ph": []
+ },
+ "schedules.table.status": {
+  "en": "Status",
+  "ph": []
+ },
+ "schedules.agent": {
+  "en": "Agent: {agent}",
+  "ph": [
+   "agent"
+  ]
+ },
+ "schedules.session": {
+  "en": "Session {sessionId}",
+  "ph": [
+   "sessionId"
+  ]
+ },
+ "schedules.runs": {
+  "en": "Runs: {count}",
+  "ph": [
+   "count"
+  ]
+ },
+ "schedules.status.scheduled": {
+  "en": "scheduled",
+  "ph": []
+ },
+ "schedules.status.disabled": {
+  "en": "disabled",
+  "ph": []
+ },
+ "schedules.status.paused": {
+  "en": "paused",
+  "ph": []
+ },
+ "schedules.status.pausedAuto": {
+  "en": "paused by Eggent",
+  "ph": []
+ },
+ "schedules.pause": {
+  "en": "Pause",
+  "ph": []
+ },
+ "schedules.resume": {
+  "en": "Resume",
+  "ph": []
+ },
+ "schedules.resumeFailed": {
+  "en": "Could not resume that task.",
+  "ph": []
+ },
+ "skills.title": {
+  "en": "Skills",
+  "ph": []
+ },
+ "skills.description": {
+  "en": "Browse the skills installed in the orchestrator or in a project, and install bundled skills into the selected workspace. Installed skills live in its {path} directory.",
+  "ph": [
+   "path"
+  ]
+ },
+ "skills.searchPlaceholder": {
+  "en": "Search skills...",
+  "ph": []
+ },
+ "skills.installedInWorkspace": {
+  "en": "Installed In Workspace",
+  "ph": []
+ },
+ "skills.total": {
+  "en": "{count} total",
+  "ph": [
+   "count"
+  ]
+ },
+ "skills.loadingInstalled": {
+  "en": "Loading installed skills...",
+  "ph": []
+ },
+ "skills.noInstalledTitle": {
+  "en": "No installed skills",
+  "ph": []
+ },
+ "skills.noInstalledDescription": {
+  "en": "Skills installed in this workspace will appear here.",
+  "ph": []
+ },
+ "skills.noDescription": {
+  "en": "No description",
+  "ph": []
+ },
+ "skills.learnedBadge": {
+  "en": "Written by the agent",
+  "ph": []
+ },
+ "skills.staleBadge": {
+  "en": "Not used for a while",
+  "ph": []
+ },
+ "skills.license": {
+  "en": "License: {license}",
+  "ph": [
+   "license"
+  ]
+ },
+ "skills.compatibility": {
+  "en": "Compatibility: {compatibility}",
+  "ph": [
+   "compatibility"
+  ]
+ },
+ "skills.catalogTitle": {
+  "en": "Bundled Skills Catalog",
+  "ph": []
+ },
+ "skills.catalogDescription": {
+  "en": "Install prebuilt skills into the selected workspace. Skills are copied to its {path} directory.",
+  "ph": [
+   "path"
+  ]
+ },
+ "skills.loadingBundled": {
+  "en": "Loading bundled skills...",
+  "ph": []
+ },
+ "skills.noBundledTitle": {
+  "en": "No bundled skills found",
+  "ph": []
+ },
+ "skills.noBundledDescription": {
+  "en": "Try a different search or select another project.",
+  "ph": []
+ },
+ "skills.installing": {
+  "en": "Installing",
+  "ph": []
+ },
+ "skills.installed": {
+  "en": "Installed",
+  "ph": []
+ },
+ "skills.install": {
+  "en": "Install",
+  "ph": []
+ },
+ "skills.sheetTitle": {
+  "en": "Skill: {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "skills.instructions": {
+  "en": "Skill instructions",
+  "ph": []
+ },
+ "skills.noContent": {
+  "en": "No skill content.",
+  "ph": []
+ },
+ "skills.errors.install": {
+  "en": "Failed to install skill",
+  "ph": []
+ },
+ "skills.installedMessage": {
+  "en": "Installed \"{skill}\" into workspace \"{project}\".",
+  "ph": [
+   "project",
+   "skill"
+  ]
+ },
+ "skills.deleteLabel": {
+  "en": "Delete {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "skills.deleteConfirm": {
+  "en": "Delete the skill “{name}”? Its folder and everything in it will be removed, along with any earlier versions kept when it was replaced. This cannot be undone.",
+  "ph": [
+   "name"
+  ]
+ },
+ "skills.deletedMessage": {
+  "en": "Deleted “{skill}” from workspace “{project}”.",
+  "ph": [
+   "project",
+   "skill"
+  ]
+ },
+ "skills.errors.delete": {
+  "en": "Failed to delete skill",
+  "ph": []
+ },
+ "skills.delete.error.noName": {
+  "en": "Say which skill to delete.",
+  "ph": []
+ },
+ "skills.delete.error.invalidName": {
+  "en": "“{name}” is not a skill name.",
+  "ph": [
+   "name"
+  ]
+ },
+ "skills.delete.error.notFound": {
+  "en": "There is no skill named “{skill}” in this workspace.",
+  "ph": [
+   "skill"
+  ]
+ },
+ "skills.delete.error.failed": {
+  "en": "The skill could not be deleted.",
+  "ph": []
+ },
+ "skills.upload.button": {
+  "en": "Upload skill",
+  "ph": []
+ },
+ "skills.upload.back": {
+  "en": "Skills",
+  "ph": []
+ },
+ "skills.upload.title": {
+  "en": "Upload a skill",
+  "ph": []
+ },
+ "skills.upload.description": {
+  "en": "Add a skill you already have as a file to the selected workspace. It is checked first, and nothing is saved unless the check passes.",
+  "ph": []
+ },
+ "skills.upload.fileLabel": {
+  "en": "Skill file",
+  "ph": []
+ },
+ "skills.upload.drop": {
+  "en": "Drag and drop skill files here, or browse — you can add several at once",
+  "ph": []
+ },
+ "skills.upload.dropActive": {
+  "en": "Drop to add",
+  "ph": []
+ },
+ "skills.upload.hintMarkdown": {
+  "en": ".md file: a SKILL.md that starts with a YAML header holding the skill's name and description",
+  "ph": []
+ },
+ "skills.upload.hintArchive": {
+  "en": ".zip or .skill file: an archive with a SKILL.md at the top or inside one folder — scripts/, references/, assets/ and other folders can come with it",
+  "ph": []
+ },
+ "skills.upload.checksTitle": {
+  "en": "Checks",
+  "ph": []
+ },
+ "skills.upload.checksWhen": {
+  "en": "Run when you upload",
+  "ph": []
+ },
+ "skills.upload.checksNote": {
+  "en": "The structure is checked: the SKILL.md header, file names, links and size. What a script does is not, so upload only skills you trust — the agent can run them.",
+  "ph": []
+ },
+ "skills.upload.upload": {
+  "en": "Upload",
+  "ph": []
+ },
+ "skills.upload.uploading": {
+  "en": "Uploading…",
+  "ph": []
+ },
+ "skills.upload.cancel": {
+  "en": "Cancel",
+  "ph": []
+ },
+ "skills.upload.backToSkills": {
+  "en": "Back to skills",
+  "ph": []
+ },
+ "skills.upload.chooseFile": {
+  "en": "Choose a file to continue.",
+  "ph": []
+ },
+ "skills.upload.ready": {
+  "en": "Ready to upload: {count}",
+  "ph": [
+   "count"
+  ]
+ },
+ "skills.upload.remove": {
+  "en": "Remove {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "skills.upload.status.queued": {
+  "en": "Ready",
+  "ph": []
+ },
+ "skills.upload.status.working": {
+  "en": "Checking and installing…",
+  "ph": []
+ },
+ "skills.upload.installed": {
+  "en": "Installed as “{skill}”",
+  "ph": [
+   "skill"
+  ]
+ },
+ "skills.upload.replaced": {
+  "en": "Replaced “{skill}”. The previous version is kept in {kept}.",
+  "ph": [
+   "kept",
+   "skill"
+  ]
+ },
+ "skills.upload.replace": {
+  "en": "Replace",
+  "ph": []
+ },
+ "skills.upload.summary": {
+  "en": "Installed {ok} of {total}.",
+  "ph": [
+   "ok",
+   "total"
+  ]
+ },
+ "skills.upload.note.learnedMarkerRemoved": {
+  "en": "The line origin: learned was removed from the header: the skill is yours now, and the agent will not change it.",
+  "ph": []
+ },
+ "skills.upload.note.emptyBody": {
+  "en": "SKILL.md has a header but no instructions under it.",
+  "ph": []
+ },
+ "skills.upload.error.network": {
+  "en": "Could not reach the server. Nothing was installed.",
+  "ph": []
+ },
+ "skills.upload.error.notAllowed": {
+  "en": "You are signed out, or the session expired. Reload the page and try again.",
+  "ph": []
+ },
+ "skills.upload.error.badRequest": {
+  "en": "The upload could not be read. Try again.",
+  "ph": []
+ },
+ "skills.upload.error.noFile": {
+  "en": "No file was sent.",
+  "ph": []
+ },
+ "skills.upload.error.projectNotFound": {
+  "en": "That project does not exist any more.",
+  "ph": []
+ },
+ "skills.upload.error.unsupportedType": {
+  "en": "“{name}” is not a skill file. Upload a .md file, or a .zip or .skill archive.",
+  "ph": [
+   "name"
+  ]
+ },
+ "skills.upload.error.empty": {
+  "en": "The file is empty.",
+  "ph": []
+ },
+ "skills.upload.error.tooLarge": {
+  "en": "{size} is too big for a skill — at most {limit}.",
+  "ph": [
+   "limit",
+   "size"
+  ]
+ },
+ "skills.upload.error.notZip": {
+  "en": "This is not a readable ZIP archive. It may be damaged or cut off; create it again.",
+  "ph": []
+ },
+ "skills.upload.error.zipUnsupported": {
+  "en": "The archive uses something that is not supported ({detail}). Create it again with a standard zip tool.",
+  "ph": [
+   "detail"
+  ]
+ },
+ "skills.upload.error.zipEncrypted": {
+  "en": "The archive is password-protected. Upload one without a password.",
+  "ph": []
+ },
+ "skills.upload.error.zipCorrupt": {
+  "en": "“{path}” is damaged inside the archive. Create the archive again.",
+  "ph": [
+   "path"
+  ]
+ },
+ "skills.upload.error.tooManyFiles": {
+  "en": "The skill holds {count} files and folders; at most {limit} are allowed.",
+  "ph": [
+   "count",
+   "limit"
+  ]
+ },
+ "skills.upload.error.unpackedTooLarge": {
+  "en": "The files add up to {size} unpacked; at most {limit} are allowed.",
+  "ph": [
+   "limit",
+   "size"
+  ]
+ },
+ "skills.upload.error.unsafePath": {
+  "en": "“{path}” has a file name that is not allowed: it climbs out of the skill's folder, has control characters, or is too long.",
+  "ph": [
+   "path"
+  ]
+ },
+ "skills.upload.error.link": {
+  "en": "“{path}” is a link or a special file, which a skill may not contain.",
+  "ph": [
+   "path"
+  ]
+ },
+ "skills.upload.error.duplicatePath": {
+  "en": "“{path}” appears more than once in the archive.",
+  "ph": [
+   "path"
+  ]
+ },
+ "skills.upload.error.skillMdMissing": {
+  "en": "SKILL.md was not found in the archive. Put it at the top of the archive, or directly inside the one folder that holds the skill.",
+  "ph": []
+ },
+ "skills.upload.error.skillMdCase": {
+  "en": "Found “{path}”, but the file has to be named SKILL.md, in capital letters.",
+  "ph": [
+   "path"
+  ]
+ },
+ "skills.upload.error.skillMdNested": {
+  "en": "SKILL.md is only at “{path}”, which is too deep. It has to be at the top of the archive, or directly inside its single top folder.",
+  "ph": [
+   "path"
+  ]
+ },
+ "skills.upload.error.severalSkills": {
+  "en": "The archive holds several skills ({names}). Upload them one at a time.",
+  "ph": [
+   "names"
+  ]
+ },
+ "skills.upload.error.skillMdNotText": {
+  "en": "SKILL.md is not a UTF-8 text file.",
+  "ph": []
+ },
+ "skills.upload.error.skillMdTooLarge": {
+  "en": "SKILL.md is {size}; at most {limit} is allowed. Move detail into files under references/.",
+  "ph": [
+   "limit",
+   "size"
+  ]
+ },
+ "skills.upload.error.frontmatterMissing": {
+  "en": "SKILL.md has no header. It has to start with a --- line, then the name and description as YAML, then a second --- line.",
+  "ph": []
+ },
+ "skills.upload.error.frontmatterUnclosed": {
+  "en": "The header at the top of SKILL.md is never closed: add a second --- line after it.",
+  "ph": []
+ },
+ "skills.upload.error.frontmatterYaml": {
+  "en": "The header of SKILL.md is not valid YAML (line {line}): {reason}. If a value contains a colon followed by a space, put the whole value in quotes.",
+  "ph": [
+   "line",
+   "reason"
+  ]
+ },
+ "skills.upload.error.frontmatterNotMap": {
+  "en": "The header of SKILL.md has to be lines of “key: value”.",
+  "ph": []
+ },
+ "skills.upload.error.fieldMissing": {
+  "en": "The header of SKILL.md has no “{field}”.",
+  "ph": [
+   "field"
+  ]
+ },
+ "skills.upload.error.fieldNotText": {
+  "en": "“{field}” in the header of SKILL.md has to be text.",
+  "ph": [
+   "field"
+  ]
+ },
+ "skills.upload.error.fieldTooLong": {
+  "en": "“{field}” in the header of SKILL.md is {length} characters; at most {limit} are allowed.",
+  "ph": [
+   "field",
+   "length",
+   "limit"
+  ]
+ },
+ "skills.upload.error.nameInvalid": {
+  "en": "The skill name “{name}” is not allowed. Use lowercase letters, numbers and single hyphens, none at either end — for example pdf-parsing.",
+  "ph": [
+   "name"
+  ]
+ },
+ "skills.upload.error.learnedMarker": {
+  "en": "The header says origin: learned, which is reserved for skills the agent writes. Remove that line and upload again.",
+  "ph": []
+ },
+ "skills.upload.error.exists": {
+  "en": "A skill named “{skill}” is already installed in this workspace.",
+  "ph": [
+   "skill"
+  ]
+ },
+ "skills.upload.error.writeFailed": {
+  "en": "The skill could not be saved. Nothing was installed.",
+  "ph": []
+ },
+ "projectDetail.notFound": {
+  "en": "Project Not Found",
+  "ph": []
+ },
+ "projectDetail.backToProjects": {
+  "en": "Back to Projects",
+  "ph": []
+ },
+ "projectDetail.directoryBacked": {
+  "en": "directory-backed agent",
+  "ph": []
+ },
+ "projectDetail.noDescription": {
+  "en": "No description provided.",
+  "ph": []
+ },
+ "projectDetail.description": {
+  "en": "This project is a directory. Its context, memory, skills, MCP, and model settings are stored as files in the project folder and used by Eggent when the agent runs. Scheduled tasks are managed by Eggent.",
+  "ph": []
+ },
+ "projectDetail.openChat": {
+  "en": "Open chat",
+  "ph": []
+ },
+ "projectDetail.projectFolder": {
+  "en": "Project folder",
+  "ph": []
+ },
+ "projectDetail.chats": {
+  "en": "Chats {count}",
+  "ph": [
+   "count"
+  ]
+ },
+ "projectDetail.runtimeModel": {
+  "en": "Runtime model",
+  "ph": []
+ },
+ "projectDetail.file.context.title": {
+  "en": "Context",
+  "ph": []
+ },
+ "projectDetail.file.context.description": {
+  "en": "Primary instructions injected into the project agent.",
+  "ph": []
+ },
+ "projectDetail.file.memory.title": {
+  "en": "Memory",
+  "ph": []
+ },
+ "projectDetail.file.memory.description": {
+  "en": "Plain Markdown memory used by Eggent bridge tools.",
+  "ph": []
+ },
+ "projectDetail.file.skills.title": {
+  "en": "Skills",
+  "ph": []
+ },
+ "projectDetail.file.skills.description": {
+  "en": "Project-local skills, each with a SKILL.md file.",
+  "ph": []
+ },
+ "projectDetail.file.mcp.title": {
+  "en": "MCP",
+  "ph": []
+ },
+ "projectDetail.file.mcp.description": {
+  "en": "Project-only MCP servers available to the agent.",
+  "ph": []
+ },
+ "projectDetail.file.model.title": {
+  "en": "Model",
+  "ph": []
+ },
+ "projectDetail.file.model.description": {
+  "en": "The workspace model, or one of its own for this project.",
+  "ph": []
+ },
+ "projectDetail.errors.notFound": {
+  "en": "Project not found",
+  "ph": []
+ },
+ "projectSub.settings.legend": {
+  "en": "This project answers with",
+  "ph": []
+ },
+ "projectSub.settings.workspaceTitle": {
+  "en": "The workspace model",
+  "ph": []
+ },
+ "projectSub.settings.workspaceFollows": {
+  "en": "When the workspace model changes, this project changes with it.",
+  "ph": []
+ },
+ "projectSub.settings.workspaceNone": {
+  "en": "The workspace has no model selected yet. Choose one for the workspace first.",
+  "ph": []
+ },
+ "projectSub.settings.projectTitle": {
+  "en": "A model of its own",
+  "ph": []
+ },
+ "projectSub.settings.projectDescription": {
+  "en": "Any model from the providers connected to the workspace. Other projects keep theirs.",
+  "ph": []
+ },
+ "projectSub.settings.chooseProviderFirst": {
+  "en": "Choose a provider first",
+  "ph": []
+ },
+ "projectSub.settings.connectMore": {
+  "en": "Connect another provider",
+  "ph": []
+ },
+ "projectSub.settings.noProviders": {
+  "en": "No provider is connected yet. Connect one for the workspace, then come back to choose its model.",
+  "ph": []
+ },
+ "projectSub.settings.notConnected": {
+  "en": "{name} (not connected)",
+  "ph": [
+   "name"
+  ]
+ },
+ "projectSub.settings.unavailable": {
+  "en": "The model saved for this project isn't available right now, so it is answering with the workspace model. Reconnect the provider for the workspace or choose another model.",
+  "ph": []
+ },
+ "projectSub.settings.lockedTitle": {
+  "en": "Every project uses {label} right now",
+  "ph": [
+   "label"
+  ]
+ },
+ "projectSub.settings.lockedDescription": {
+  "en": "While the workspace runs on {label}, projects can't have a model of their own. Connect your own provider for the workspace, and each project can then use it, another connected provider, or {label}.",
+  "ph": [
+   "label",
+   "label"
+  ]
+ },
+ "projectSub.settings.openSettings": {
+  "en": "Open the workspace model",
+  "ph": []
+ },
+ "projectSub.settings.unreadable": {
+  "en": "model.json isn't valid JSON, so the form starts from the workspace model. Fix the file under Advanced, or save a choice here to replace it.",
+  "ph": []
+ },
+ "projectSub.settings.loadFailed": {
+  "en": "Couldn't load this project's model settings.",
+  "ph": []
+ },
+ "projectSub.settings.retry": {
+  "en": "Try again",
+  "ph": []
+ },
+ "projectSub.settings.saveFailed": {
+  "en": "Couldn't save: {error}",
+  "ph": [
+   "error"
+  ]
+ },
+ "projectSub.settings.advancedSummary": {
+  "en": "Advanced: edit model.json",
+  "ph": []
+ },
+ "projectSub.settings.editorDescription": {
+  "en": "The file this form writes. \"inheritsGlobal\": true follows the workspace; false together with \"provider\" and \"model\" gives the project its own.",
+  "ph": []
+ },
+ "orchestrator.title": {
+  "en": "Orchestrator",
+  "ph": []
+ },
+ "orchestrator.description": {
+  "en": "The agent that answers when no project is selected. It keeps the same four files as a project — context, memory, skills and MCP — in its own working directory.",
+  "ph": []
+ },
+ "projectEditor.loadFailed": {
+  "en": "Failed to load {filename}",
+  "ph": [
+   "filename"
+  ]
+ },
+ "projectEditor.saveFailed": {
+  "en": "Failed to save {filename}",
+  "ph": [
+   "filename"
+  ]
+ },
+ "projectEditor.saved": {
+  "en": "{filename} saved.",
+  "ph": [
+   "filename"
+  ]
+ },
+ "projectEditor.loading": {
+  "en": "Loading {filename}...",
+  "ph": [
+   "filename"
+  ]
+ },
+ "projectSkills.total": {
+  "en": "{count} total",
+  "ph": [
+   "count"
+  ]
+ },
+ "telegram.source.stored": {
+  "en": "stored in app",
+  "ph": []
+ },
+ "telegram.source.env": {
+  "en": "from .env",
+  "ph": []
+ },
+ "telegram.source.none": {
+  "en": "not configured",
+  "ph": []
+ },
+ "telegram.botToken.title": {
+  "en": "1. Bot Token",
+  "ph": []
+ },
+ "telegram.botToken.description": {
+  "en": "Enter your Telegram bot token from @BotFather.",
+  "ph": []
+ },
+ "telegram.botToken.label": {
+  "en": "Bot Token",
+  "ph": []
+ },
+ "telegram.botToken.saved": {
+  "en": "Token saved ({source})",
+  "ph": [
+   "source"
+  ]
+ },
+ "telegram.botToken.required": {
+  "en": "Bot token is required",
+  "ph": []
+ },
+ "telegram.activate": {
+  "en": "Activate Bot",
+  "ph": []
+ },
+ "telegram.activating": {
+  "en": "Activating...",
+  "ph": []
+ },
+ "telegram.connectionMode.title": {
+  "en": "2. Connection Mode",
+  "ph": []
+ },
+ "telegram.connectionMode.description": {
+  "en": "Choose how Telegram connects to your bot.",
+  "ph": []
+ },
+ "telegram.mode": {
+  "en": "Mode",
+  "ph": []
+ },
+ "telegram.activeMode": {
+  "en": "Active Mode",
+  "ph": []
+ },
+ "telegram.mode.pollingRecommended": {
+  "en": "Long Polling (recommended)",
+  "ph": []
+ },
+ "telegram.mode.auto": {
+  "en": "Auto",
+  "ph": []
+ },
+ "telegram.mode.webhook": {
+  "en": "Webhook",
+  "ph": []
+ },
+ "telegram.mode.polling": {
+  "en": "Long Polling",
+  "ph": []
+ },
+ "telegram.autoMode": {
+  "en": "Auto mode:",
+  "ph": []
+ },
+ "telegram.autoWebhook": {
+  "en": "Webhook will be used when a public HTTPS URL is configured.",
+  "ph": []
+ },
+ "telegram.autoPolling": {
+  "en": "Long polling is active. Add a public HTTPS URL to switch to webhook.",
+  "ph": []
+ },
+ "telegram.publicBaseUrl": {
+  "en": "Public Base URL (HTTPS required)",
+  "ph": []
+ },
+ "telegram.webhookEndpoint": {
+  "en": "Webhook endpoint:",
+  "ph": []
+ },
+ "telegram.setupWebhook": {
+  "en": "Setup Webhook",
+  "ph": []
+ },
+ "telegram.connecting": {
+  "en": "Connecting...",
+  "ph": []
+ },
+ "telegram.polling.description": {
+  "en": "Bot will receive messages via long polling (no HTTPS required).",
+  "ph": []
+ },
+ "telegram.startPolling": {
+  "en": "Start Polling",
+  "ph": []
+ },
+ "telegram.starting": {
+  "en": "Starting...",
+  "ph": []
+ },
+ "telegram.stopPolling": {
+  "en": "Stop Polling",
+  "ph": []
+ },
+ "telegram.stopping": {
+  "en": "Stopping...",
+  "ph": []
+ },
+ "telegram.status": {
+  "en": "Status:",
+  "ph": []
+ },
+ "telegram.running": {
+  "en": "Running",
+  "ph": []
+ },
+ "telegram.stopped": {
+  "en": "Stopped",
+  "ph": []
+ },
+ "telegram.lastUpdateId": {
+  "en": "Last update ID: {id}",
+  "ph": [
+   "id"
+  ]
+ },
+ "telegram.connectionStatus": {
+  "en": "Connection Status",
+  "ph": []
+ },
+ "telegram.token": {
+  "en": "Token:",
+  "ph": []
+ },
+ "telegram.publicBaseUrlShort": {
+  "en": "Public Base URL:",
+  "ph": []
+ },
+ "telegram.updated": {
+  "en": "Updated: {date}",
+  "ph": [
+   "date"
+  ]
+ },
+ "telegram.disconnect": {
+  "en": "Disconnect",
+  "ph": []
+ },
+ "telegram.disconnecting": {
+  "en": "Disconnecting...",
+  "ph": []
+ },
+ "telegram.accessControl": {
+  "en": "Access Control",
+  "ph": []
+ },
+ "telegram.accessDescription": {
+  "en": "Only users from this allowlist can chat with the bot. Others must send an access code first.",
+  "ph": []
+ },
+ "telegram.allowedUserIds": {
+  "en": "Allowed Telegram user_id",
+  "ph": []
+ },
+ "telegram.separatorHelp": {
+  "en": "Use comma, space, or newline as separator.",
+  "ph": []
+ },
+ "telegram.saveAllowlist": {
+  "en": "Save Allowlist",
+  "ph": []
+ },
+ "telegram.generateAccessCode": {
+  "en": "Generate Access Code",
+  "ph": []
+ },
+ "telegram.generating": {
+  "en": "Generating...",
+  "ph": []
+ },
+ "telegram.pendingCodes": {
+  "en": "Pending access codes: {count}",
+  "ph": [
+   "count"
+  ]
+ },
+ "telegram.latestCode": {
+  "en": "Latest code:",
+  "ph": []
+ },
+ "telegram.expiresAt": {
+  "en": "Expires at: {date}",
+  "ph": [
+   "date"
+  ]
+ },
+ "telegram.errors.loadSettings": {
+  "en": "Failed to load Telegram settings",
+  "ph": []
+ },
+ "telegram.errors.saveSettings": {
+  "en": "Failed to save Telegram settings",
+  "ph": []
+ },
+ "telegram.errors.connect": {
+  "en": "Failed to connect Telegram",
+  "ph": []
+ },
+ "telegram.errors.disconnect": {
+  "en": "Failed to disconnect Telegram",
+  "ph": []
+ },
+ "telegram.errors.saveAllowedUsers": {
+  "en": "Failed to save allowed users",
+  "ph": []
+ },
+ "telegram.errors.generateAccessCode": {
+  "en": "Failed to generate access code",
+  "ph": []
+ },
+ "telegram.errors.startPolling": {
+  "en": "Failed to start polling",
+  "ph": []
+ },
+ "telegram.errors.stopPolling": {
+  "en": "Failed to stop polling",
+  "ph": []
+ },
+ "telegram.errors.saveMode": {
+  "en": "Failed to save mode",
+  "ph": []
+ },
+ "telegram.errors.activate": {
+  "en": "Failed to activate Telegram bot",
+  "ph": []
+ },
+ "telegram.webhookConfigured": {
+  "en": "Webhook configured",
+  "ph": []
+ },
+ "telegram.disconnected": {
+  "en": "Telegram disconnected",
+  "ph": []
+ },
+ "telegram.webhookWarning": {
+  "en": "Webhook warning: {warning}",
+  "ph": [
+   "warning"
+  ]
+ },
+ "telegram.allowedUsersUpdated": {
+  "en": "Allowed Telegram user_id list updated",
+  "ph": []
+ },
+ "telegram.accessCodeGenerated": {
+  "en": "Access code generated",
+  "ph": []
+ },
+ "telegram.pollingStarted": {
+  "en": "Polling started",
+  "ph": []
+ },
+ "telegram.pollingStopped": {
+  "en": "Polling stopped",
+  "ph": []
+ },
+ "telegram.modeUpdated": {
+  "en": "Mode updated to {mode}",
+  "ph": [
+   "mode"
+  ]
+ },
+ "telegram.longPollingStarted": {
+  "en": "Long polling started",
+  "ph": []
+ },
+ "api.error.internal": {
+  "en": "Internal server error",
+  "ph": []
+ },
+ "api.error.unauthorized": {
+  "en": "Unauthorized",
+  "ph": []
+ },
+ "api.error.terminalOrigin": {
+  "en": "This request did not come from the workspace page.",
+  "ph": []
+ },
+ "api.error.terminalJsonRequired": {
+  "en": "Send the request as JSON.",
+  "ph": []
+ },
+ "api.error.terminalCommandRequired": {
+  "en": "There is no command to run.",
+  "ph": []
+ },
+ "api.error.terminalCommandTooLong": {
+  "en": "That command is too long to run from here.",
+  "ph": []
+ },
+ "api.error.terminalNotFound": {
+  "en": "That terminal or command is no longer running.",
+  "ph": []
+ },
+ "api.error.terminalTooMany": {
+  "en": "Too many terminals or commands are running. Stop one and try again.",
+  "ph": []
+ },
+ "api.error.terminalNoPty": {
+  "en": "An interactive terminal needs Python 3 on this machine. Commands still run from the chat.",
+  "ph": []
+ },
+ "api.error.terminalProjectNotFound": {
+  "en": "Project not found.",
+  "ph": []
+ },
+ "api.error.terminalKindInvalid": {
+  "en": "Unknown kind of terminal job.",
+  "ph": []
+ },
+ "api.error.terminalStartFailed": {
+  "en": "Could not start that.",
+  "ph": []
+ },
+ "api.error.terminalInputInvalid": {
+  "en": "There is nothing valid to send.",
+  "ph": []
+ },
+ "api.error.messageRequired": {
+  "en": "Message is required",
+  "ph": []
+ },
+ "api.error.sessionIdRequired": {
+  "en": "sessionId is required",
+  "ph": []
+ },
+ "api.error.projectNameAmbiguous": {
+  "en": "Project name \"{project}\" is ambiguous. Use projectId instead.",
+  "ph": [
+   "project"
+  ]
+ },
+ "api.error.projectRefNotFound": {
+  "en": "Project \"{project}\" not found",
+  "ph": [
+   "project"
+  ]
+ },
+ "api.error.chatNotFound": {
+  "en": "Chat \"{chatId}\" not found",
+  "ph": [
+   "chatId"
+  ]
+ },
+ "api.error.chatProjectMismatch": {
+  "en": "Provided chatId belongs to a different project context. Send matching chatId/projectId or omit chatId.",
+  "ph": []
+ },
+ "api.external.publicModeInstructions": {
+  "en": "This is a public shared project chat. Stay within the locked project. Do not switch projects, create projects, list other projects, or reveal unrelated workspace details.",
+  "ph": []
+ },
+ "api.external.sessionTitle": {
+  "en": "External session {sessionId}",
+  "ph": [
+   "sessionId"
+  ]
+ },
+ "api.external.attachedFile": {
+  "en": "Attached file: {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "api.external.fileSaved": {
+  "en": "File \"{name}\" saved to chat files.",
+  "ph": [
+   "name"
+  ]
+ },
+ "api.error.chatIdRequired": {
+  "en": "chatId is required",
+  "ph": []
+ },
+ "api.error.fileRequired": {
+  "en": "file is required",
+  "ph": []
+ },
+ "api.error.chatIdAndFilenameRequired": {
+  "en": "chatId and filename are required",
+  "ph": []
+ },
+ "api.error.fileNotFound": {
+  "en": "File not found",
+  "ph": []
+ },
+ "api.error.projectIdRequired": {
+  "en": "Project ID required",
+  "ph": []
+ },
+ "api.error.projectIdAndPathRequired": {
+  "en": "Project ID and path required",
+  "ph": []
+ },
+ "api.error.projectIdAndFilePathRequired": {
+  "en": "Project ID and file path required",
+  "ph": []
+ },
+ "api.error.invalidFilePath": {
+  "en": "Invalid file path",
+  "ph": []
+ },
+ "api.error.zipEmpty": {
+  "en": "There is nothing to put in an archive here.",
+  "ph": []
+ },
+ "api.error.zipTooLarge": {
+  "en": "This is too large to download as one archive ({size}; the limit is {limit}). Download parts of it, or sync the folder to your computer.",
+  "ph": [
+   "limit",
+   "size"
+  ]
+ },
+ "api.error.zipTooMany": {
+  "en": "This holds too many files for one archive ({count}; the limit is {limit}). Download parts of it.",
+  "ph": [
+   "count",
+   "limit"
+  ]
+ },
+ "api.error.zipTooDeep": {
+  "en": "These folders are nested too deeply for one archive.",
+  "ph": []
+ },
+ "api.error.zipBusy": {
+  "en": "Another archive is being prepared. Try again in a moment.",
+  "ph": []
+ },
+ "api.error.telegramNoDestination": {
+  "en": "This workspace does not know your Telegram chat yet. Write to the bot once, or connect one in Settings -> Messengers.",
+  "ph": []
+ },
+ "api.error.telegramFileTooLarge": {
+  "en": "This file is too large to send through Telegram.",
+  "ph": []
+ },
+ "api.error.telegramSendFailed": {
+  "en": "Telegram did not accept the file.",
+  "ph": []
+ },
+ "api.error.fileAlreadyExists": {
+  "en": "File already exists",
+  "ph": []
+ },
+ "api.error.failedCreatePath": {
+  "en": "Failed to create path",
+  "ph": []
+ },
+ "api.error.noFilesOrDirectories": {
+  "en": "No files or directories provided",
+  "ph": []
+ },
+ "api.error.invalidDirectoryPath": {
+  "en": "Invalid directory path",
+  "ph": []
+ },
+ "api.error.failedCreateDirectory": {
+  "en": "Failed to create directory",
+  "ph": []
+ },
+ "api.error.invalidFilename": {
+  "en": "Invalid filename",
+  "ph": []
+ },
+ "api.error.failedWriteFile": {
+  "en": "Failed to write file",
+  "ph": []
+ },
+ "api.error.failedGetChatFiles": {
+  "en": "Failed to get chat files",
+  "ph": []
+ },
+ "api.error.failedUploadFile": {
+  "en": "Failed to upload file",
+  "ph": []
+ },
+ "api.error.uploadTooLarge": {
+  "en": "{size} is too big to upload — one upload can carry at most {limit}",
+  "ph": [
+   "limit",
+   "size"
+  ]
+ },
+ "api.error.failedDeleteFile": {
+  "en": "Failed to delete file",
+  "ph": []
+ },
+ "api.error.pathNotFile": {
+  "en": "Path is not a file",
+  "ph": []
+ },
+ "api.error.fileTooLargePreview": {
+  "en": "File is too large to preview as text",
+  "ph": []
+ },
+ "api.error.binaryPreview": {
+  "en": "Binary files cannot be previewed as text",
+  "ph": []
+ },
+ "api.error.contentString": {
+  "en": "content must be a string",
+  "ph": []
+ },
+ "api.error.projectNameRequired": {
+  "en": "Project name is required",
+  "ph": []
+ },
+ "api.error.projectNotFound": {
+  "en": "Project not found",
+  "ph": []
+ },
+ "api.error.fieldContentString": {
+  "en": "Field \"content\" must be a string.",
+  "ph": []
+ },
+ "api.error.invalidJsonPayload": {
+  "en": "Invalid JSON payload",
+  "ph": []
+ },
+ "api.error.usernamePasswordRequired": {
+  "en": "Username and password are required.",
+  "ph": []
+ },
+ "api.error.authDisabled": {
+  "en": "Authentication is disabled.",
+  "ph": []
+ },
+ "api.error.invalidCredentials": {
+  "en": "Invalid credentials.",
+  "ph": []
+ },
+ "api.error.loginFailed": {
+  "en": "Login failed.",
+  "ph": []
+ },
+ "api.error.handoffInvalid": {
+  "en": "This sign-in link has already been used or has expired.",
+  "ph": []
+ },
+ "api.error.usernameMin": {
+  "en": "Username must be at least 3 characters.",
+  "ph": []
+ },
+ "api.error.usernameMax": {
+  "en": "Username must be at most 64 characters.",
+  "ph": []
+ },
+ "api.error.usernameInvalid": {
+  "en": "Username may contain only letters, numbers, dots, underscores, and hyphens.",
+  "ph": []
+ },
+ "api.error.usernameEmailInvalid": {
+  "en": "A login with @ has to be an email address, like name@example.com.",
+  "ph": []
+ },
+ "api.error.passwordMin": {
+  "en": "Password must be at least 8 characters.",
+  "ph": []
+ },
+ "api.error.passwordMax": {
+  "en": "Password must be at most 128 characters.",
+  "ph": []
+ },
+ "api.error.updateCredentials": {
+  "en": "Failed to update credentials.",
+  "ph": []
+ },
+ "api.error.externalTokenMissing": {
+  "en": "External API token is not configured. Set EXTERNAL_API_TOKEN or generate token in API page.",
+  "ph": []
+ },
+ "api.error.generateToken": {
+  "en": "Failed to generate token",
+  "ph": []
+ },
+ "api.error.generationAfterTools": {
+  "en": "Generation failed after tool execution. Please retry.",
+  "ph": []
+ },
+ "api.error.generationAfterToolsDetails": {
+  "en": "Generation failed after tool execution: {details}",
+  "ph": [
+   "details"
+  ]
+ },
+ "api.chat.newTitle": {
+  "en": "New Chat",
+  "ph": []
+ },
+ "api.success.telegramWebhookConnected": {
+  "en": "Telegram webhook connected",
+  "ph": []
+ },
+ "api.success.telegramPollingOpenBot": {
+  "en": "Long polling started. Open @{username} and send /start.",
+  "ph": [
+   "username"
+  ]
+ },
+ "api.success.telegramPollingOpenGeneric": {
+  "en": "Long polling started. Open your bot in Telegram and send /start.",
+  "ph": []
+ },
+ "api.error.telegramTokenRequired": {
+  "en": "Telegram bot token is required",
+  "ph": []
+ },
+ "api.error.telegramTokenMissing": {
+  "en": "Telegram bot token is not configured",
+  "ph": []
+ },
+ "api.error.telegramSecretMissing": {
+  "en": "Telegram webhook secret is not configured",
+  "ph": []
+ },
+ "api.error.telegramPublicUrlRequired": {
+  "en": "Public base URL is required. Set APP_BASE_URL or access the app via public host.",
+  "ph": []
+ },
+ "api.error.telegramSetupFailed": {
+  "en": "Failed to configure Telegram integration",
+  "ph": []
+ },
+ "api.error.telegramConfigLoadFailed": {
+  "en": "Failed to load Telegram integration settings",
+  "ph": []
+ },
+ "api.error.telegramConfigSaveFailed": {
+  "en": "Failed to save Telegram integration settings",
+  "ph": []
+ },
+ "api.error.telegramAccessCodeFailed": {
+  "en": "Failed to generate Telegram access code",
+  "ph": []
+ },
+ "api.telegram.botDescription": {
+  "en": "Eggent is connected. Send /start to begin.",
+  "ph": []
+ },
+ "api.telegram.botShortDescription": {
+  "en": "Chat with your Eggent workspace.",
+  "ph": []
+ },
+ "api.error.telegramCloudClaimFailed": {
+  "en": "Cloud Telegram claim failed",
+  "ph": []
+ },
+ "api.error.telegramWebhookStatusFailed": {
+  "en": "Failed to load Telegram webhook status",
+  "ph": []
+ },
+ "api.error.telegramWebhookConfigureFailed": {
+  "en": "Failed to configure Telegram webhook",
+  "ph": []
+ },
+ "api.error.telegramWebhookRemoveFailed": {
+  "en": "Failed to remove Telegram webhook",
+  "ph": []
+ },
+ "api.success.telegramWebhookConfigured": {
+  "en": "Webhook has been configured",
+  "ph": []
+ },
+ "api.success.telegramWebhookRemoved": {
+  "en": "Webhook has been removed",
+  "ph": []
+ },
+ "api.success.telegramDisconnected": {
+  "en": "Telegram disconnected",
+  "ph": []
+ },
+ "api.error.telegramDisconnectFailed": {
+  "en": "Failed to disconnect Telegram integration",
+  "ph": []
+ },
+ "api.error.telegramEnvTokenNote": {
+  "en": "Token is still provided by .env. Remove TELEGRAM_BOT_TOKEN and TELEGRAM_WEBHOOK_SECRET to fully disconnect.",
+  "ph": []
+ },
+ "api.success.pollingStarted": {
+  "en": "Polling started",
+  "ph": []
+ },
+ "api.success.pollingStopped": {
+  "en": "Polling stopped",
+  "ph": []
+ },
+ "api.error.pollingAlreadyRunning": {
+  "en": "Polling is already running",
+  "ph": []
+ },
+ "api.error.pollingNotRunning": {
+  "en": "Polling is not running",
+  "ph": []
+ },
+ "api.error.pollingWebhookMode": {
+  "en": "Detected mode is webhook. Use force=true to start polling anyway.",
+  "ph": []
+ },
+ "api.error.pollingStartFailed": {
+  "en": "Failed to start polling",
+  "ph": []
+ },
+ "api.error.pollingStopFailed": {
+  "en": "Failed to stop polling",
+  "ph": []
+ },
+ "telegram.bot.progress.short": {
+  "en": "⏳ I’m working on the answer…",
+  "ph": []
+ },
+ "telegram.bot.progress.medium": {
+  "en": "🔧 Still working on the task. This may take a bit.",
+  "ph": []
+ },
+ "telegram.bot.progress.long": {
+  "en": "🧠 Still working — not stuck, just a long task.",
+  "ph": []
+ },
+ "telegram.bot.draft.thinking": {
+  "en": "Thinking…",
+  "ph": []
+ },
+ "telegram.bot.draft.search": {
+  "en": "Searching the web…",
+  "ph": []
+ },
+ "telegram.bot.draft.page": {
+  "en": "Reading a page…",
+  "ph": []
+ },
+ "telegram.bot.draft.files": {
+  "en": "Working with files…",
+  "ph": []
+ },
+ "telegram.bot.draft.command": {
+  "en": "Running a command…",
+  "ph": []
+ },
+ "telegram.bot.draft.helper": {
+  "en": "A helper agent is on it…",
+  "ph": []
+ },
+ "telegram.bot.draft.helpers": {
+  "en": "Helpers at work: {running} of {total} still going…",
+  "ph": [
+   "running",
+   "total"
+  ]
+ },
+ "telegram.bot.draft.service": {
+  "en": "Using a connected service…",
+  "ph": []
+ },
+ "telegram.bot.draft.image": {
+  "en": "Drawing a picture…",
+  "ph": []
+ },
+ "telegram.bot.draft.send": {
+  "en": "Sending to Telegram…",
+  "ph": []
+ },
+ "telegram.bot.draft.work": {
+  "en": "Working…",
+  "ph": []
+ },
+ "telegram.bot.draft.silent": {
+  "en": "Still working… it has been quiet for a while. Send /reset if you want to stop it.",
+  "ph": []
+ },
+ "telegram.bot.emptyAgentReply": {
+  "en": "Empty response from the agent.",
+  "ph": []
+ },
+ "telegram.bot.help.connected": {
+  "en": "Telegram connection is active.",
+  "ph": []
+ },
+ "telegram.bot.help.activeProject": {
+  "en": "Active project: {project}",
+  "ph": [
+   "project"
+  ]
+ },
+ "telegram.bot.help.noProject": {
+  "en": "not selected",
+  "ph": []
+ },
+ "telegram.bot.help.commands": {
+  "en": "Commands:",
+  "ph": []
+ },
+ "telegram.bot.help.start": {
+  "en": "/start - show this help",
+  "ph": []
+ },
+ "telegram.bot.help.help": {
+  "en": "/help - show this help",
+  "ph": []
+ },
+ "telegram.bot.help.code": {
+  "en": "/code <access_code> - activate access for your Telegram user",
+  "ph": []
+ },
+ "telegram.bot.help.new": {
+  "en": "/new - start a new conversation (reset context)",
+  "ph": []
+ },
+ "telegram.bot.help.chats": {
+  "en": "/chats - recent chats; tap one to continue it",
+  "ph": []
+ },
+ "telegram.bot.help.reset": {
+  "en": "/reset - stop an answer that seems stuck (the conversation is kept)",
+  "ph": []
+ },
+ "telegram.bot.help.filesCommand": {
+  "en": "/files - send the files the last answer made",
+  "ph": []
+ },
+ "telegram.bot.help.text": {
+  "en": "Text messages are sent to the agent.",
+  "ph": []
+ },
+ "telegram.bot.help.mention": {
+  "en": "Start a message with @ and a project's name to hand it a task; its answer comes back here.",
+  "ph": []
+ },
+ "telegram.bot.help.voice": {
+  "en": "Voice messages are transcribed locally and sent to the agent.",
+  "ph": []
+ },
+ "telegram.bot.help.files": {
+  "en": "File uploads are saved into chat files.",
+  "ph": []
+ },
+ "telegram.bot.help.sendBack": {
+  "en": "You can also ask the agent to send a local file back to Telegram.",
+  "ph": []
+ },
+ "telegram.bot.accessGranted": {
+  "en": "Access granted. You can now send messages to the agent.",
+  "ph": []
+ },
+ "telegram.bot.greeting": {
+  "en": "Hi! Eggent is connected to this bot ✅",
+  "ph": []
+ },
+ "telegram.bot.needAccess": {
+  "en": "To start chatting with the agent, activate access with a code from Telegram settings.",
+  "ph": []
+ },
+ "telegram.bot.sendCode": {
+  "en": "Send the code with /code <code> or /start <code>.",
+  "ph": []
+ },
+ "telegram.bot.yourUserId": {
+  "en": "Your user_id: {userId}",
+  "ph": [
+   "userId"
+  ]
+ },
+ "telegram.bot.newChat": {
+  "en": "Started a new conversation. Context is cleared for the next message.",
+  "ph": []
+ },
+ "telegram.bot.exitProject": {
+  "en": "Leave project {project}",
+  "ph": [
+   "project"
+  ]
+ },
+ "telegram.bot.leftProject": {
+  "en": "Left the project. You are back in the orchestrator.",
+  "ph": []
+ },
+ "telegram.bot.transcribingVoice": {
+  "en": "🎙 Transcribing voice locally…",
+  "ph": []
+ },
+ "telegram.bot.voiceTranscriptionFailed": {
+  "en": "Failed to transcribe voice: {error}",
+  "ph": [
+   "error"
+  ]
+ },
+ "telegram.bot.voiceComment": {
+  "en": "Voice comment: {text}",
+  "ph": [
+   "text"
+  ]
+ },
+ "telegram.bot.voiceMessage": {
+  "en": "🎙 Voice message:\n{text}",
+  "ph": [
+   "text"
+  ]
+ },
+ "telegram.bot.fileSaved": {
+  "en": "File \"{name}\" saved to chat files.",
+  "ph": [
+   "name"
+  ]
+ },
+ "telegram.bot.unsupported": {
+  "en": "Only text messages, voice messages, and file uploads are supported right now.",
+  "ph": []
+ },
+ "telegram.bot.attachedFile": {
+  "en": "Attached file: {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "telegram.bot.processingFailed": {
+  "en": "Failed to process the message.",
+  "ph": []
+ },
+ "telegram.bot.errorPrefix": {
+  "en": "Error: {error}",
+  "ph": [
+   "error"
+  ]
+ },
+ "telegram.bot.projectNotFound": {
+  "en": "Project \"{project}\" not found",
+  "ph": [
+   "project"
+  ]
+ },
+ "telegram.command.start": {
+  "en": "Show help and current project",
+  "ph": []
+ },
+ "telegram.command.help": {
+  "en": "Show available commands",
+  "ph": []
+ },
+ "telegram.command.code": {
+  "en": "Activate access with a code",
+  "ph": []
+ },
+ "telegram.command.new": {
+  "en": "Start a new conversation",
+  "ph": []
+ },
+ "telegram.command.chats": {
+  "en": "Recent chats",
+  "ph": []
+ },
+ "telegram.command.reset": {
+  "en": "Stop a stuck answer",
+  "ph": []
+ },
+ "telegram.command.files": {
+  "en": "Files from the last answer",
+  "ph": []
+ },
+ "telegram.command.here": {
+  "en": "Run this chat on this side",
+  "ph": []
+ },
+ "telegram.chats.title": {
+  "en": "Recent chats:",
+  "ph": []
+ },
+ "telegram.chats.current": {
+  "en": "← you are here",
+  "ph": []
+ },
+ "telegram.chats.empty": {
+  "en": "There are no chats yet.",
+  "ph": []
+ },
+ "telegram.chats.hint": {
+  "en": "Tap a chat's /c_ command to continue it. /new starts a new one.",
+  "ph": []
+ },
+ "telegram.chats.notFound": {
+  "en": "No chat matches that. /chats lists the recent ones.",
+  "ph": []
+ },
+ "telegram.chats.opened": {
+  "en": "Now in “{title}”. Your next message continues this chat.",
+  "ph": [
+   "title"
+  ]
+ },
+ "telegram.chats.lastMessage": {
+  "en": "Last message: {text}",
+  "ph": [
+   "text"
+  ]
+ },
+ "telegram.chats.justNow": {
+  "en": "just now",
+  "ph": []
+ },
+ "telegram.chats.minutesAgo": {
+  "en": "{count} min ago",
+  "ph": [
+   "count"
+  ]
+ },
+ "telegram.chats.hoursAgo": {
+  "en": "{count} h ago",
+  "ph": [
+   "count"
+  ]
+ },
+ "telegram.chats.daysAgo": {
+  "en": "{count} d ago",
+  "ph": [
+   "count"
+  ]
+ },
+ "schedules.runChatTitle": {
+  "en": "{job} · {month} {day}",
+  "ph": [
+   "day",
+   "job",
+   "month"
+  ]
+ },
+ "schedules.runFallbackName": {
+  "en": "Scheduled task",
+  "ph": []
+ },
+ "projects.visit.chatTitle": {
+  "en": "From \"{chat}\"",
+  "ph": [
+   "chat"
+  ]
+ },
+ "projects.visit.untitled": {
+  "en": "another chat",
+  "ph": []
+ },
+ "schedules.run.failed": {
+  "en": "Scheduled task \"{job}\" did not finish this time. It will try again at its next time.",
+  "ph": [
+   "job"
+  ]
+ },
+ "schedules.paused.refused": {
+  "en": "Scheduled task \"{job}\" is paused: its last {count} runs were turned away before they could start.",
+  "ph": [
+   "count",
+   "job"
+  ]
+ },
+ "schedules.paused.failed": {
+  "en": "Scheduled task \"{job}\" is paused: its last {count} runs ended with an error.",
+  "ph": [
+   "count",
+   "job"
+  ]
+ },
+ "schedules.paused.resume": {
+  "en": "Once that is dealt with, resume it in Settings → Schedules, or ask me to resume it.",
+  "ph": []
+ },
+ "schedules.run.nothingNew": {
+  "en": "Checked: nothing new this time.",
+  "ph": []
+ },
+ "date.monthsShort": {
+  "en": "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec",
+  "ph": []
+ },
+ "chat.code.copy": {
+  "en": "Copy",
+  "ph": []
+ },
+ "chat.code.copied": {
+  "en": "Copied",
+  "ph": []
+ },
+ "terminal.run.run": {
+  "en": "Run",
+  "ph": []
+ },
+ "terminal.run.runAgain": {
+  "en": "Run again",
+  "ph": []
+ },
+ "terminal.run.runHint": {
+  "en": "Run this in the project folder, where the agent works",
+  "ph": []
+ },
+ "terminal.run.starting": {
+  "en": "Starting…",
+  "ph": []
+ },
+ "terminal.run.running": {
+  "en": "Running · {time}",
+  "ph": [
+   "time"
+  ]
+ },
+ "terminal.run.done": {
+  "en": "Done · {time}",
+  "ph": [
+   "time"
+  ]
+ },
+ "terminal.run.timeout": {
+  "en": "Stopped: it ran past the time limit",
+  "ph": []
+ },
+ "terminal.run.failed": {
+  "en": "Exit code {code}",
+  "ph": [
+   "code"
+  ]
+ },
+ "terminal.run.stopped": {
+  "en": "Stopped",
+  "ph": []
+ },
+ "terminal.run.lost": {
+  "en": "Cut off before it finished (the workspace may have restarted)",
+  "ph": []
+ },
+ "terminal.run.error": {
+  "en": "Could not run this: {reason}",
+  "ph": [
+   "reason"
+  ]
+ },
+ "terminal.run.reconnecting": {
+  "en": "reconnecting…",
+  "ph": []
+ },
+ "terminal.run.stop": {
+  "en": "Stop",
+  "ph": []
+ },
+ "terminal.run.copy": {
+  "en": "Copy output",
+  "ph": []
+ },
+ "terminal.run.copied": {
+  "en": "Copied",
+  "ph": []
+ },
+ "terminal.run.askAgent": {
+  "en": "Show to the agent",
+  "ph": []
+ },
+ "terminal.run.dismiss": {
+  "en": "Remove",
+  "ph": []
+ },
+ "terminal.run.hiddenLines": {
+  "en": "{count} earlier lines not shown",
+  "ph": [
+   "count"
+  ]
+ },
+ "terminal.run.earlierDropped": {
+  "en": "The start of the output is not kept",
+  "ph": []
+ },
+ "terminal.run.noOutput": {
+  "en": "No output",
+  "ph": []
+ },
+ "terminal.run.inputPlaceholder": {
+  "en": "Answer the command, then press Enter",
+  "ph": []
+ },
+ "terminal.run.send": {
+  "en": "Send",
+  "ph": []
+ },
+ "terminal.run.askIntro": {
+  "en": "I ran this command myself:",
+  "ph": []
+ },
+ "terminal.run.askExit": {
+  "en": "Exit code: {code}",
+  "ph": [
+   "code"
+  ]
+ },
+ "terminal.run.askOutput": {
+  "en": "Output:",
+  "ph": []
+ },
+ "terminal.run.askTruncated": {
+  "en": "(only the end of the output is included)",
+  "ph": []
+ },
+ "terminal.shellMode.hint": {
+  "en": "Shell command: runs in the project folder, not sent to the agent",
+  "ph": []
+ },
+ "terminal.shellMode.escape": {
+  "en": "To send a message that really begins with !, start it with !!",
+  "ph": []
+ },
+ "terminal.panel.toggle": {
+  "en": "Terminal",
+  "ph": []
+ },
+ "terminal.panel.title": {
+  "en": "Terminal",
+  "ph": []
+ },
+ "terminal.panel.close": {
+  "en": "Close terminal",
+  "ph": []
+ },
+ "terminal.panel.restart": {
+  "en": "Restart the terminal",
+  "ph": []
+ },
+ "terminal.panel.resize": {
+  "en": "Resize the terminal",
+  "ph": []
+ },
+ "terminal.panel.starting": {
+  "en": "Starting the terminal…",
+  "ph": []
+ },
+ "terminal.panel.reconnecting": {
+  "en": "Connection lost. Reconnecting…",
+  "ph": []
+ },
+ "terminal.panel.unavailable": {
+  "en": "An interactive terminal needs Python 3 on this computer. Commands still run from the chat: press Run under a code block, or start a message with !.",
+  "ph": []
+ },
+ "terminal.panel.error": {
+  "en": "The terminal could not start: {reason}",
+  "ph": [
+   "reason"
+  ]
+ },
+ "terminal.panel.tryAgain": {
+  "en": "Try again",
+  "ph": []
+ },
+ "terminal.panel.startAgain": {
+  "en": "Start again",
+  "ph": []
+ },
+ "terminal.panel.closed.exit": {
+  "en": "The shell ended (exit code {code}).",
+  "ph": [
+   "code"
+  ]
+ },
+ "terminal.panel.closed.stopped": {
+  "en": "The terminal was stopped.",
+  "ph": []
+ },
+ "terminal.panel.closed.idle": {
+  "en": "Closed because it had not been used for a while, so it does not stay open in the background.",
+  "ph": []
+ },
+ "terminal.panel.closed.detached": {
+  "en": "Closed because nothing had been watching it for a while.",
+  "ph": []
+ },
+ "terminal.panel.closed.shutdown": {
+  "en": "The workspace restarted, which ended the terminal.",
+  "ph": []
+ },
+ "terminal.panel.closed.timeout": {
+  "en": "The terminal ran out of time.",
+  "ph": []
+ },
+ "terminal.panel.closed.error": {
+  "en": "The terminal stopped working.",
+  "ph": []
+ },
+ "browser.panel.toggle": {
+  "en": "Browser",
+  "ph": []
+ },
+ "browser.panel.title": {
+  "en": "Browser",
+  "ph": []
+ },
+ "browser.panel.close": {
+  "en": "Close the browser panel",
+  "ph": []
+ },
+ "browser.panel.notOpen": {
+  "en": "The agent's browser is not open. The agent opens it when a task needs one; you can open it yourself to sign in somewhere first.",
+  "ph": []
+ },
+ "browser.panel.open": {
+  "en": "Open the browser",
+  "ph": []
+ },
+ "browser.panel.opening": {
+  "en": "Opening the browser…",
+  "ph": []
+ },
+ "browser.panel.connecting": {
+  "en": "Connecting to the browser…",
+  "ph": []
+ },
+ "browser.panel.closeBrowser": {
+  "en": "Close the browser",
+  "ph": []
+ },
+ "browser.panel.take": {
+  "en": "Take control",
+  "ph": []
+ },
+ "browser.panel.return": {
+  "en": "Hand back to the agent",
+  "ph": []
+ },
+ "browser.panel.youHaveControl": {
+  "en": "You have control: open a page from the address bar, click, scroll and type on the picture. The agent waits until you hand it back.",
+  "ph": []
+ },
+ "browser.panel.agentHasControl": {
+  "en": "The agent is using the browser. Take control to sign in or to do a step yourself.",
+  "ph": []
+ },
+ "browser.panel.minutes": {
+  "en": "{left} of {monthly} min left this month",
+  "ph": [
+   "left",
+   "monthly"
+  ]
+ },
+ "browser.panel.forget": {
+  "en": "Forget sign-ins",
+  "ph": []
+ },
+ "browser.panel.forgetConfirm": {
+  "en": "Close the browser and forget every site it is signed in to?",
+  "ph": []
+ },
+ "browser.panel.forgotten": {
+  "en": "The browser is closed and its sign-ins are forgotten.",
+  "ph": []
+ },
+ "browser.panel.closed": {
+  "en": "The browser closed ({reason}).",
+  "ph": [
+   "reason"
+  ]
+ },
+ "browser.panel.error": {
+  "en": "The browser could not be reached: {reason}",
+  "ph": [
+   "reason"
+  ]
+ },
+ "browser.panel.picture": {
+  "en": "The page in the agent's browser",
+  "ph": []
+ },
+ "browser.panel.typing": {
+  "en": "Type here to type on the page",
+  "ph": []
+ },
+ "browser.panel.address": {
+  "en": "Page address",
+  "ph": []
+ },
+ "browser.panel.addressPlaceholder": {
+  "en": "Type an address and press Enter",
+  "ph": []
+ },
+ "browser.panel.back": {
+  "en": "Back",
+  "ph": []
+ },
+ "browser.panel.forward": {
+  "en": "Forward",
+  "ph": []
+ },
+ "browser.panel.reload": {
+  "en": "Reload",
+  "ph": []
+ },
+ "browser.panel.notAnAddress": {
+  "en": "That is not a page address. Type one like example.com.",
+  "ph": []
+ },
+ "browser.panel.didNotOpen": {
+  "en": "The page did not open: {reason}",
+  "ph": [
+   "reason"
+  ]
+ },
+ "cloudPromo.title": {
+  "en": "Eggent Cloud",
+  "ph": []
+ },
+ "cloudPromo.lead": {
+  "en": "The same Eggent, hosted for you. Updates and security are on us.",
+  "ph": []
+ },
+ "cloudPromo.keysTitle": {
+  "en": "No API keys",
+  "ph": []
+ },
+ "cloudPromo.keysText": {
+  "en": "Eggent AI gives you the most popular models and image generation.",
+  "ph": []
+ },
+ "cloudPromo.awayTitle": {
+  "en": "Works while you are away",
+  "ph": []
+ },
+ "cloudPromo.awayText": {
+  "en": "Schedules and the Telegram bot keep going when your computer is off.",
+  "ph": []
+ },
+ "cloudPromo.anywhereTitle": {
+  "en": "Open it anywhere",
+  "ph": []
+ },
+ "cloudPromo.anywhereText": {
+  "en": "Your own address with HTTPS, on your phone or any computer.",
+  "ph": []
+ },
+ "cloudPromo.browser": {
+  "en": "A cloud browser your agent drives",
+  "ph": []
+ },
+ "cloudPromo.pages": {
+  "en": "Reads pages a plain request cannot open",
+  "ph": []
+ },
+ "cloudPromo.voice": {
+  "en": "Voice messages recognized accurately",
+  "ph": []
+ },
+ "cloudPromo.skills": {
+  "en": "Ready-made skills: documents, a morning digest and more",
+  "ph": []
+ },
+ "cloudPromo.telegram": {
+  "en": "Telegram in one tap, no bot to set up",
+  "ph": []
+ },
+ "cloudPromo.sync": {
+  "en": "Files in sync between your computer and the cloud",
+  "ph": []
+ },
+ "cloudPromo.mac": {
+  "en": "The Eggent app for Mac",
+  "ph": []
+ },
+ "cloudPromo.team": {
+  "en": "For a team: colleagues' workspaces, shared folders, approvals",
+  "ph": []
+ },
+ "cloudPromo.cta": {
+  "en": "Learn more at eggent.ai",
+  "ph": []
+ },
+ "cloudPromo.url": {
+  "en": "https://eggent.ai/",
+  "ph": []
+ },
+ "cloudPromo.hide": {
+  "en": "Hide",
+  "ph": []
+ },
+ "remote.where.cloud": {
+  "en": "the cloud",
+  "ph": []
+ },
+ "remote.where.yourComputer": {
+  "en": "your computer",
+  "ph": []
+ },
+ "remote.error.offlineCloud": {
+  "en": "The cloud workspace can't be reached right now. Check the connection, or run this chat on this computer instead.",
+  "ph": []
+ },
+ "remote.error.offlineDevice": {
+  "en": "{where} isn't available right now: the Eggent app is closed, offline, or not set to take tasks from the cloud. Run this chat in the cloud instead, or open the app and try again.",
+  "ph": [
+   "where"
+  ]
+ },
+ "remote.error.denied": {
+  "en": "{where} declined to run this chat.",
+  "ph": [
+   "where"
+  ]
+ },
+ "remote.error.notReady": {
+  "en": "{where} can't take this chat yet: its chat history isn't shared with the cloud.",
+  "ph": [
+   "where"
+  ]
+ },
+ "remote.error.engine": {
+  "en": "{where} can't run this chat right now. {reason} Sort it out in the app on that computer, or run this chat here instead.",
+  "ph": [
+   "reason",
+   "where"
+  ]
+ },
+ "remote.error.notSynced": {
+  "en": "{where} hasn't received this chat's latest changes yet. Give it a few seconds and send again.",
+  "ph": [
+   "where"
+  ]
+ },
+ "remote.error.busy": {
+  "en": "This chat is working right now. Wait for it to finish, or stop it first.",
+  "ph": []
+ },
+ "remote.error.notSyncedMove": {
+  "en": "The chat can't be moved yet: this side hasn't received everything the other side wrote in it. Give it a few seconds and try again.",
+  "ph": []
+ },
+ "remote.error.moved": {
+  "en": "This chat was moved to this side a moment ago, before this screen had heard of it. Give it a few seconds and send again.",
+  "ph": []
+ },
+ "remote.error.timeout": {
+  "en": "{where} didn't answer in time.",
+  "ph": [
+   "where"
+  ]
+ },
+ "remote.error.disabled": {
+  "en": "Running chats on another side isn't set up here.",
+  "ph": []
+ },
+ "remote.error.failed": {
+  "en": "The message couldn't be handed to {where}: {reason}",
+  "ph": [
+   "reason",
+   "where"
+  ]
+ },
+ "remote.error.lost": {
+  "en": "The connection to {where} was lost. The turn may still be running there; its answer will appear in this chat when it syncs.",
+  "ph": [
+   "where"
+  ]
+ },
+ "remote.error.hintHere": {
+  "en": "Send /here to run this chat on this side instead.",
+  "ph": []
+ },
+ "external.here.done": {
+  "en": "Done. This chat runs here now.",
+  "ph": []
+ },
+ "external.here.already": {
+  "en": "This chat already runs here.",
+  "ph": []
+ },
+ "external.here.unavailable": {
+  "en": "Running a chat on another side isn't set up here.",
+  "ph": []
+ },
+ "external.here.busy": {
+  "en": "This chat is working right now, so it cannot be moved. Wait for it to finish, or send \"stop\" (or /reset) first.",
+  "ph": []
+ },
+ "external.here.notSynced": {
+  "en": "This chat hasn't fully arrived here yet. Give it a few seconds and send /here again.",
+  "ph": []
+ },
+ "chat.runPlace.trigger": {
+  "en": "Where this chat runs",
+  "ph": []
+ },
+ "chat.runPlace.hint": {
+  "en": "Where this chat runs. Messages go there whichever side you type them on, and the answer comes back here.",
+  "ph": []
+ },
+ "chat.runPlace.thisComputer": {
+  "en": "This computer",
+  "ph": []
+ },
+ "chat.runPlace.cloud": {
+  "en": "Cloud",
+  "ph": []
+ },
+ "chat.runPlace.yourComputer": {
+  "en": "Your computer",
+  "ph": []
+ },
+ "chat.runPlace.here": {
+  "en": "here",
+  "ph": []
+ },
+ "chat.runPlace.unavailable": {
+  "en": "not available",
+  "ph": []
+ },
+ "chat.runPlace.unavailableReason": {
+  "en": "The app is closed, offline, or not set to take tasks from the cloud.",
+  "ph": []
+ },
+ "chat.runPlace.notReadyReason": {
+  "en": "Its chat history isn't shared with the cloud yet.",
+  "ph": []
+ },
+ "chat.runPlace.cloudUnreachable": {
+  "en": "The cloud can't be reached right now.",
+  "ph": []
+ },
+ "chat.runPlace.busy": {
+  "en": "Wait for the current turn to finish first.",
+  "ph": []
+ },
+ "chat.runPlace.switchFailed": {
+  "en": "Couldn't switch: {reason}",
+  "ph": [
+   "reason"
+  ]
+ },
+ "chat.runPlace.runHere": {
+  "en": "Run it here instead",
+  "ph": []
+ },
+ "chat.runPlace.tryAgain": {
+  "en": "Try again",
+  "ph": []
+ },
+ "chat.runPlace.modelOnDevice": {
+  "en": "Model on {place}",
+  "ph": [
+   "place"
+  ]
+ },
+ "chat.runPlace.modelOnDeviceHint": {
+  "en": "This chat runs on {place}: it answers with the model or program chosen there, in the Eggent app.",
+  "ph": [
+   "place"
+  ]
+ },
+ "chat.runPlace.modelInCloud": {
+  "en": "Cloud model",
+  "ph": []
+ },
+ "chat.runPlace.modelInCloudHint": {
+  "en": "This chat runs in the cloud: it answers with the model chosen there.",
+  "ph": []
+ },
+ "nav.homeCloud": {
+  "en": "Runs in the cloud",
+  "ph": []
+ },
+ "nav.homeDevice": {
+  "en": "Runs on {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "nav.messages": {
+  "en": "Messages",
+  "ph": []
+ },
+ "nav.messagesAll": {
+  "en": "All messages",
+  "ph": []
+ },
+ "nav.messagesUnread": {
+  "en": "{count} unread",
+  "ph": [
+   "count"
+  ]
+ },
+ "nav.mailReplyChat": {
+  "en": "Answering {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "nav.board": {
+  "en": "Board",
+  "ph": []
+ },
+ "nav.boardWaiting": {
+  "en": "{count} waiting for you",
+  "ph": [
+   "count"
+  ]
+ },
+ "nav.boardWorking": {
+  "en": "Cards are being worked on",
+  "ph": []
+ },
+ "nav.boardChat": {
+  "en": "A card on the board",
+  "ph": []
+ },
+ "board.pageTitle": {
+  "en": "Board",
+  "ph": []
+ },
+ "board.heading": {
+  "en": "Task board",
+  "ph": []
+ },
+ "board.description": {
+  "en": "Work you hand to the agent as cards. Each card is carried out in a conversation of its own, one after another, and the board tells you when one needs you.",
+  "ph": []
+ },
+ "board.filter.label": {
+  "en": "Project",
+  "ph": []
+ },
+ "board.filter.all": {
+  "en": "All projects",
+  "ph": []
+ },
+ "board.new": {
+  "en": "New card",
+  "ph": []
+ },
+ "board.startAll": {
+  "en": "Start all",
+  "ph": []
+ },
+ "board.showArchived": {
+  "en": "Show cards put away",
+  "ph": []
+ },
+ "board.hideArchived": {
+  "en": "Hide cards put away",
+  "ph": []
+ },
+ "board.showMoreDone": {
+  "en": "Show {count} more",
+  "ph": [
+   "count"
+  ]
+ },
+ "board.limits": {
+  "en": "Up to {running} cards work at once, {perProject} per project: cards of one project share its folder.",
+  "ph": [
+   "perProject",
+   "running"
+  ]
+ },
+ "board.loading": {
+  "en": "Loading the board…",
+  "ph": []
+ },
+ "board.errors.load": {
+  "en": "Could not load the board.",
+  "ph": []
+ },
+ "board.errors.action": {
+  "en": "That did not work: {error}",
+  "ph": [
+   "error"
+  ]
+ },
+ "board.column.inbox": {
+  "en": "Inbox",
+  "ph": []
+ },
+ "board.column.queued": {
+  "en": "Queue",
+  "ph": []
+ },
+ "board.column.running": {
+  "en": "Working",
+  "ph": []
+ },
+ "board.column.waiting": {
+  "en": "Waiting for you",
+  "ph": []
+ },
+ "board.column.done": {
+  "en": "Done",
+  "ph": []
+ },
+ "board.column.archived": {
+  "en": "Put away",
+  "ph": []
+ },
+ "board.column.inboxHint": {
+  "en": "Not started. Cards the agent proposes wait here for you.",
+  "ph": []
+ },
+ "board.column.queuedHint": {
+  "en": "Starts by itself when there is room, top first.",
+  "ph": []
+ },
+ "board.column.runningHint": {
+  "en": "Being worked on now.",
+  "ph": []
+ },
+ "board.column.waitingHint": {
+  "en": "Stopped for you: a question, a failure, a check.",
+  "ph": []
+ },
+ "board.column.doneHint": {
+  "en": "Finished. The last answer is the result.",
+  "ph": []
+ },
+ "board.column.empty": {
+  "en": "Nothing here",
+  "ph": []
+ },
+ "board.column.dropHere": {
+  "en": "Drop here",
+  "ph": []
+ },
+ "board.card.byAgent": {
+  "en": "Proposed by the agent",
+  "ph": []
+ },
+ "board.card.after": {
+  "en": "After: {titles}",
+  "ph": [
+   "titles"
+  ]
+ },
+ "board.card.waitsFor": {
+  "en": "Waits for {count}",
+  "ph": [
+   "count"
+  ]
+ },
+ "board.card.retryAt": {
+  "en": "Tries again at {time}",
+  "ph": [
+   "time"
+  ]
+ },
+ "board.card.working": {
+  "en": "Working · {minutes} min",
+  "ph": [
+   "minutes"
+  ]
+ },
+ "board.card.workingNow": {
+  "en": "Working",
+  "ph": []
+ },
+ "board.card.asked": {
+  "en": "Asked a question",
+  "ph": []
+ },
+ "board.card.review": {
+  "en": "Check before done",
+  "ph": []
+ },
+ "board.card.open": {
+  "en": "Open the card {title}",
+  "ph": [
+   "title"
+  ]
+ },
+ "board.card.deviceAway": {
+  "en": "{name} is away",
+  "ph": [
+   "name"
+  ]
+ },
+ "board.run.place": {
+  "en": "on {place}",
+  "ph": [
+   "place"
+  ]
+ },
+ "board.waiting.question": {
+  "en": "Question",
+  "ph": []
+ },
+ "board.waiting.failed": {
+  "en": "Failed",
+  "ph": []
+ },
+ "board.waiting.stalled": {
+  "en": "Went quiet",
+  "ph": []
+ },
+ "board.waiting.stopped": {
+  "en": "Stopped",
+  "ph": []
+ },
+ "board.waiting.refused": {
+  "en": "Refused by the model service",
+  "ph": []
+ },
+ "board.waiting.review": {
+  "en": "Check the result",
+  "ph": []
+ },
+ "board.waiting.interrupted": {
+  "en": "Interrupted",
+  "ph": []
+ },
+ "board.paused.title": {
+  "en": "The board is paused",
+  "ph": []
+ },
+ "board.paused.body": {
+  "en": "The model service refused a card's run, so nothing else starts until you resume - otherwise every card in the queue would be refused in turn.",
+  "ph": []
+ },
+ "board.paused.resume": {
+  "en": "Resume",
+  "ph": []
+ },
+ "board.empty.title": {
+  "en": "No cards yet",
+  "ph": []
+ },
+ "board.empty.body": {
+  "en": "Write a card here, or ask the agent in any chat to plan a job as tasks: it puts them in the Inbox for you to start.",
+  "ph": []
+ },
+ "board.form.newTitle": {
+  "en": "New card",
+  "ph": []
+ },
+ "board.form.title": {
+  "en": "Title",
+  "ph": []
+ },
+ "board.form.titlePlaceholder": {
+  "en": "Compare five competitors' prices",
+  "ph": []
+ },
+ "board.form.body": {
+  "en": "Task",
+  "ph": []
+ },
+ "board.form.bodyPlaceholder": {
+  "en": "What to do, with everything needed to do it without you: sources, what the result should look like, where to save it.",
+  "ph": []
+ },
+ "board.form.project": {
+  "en": "Project",
+  "ph": []
+ },
+ "board.form.after": {
+  "en": "Start after",
+  "ph": []
+ },
+ "board.form.afterNone": {
+  "en": "Nothing: as soon as there is room",
+  "ph": []
+ },
+ "board.form.afterHint": {
+  "en": "It starts only once every card ticked here is done, and gets their results.",
+  "ph": []
+ },
+ "board.form.review": {
+  "en": "Let me check the result before it counts as done",
+  "ph": []
+ },
+ "board.form.place": {
+  "en": "Runs on",
+  "ph": []
+ },
+ "board.form.placeCloud": {
+  "en": "In the cloud. It keeps going while your computer is off.",
+  "ph": []
+ },
+ "board.form.placeDevice": {
+  "en": "On {name}, with the files and programs there. That computer is asked first, as for a chat handed to it, and the card waits in the queue while the computer is away.",
+  "ph": [
+   "name"
+  ]
+ },
+ "board.form.placeAway": {
+  "en": "away",
+  "ph": []
+ },
+ "board.form.placeHere": {
+  "en": "On this computer, with its files and programs. The cloud starts it here, so the card waits in the queue while the app is closed.",
+  "ph": []
+ },
+ "board.form.placeHereOff": {
+  "en": "This computer does not take tasks from the cloud yet. Allow them in Eggent → Cloud & Sync → Tasks from your cloud; until then the card waits in the queue.",
+  "ph": []
+ },
+ "board.form.start": {
+  "en": "Start now",
+  "ph": []
+ },
+ "board.form.save": {
+  "en": "Save to Inbox",
+  "ph": []
+ },
+ "board.form.saveChanges": {
+  "en": "Save",
+  "ph": []
+ },
+ "board.form.cancel": {
+  "en": "Cancel",
+  "ph": []
+ },
+ "board.form.saving": {
+  "en": "Saving…",
+  "ph": []
+ },
+ "board.sheet.task": {
+  "en": "Task",
+  "ph": []
+ },
+ "board.sheet.result": {
+  "en": "Result",
+  "ph": []
+ },
+ "board.sheet.noResult": {
+  "en": "No result yet.",
+  "ph": []
+ },
+ "board.sheet.resultTruncated": {
+  "en": "The whole answer is in the conversation.",
+  "ph": []
+ },
+ "board.sheet.question": {
+  "en": "The agent asks",
+  "ph": []
+ },
+ "board.sheet.answerPlaceholder": {
+  "en": "Your answer",
+  "ph": []
+ },
+ "board.sheet.sendAnswer": {
+  "en": "Send answer",
+  "ph": []
+ },
+ "board.sheet.waitingDetail": {
+  "en": "What happened",
+  "ph": []
+ },
+ "board.sheet.openChat": {
+  "en": "Open the conversation",
+  "ph": []
+ },
+ "board.sheet.runs": {
+  "en": "Runs",
+  "ph": []
+ },
+ "board.sheet.from": {
+  "en": "Proposed in “{chat}”",
+  "ph": [
+   "chat"
+  ]
+ },
+ "board.sheet.close": {
+  "en": "Close",
+  "ph": []
+ },
+ "board.outcome.done": {
+  "en": "Finished",
+  "ph": []
+ },
+ "board.outcome.question": {
+  "en": "Asked a question",
+  "ph": []
+ },
+ "board.outcome.failed": {
+  "en": "Failed",
+  "ph": []
+ },
+ "board.outcome.stalled": {
+  "en": "Went quiet",
+  "ph": []
+ },
+ "board.outcome.stopped": {
+  "en": "Stopped",
+  "ph": []
+ },
+ "board.outcome.refused": {
+  "en": "Refused",
+  "ph": []
+ },
+ "board.outcome.interrupted": {
+  "en": "Interrupted",
+  "ph": []
+ },
+ "board.outcome.running": {
+  "en": "Working",
+  "ph": []
+ },
+ "board.surface.board": {
+  "en": "started by the board",
+  "ph": []
+ },
+ "board.surface.web": {
+  "en": "from the chat",
+  "ph": []
+ },
+ "board.surface.external": {
+  "en": "from a messenger",
+  "ph": []
+ },
+ "board.action.start": {
+  "en": "Start",
+  "ph": []
+ },
+ "board.action.stop": {
+  "en": "Stop",
+  "ph": []
+ },
+ "board.action.retry": {
+  "en": "Run again",
+  "ph": []
+ },
+ "board.action.continue": {
+  "en": "Continue",
+  "ph": []
+ },
+ "board.action.decide": {
+  "en": "Let the agent decide",
+  "ph": []
+ },
+ "board.action.accept": {
+  "en": "Accept as done",
+  "ph": []
+ },
+ "board.action.toInbox": {
+  "en": "Back to Inbox",
+  "ph": []
+ },
+ "board.action.archive": {
+  "en": "Put away",
+  "ph": []
+ },
+ "board.action.unarchive": {
+  "en": "Bring back",
+  "ph": []
+ },
+ "board.action.edit": {
+  "en": "Edit",
+  "ph": []
+ },
+ "board.action.delete": {
+  "en": "Delete",
+  "ph": []
+ },
+ "board.action.deleteConfirm": {
+  "en": "Delete the card “{title}” and its conversation? The files it made stay where they are.",
+  "ph": [
+   "title"
+  ]
+ },
+ "board.action.moveUp": {
+  "en": "Move up",
+  "ph": []
+ },
+ "board.action.moveDown": {
+  "en": "Move down",
+  "ph": []
+ },
+ "board.action.menu": {
+  "en": "Actions for {title}",
+  "ph": [
+   "title"
+  ]
+ },
+ "board.chatBanner": {
+  "en": "This conversation is a card on the board.",
+  "ph": []
+ },
+ "board.chatBanner.status": {
+  "en": "Now: {status}.",
+  "ph": [
+   "status"
+  ]
+ },
+ "board.chatBanner.open": {
+  "en": "Open the board",
+  "ph": []
+ },
+ "board.error.noProject": {
+  "en": "There is no project “{project}”.",
+  "ph": [
+   "project"
+  ]
+ },
+ "board.error.tooManyAfter": {
+  "en": "A card can wait for at most {max} others.",
+  "ph": [
+   "max"
+  ]
+ },
+ "board.error.afterSelf": {
+  "en": "A card cannot wait for itself.",
+  "ph": []
+ },
+ "board.error.noCard": {
+  "en": "That card is not on the board any more.",
+  "ph": []
+ },
+ "board.error.cycle": {
+  "en": "These cards would wait for each other, and none of them could ever start.",
+  "ph": []
+ },
+ "board.error.nothing": {
+  "en": "Nothing to put on the board.",
+  "ph": []
+ },
+ "board.error.tooMany": {
+  "en": "At most 30 cards at a time.",
+  "ph": []
+ },
+ "board.error.emptyCard": {
+  "en": "A card needs a title or a task.",
+  "ph": []
+ },
+ "board.error.running": {
+  "en": "The card is being worked on. Stop it first, or wait for it to finish.",
+  "ph": []
+ },
+ "board.error.agentStarted": {
+  "en": "The agent can change a card only while it waits in the Inbox.",
+  "ph": []
+ },
+ "board.error.projectFixed": {
+  "en": "The card has already run in its project, and its conversation is there.",
+  "ph": []
+ },
+ "board.error.moveRunning": {
+  "en": "A card starts by being put in the queue.",
+  "ph": []
+ },
+ "board.error.archiveActive": {
+  "en": "Only a card that is not working or waiting to start can be put away.",
+  "ph": []
+ },
+ "board.error.moveWaiting": {
+  "en": "A card waits for you when its run says so.",
+  "ph": []
+ },
+ "board.error.emptyAnswer": {
+  "en": "Write an answer first.",
+  "ph": []
+ },
+ "board.error.badHome": {
+  "en": "A card cannot be put to run there from this side.",
+  "ph": []
+ },
+ "board.error.stopUnreachable": {
+  "en": "The other side cannot be reached to stop it right now. Try again in a moment.",
+  "ph": []
+ },
+ "board.error.agentRemove": {
+  "en": "The agent can remove only a card it proposed that is still in the Inbox.",
+  "ph": []
+ },
+ "board.next.retry": {
+  "en": "The previous attempt stopped with an error: {error}. Carry on with the task from where it stopped.",
+  "ph": [
+   "error"
+  ]
+ },
+ "board.next.unknownError": {
+  "en": "unknown error",
+  "ph": []
+ },
+ "board.next.resume": {
+  "en": "The previous run was cut off when the workspace restarted. Carry on with the task from where it stopped: check what is already done before doing anything again.",
+  "ph": []
+ },
+ "board.next.continue": {
+  "en": "Carry on with the task from where it stopped.",
+  "ph": []
+ },
+ "board.next.decide": {
+  "en": "Carry on without an answer to your question: decide it yourself and say what you chose.",
+  "ph": []
+ },
+ "board.next.redo": {
+  "en": "Do this task again, from the start.",
+  "ph": []
+ },
+ "board.message.parents": {
+  "en": "What the cards this one waited for came to:",
+  "ph": []
+ },
+ "board.message.files": {
+  "en": "Files",
+  "ph": []
+ },
+ "mail.pageTitle": {
+  "en": "Messages",
+  "ph": []
+ },
+ "mail.heading": {
+  "en": "Messages",
+  "ph": []
+ },
+ "mail.description": {
+  "en": "Write to the people of your company. Each person is one conversation. What they send arrives here, and in Telegram when it is linked.",
+  "ph": []
+ },
+ "mail.noContacts": {
+  "en": "There is nobody to write to yet.",
+  "ph": []
+ },
+ "mail.unavailable": {
+  "en": "Messages are not available in this workspace.",
+  "ph": []
+ },
+ "mail.loadFailed": {
+  "en": "Could not load the messages.",
+  "ph": []
+ },
+ "mail.retry": {
+  "en": "Try again",
+  "ph": []
+ },
+ "mail.empty": {
+  "en": "No messages yet. Write the first one below.",
+  "ph": []
+ },
+ "mail.loadOlder": {
+  "en": "Show earlier messages",
+  "ph": []
+ },
+ "mail.about": {
+  "en": "Does: {about}",
+  "ph": [
+   "about"
+  ]
+ },
+ "mail.roleOwner": {
+  "en": "Runs the company",
+  "ph": []
+ },
+ "mail.backToList": {
+  "en": "All messages",
+  "ph": []
+ },
+ "mail.seen": {
+  "en": "Read",
+  "ph": []
+ },
+ "mail.folderName": {
+  "en": "Messages",
+  "ph": []
+ },
+ "mail.composer.placeholder": {
+  "en": "Write to {name}…",
+  "ph": [
+   "name"
+  ]
+ },
+ "mail.composer.label": {
+  "en": "Message to {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "mail.composer.send": {
+  "en": "Send",
+  "ph": []
+ },
+ "mail.composer.sending": {
+  "en": "Sending…",
+  "ph": []
+ },
+ "mail.composer.attach": {
+  "en": "Attach files",
+  "ph": []
+ },
+ "mail.composer.removeFile": {
+  "en": "Remove {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "mail.composer.replyingTo": {
+  "en": "Answering {name}: “{preview}”",
+  "ph": [
+   "name",
+   "preview"
+  ]
+ },
+ "mail.composer.cancelReply": {
+  "en": "Cancel the reply",
+  "ph": []
+ },
+ "mail.composer.hint": {
+  "en": "Enter sends, Shift+Enter starts a new line.",
+  "ph": []
+ },
+ "mail.message.viaAgent": {
+  "en": "{name} (via agent)",
+  "ph": [
+   "name"
+  ]
+ },
+ "mail.message.you": {
+  "en": "You",
+  "ph": []
+ },
+ "mail.message.youViaAgent": {
+  "en": "You (via agent)",
+  "ph": []
+ },
+ "mail.message.reply": {
+  "en": "Reply",
+  "ph": []
+ },
+ "mail.message.assign": {
+  "en": "Hand to the agent",
+  "ph": []
+ },
+ "mail.message.assigning": {
+  "en": "Opening a chat…",
+  "ph": []
+ },
+ "mail.message.assignHelp": {
+  "en": "Opens a chat with your agent about this message. Nothing is sent until you send it.",
+  "ph": []
+ },
+ "mail.message.answers": {
+  "en": "Answers “{preview}”",
+  "ph": [
+   "preview"
+  ]
+ },
+ "mail.file.open": {
+  "en": "Open",
+  "ph": []
+ },
+ "mail.file.download": {
+  "en": "Download",
+  "ph": []
+ },
+ "mail.file.copying": {
+  "en": "Being copied to your Messages folder",
+  "ph": []
+ },
+ "mail.assign.chatTitle": {
+  "en": "Answer to {name}: {quote}",
+  "ph": [
+   "name",
+   "quote"
+  ]
+ },
+ "mail.banner.answering": {
+  "en": "Answer to {name} on:",
+  "ph": [
+   "name"
+  ]
+ },
+ "mail.banner.openThread": {
+  "en": "Open the conversation",
+  "ph": []
+ },
+ "mail.banner.howItWorks": {
+  "en": "Tell the agent what to do with it. Under each answer there is a button to send it to {name}.",
+  "ph": [
+   "name"
+  ]
+ },
+ "mail.sendTo": {
+  "en": "Send to {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "mail.sendTo.preview": {
+  "en": "This goes to {name}, signed as written by the agent for you. You can change it first.",
+  "ph": [
+   "name"
+  ]
+ },
+ "mail.sendTo.files": {
+  "en": "With the files of this answer",
+  "ph": []
+ },
+ "mail.sendTo.confirm": {
+  "en": "Send",
+  "ph": []
+ },
+ "mail.sendTo.cancel": {
+  "en": "Cancel",
+  "ph": []
+ },
+ "mail.sendTo.sending": {
+  "en": "Sending…",
+  "ph": []
+ },
+ "mail.sendTo.sent": {
+  "en": "Sent to {name}.",
+  "ph": [
+   "name"
+  ]
+ },
+ "mail.sendTo.failed": {
+  "en": "Not sent: {error}",
+  "ph": [
+   "error"
+  ]
+ },
+ "mail.sendTo.empty": {
+  "en": "There is nothing to send: write the message first.",
+  "ph": []
+ },
+ "engines.waiting": {
+  "en": "waiting for a free place",
+  "ph": []
+ },
+ "engines.stopped": {
+  "en": "Stopped.",
+  "ph": []
+ },
+ "engines.noAnswer": {
+  "en": "{engine} finished without writing an answer.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.error.notInstalled": {
+  "en": "{engine} is not installed on this computer, so this project cannot run on it. Install it, or pick another model in Settings → Models.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.error.signedOut": {
+  "en": "{engine} is not signed in on this computer. Open Settings → Models, press Sign in, then send your message again.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.error.limit": {
+  "en": "{engine} has reached the limit of your subscription{until}. Wait for it to open again, or pick another model for this project.",
+  "ph": [
+   "engine",
+   "until"
+  ]
+ },
+ "engines.error.limitUntil": {
+  "en": " (it opens again at {time})",
+  "ph": [
+   "time"
+  ]
+ },
+ "engines.error.unsupportedModel": {
+  "en": "{engine} does not accept that model on your account. Pick another one for this project in Settings → Models.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.error.apiKey": {
+  "en": "{engine} found an API key and would bill it instead of your subscription, so it was not started. Remove the key from its settings or from the environment, then send again.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.error.timeout": {
+  "en": "{engine} stopped answering and was stopped.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.error.failed": {
+  "en": "{engine} could not finish: {detail}",
+  "ph": [
+   "detail",
+   "engine"
+  ]
+ },
+ "engines.error.problem": {
+  "en": "{engine} is not ready: {detail}",
+  "ph": [
+   "detail",
+   "engine"
+  ]
+ },
+ "engines.reason.notInstalled": {
+  "en": "{engine} is not installed there.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.reason.signedOut": {
+  "en": "{engine} is not signed in there.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.reason.apiKey": {
+  "en": "{engine} is set up with an API key, not a subscription.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.reason.limit": {
+  "en": "{engine} has reached its subscription limit for now.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.reason.problem": {
+  "en": "{engine} is not ready: {detail}",
+  "ph": [
+   "detail",
+   "engine"
+  ]
+ },
+ "engines.plate.title": {
+  "en": "On this computer",
+  "ph": []
+ },
+ "engines.plate.hint": {
+  "en": "Programs found here that can do this project's work on your own subscription, with their own tools.",
+  "ph": []
+ },
+ "engines.plate.using": {
+  "en": "This project runs on {engine}. The model chosen for it below is not used while this is on.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.plate.usingHere": {
+  "en": "Chats outside projects run on {engine}. The workspace model is not used for them while this is on.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.plate.saveFailed": {
+  "en": "Could not save that. Try again.",
+  "ph": []
+ },
+ "engines.plate.hintHere": {
+  "en": "Programs found here that can do the work of chats outside any project on your own subscription, with their own tools.",
+  "ph": []
+ },
+ "engines.row.account": {
+  "en": "{plan} subscription",
+  "ph": [
+   "plan"
+  ]
+ },
+ "engines.row.accountUnknown": {
+  "en": "signed in",
+  "ph": []
+ },
+ "engines.row.use": {
+  "en": "Use for this project",
+  "ph": []
+ },
+ "engines.row.useHere": {
+  "en": "Use here",
+  "ph": []
+ },
+ "engines.row.inUse": {
+  "en": "In use",
+  "ph": []
+ },
+ "engines.row.experimental": {
+  "en": "Experimental",
+  "ph": []
+ },
+ "engines.row.stopUsing": {
+  "en": "Use Eggent's model instead",
+  "ph": []
+ },
+ "engines.row.signIn": {
+  "en": "Sign in",
+  "ph": []
+ },
+ "engines.row.signingIn": {
+  "en": "Finish signing in in the browser…",
+  "ph": []
+ },
+ "engines.row.signInFailed": {
+  "en": "Signing in did not finish. Try again.",
+  "ph": []
+ },
+ "engines.row.signedOut": {
+  "en": "Installed, but not signed in.",
+  "ph": []
+ },
+ "engines.row.check": {
+  "en": "Check again",
+  "ph": []
+ },
+ "engines.row.problem.apiKey": {
+  "en": "It is set up with an API key, not a subscription: use would be billed to the key.",
+  "ph": []
+ },
+ "engines.row.problem.oldVersion": {
+  "en": "This version is too old. Update it first.",
+  "ph": []
+ },
+ "engines.row.problem.limit": {
+  "en": "The subscription limit is used up for now.",
+  "ph": []
+ },
+ "engines.row.problem.error": {
+  "en": "Could not check it: {detail}",
+  "ph": [
+   "detail"
+  ]
+ },
+ "engines.limits.window": {
+  "en": "{label}: {percent}% used",
+  "ph": [
+   "label",
+   "percent"
+  ]
+ },
+ "engines.model.label": {
+  "en": "Model",
+  "ph": []
+ },
+ "engines.model.default": {
+  "en": "Default",
+  "ph": []
+ },
+ "engines.access.label": {
+  "en": "Access",
+  "ph": []
+ },
+ "engines.access.projectHere": {
+  "en": "Changes only in your projects folder",
+  "ph": []
+ },
+ "engines.access.projectNoteHere": {
+  "en": "Files are changed only inside the folder that holds your projects, and what is read is sent to the company behind {engine}.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.access.projectNote": {
+  "en": "Files are changed only inside this project's folder, and what is read is sent to the company behind {engine}.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.access.fullNote": {
+  "en": "{engine} can read and change anything on this computer that you can, and runs commands without asking first.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.access.project": {
+  "en": "Changes only in this project's folder",
+  "ph": []
+ },
+ "engines.access.full": {
+  "en": "As in a terminal (the whole computer)",
+  "ph": []
+ },
+ "engines.consent.title": {
+  "en": "Run this project on {engine}?",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.consent.titleHere": {
+  "en": "Run chats outside projects on {engine}?",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.consent.folder": {
+  "en": "{engine} works in the folder with its own tools, not with Eggent's.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.consent.cost": {
+  "en": "It uses the limits of your own subscription. Nothing is taken from your Eggent balance.",
+  "ph": []
+ },
+ "engines.consent.data": {
+  "en": "What you write and the files it reads go to the company behind {engine}.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.consent.missing": {
+  "en": "Schedules, question cards, Eggent skills and Telegram do not work in this mode, and Eggent learns nothing from these chats. It suits work with files and code.",
+  "ph": []
+ },
+ "engines.consent.experimental": {
+  "en": "{engine} is offered here as an experiment: it may change or stop working without notice.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.consent.saveFailed": {
+  "en": "Could not save the choice. Try again.",
+  "ph": []
+ },
+ "engines.consent.confirm": {
+  "en": "Turn on",
+  "ph": []
+ },
+ "engines.consent.cancel": {
+  "en": "Cancel",
+  "ph": []
+ },
+ "engines.consent.checking": {
+  "en": "Checking that it answers…",
+  "ph": []
+ },
+ "engines.consent.checkFailed": {
+  "en": "{engine} did not answer: {detail}",
+  "ph": [
+   "detail",
+   "engine"
+  ]
+ },
+ "engines.picker.group": {
+  "en": "On this computer",
+  "ph": []
+ },
+ "engines.picker.signInNote": {
+  "en": "Sign in to use it",
+  "ph": []
+ },
+ "engines.chatNotice": {
+  "en": "{engine} does this chat's work with its own tools. Schedules, question cards, Eggent skills and Telegram are not available in this mode.",
+  "ph": [
+   "engine"
+  ]
+ },
+ "engines.limit.continue": {
+  "en": "Continue with Eggent's model",
+  "ph": []
+ },
+ "nav.approvals": {
+  "en": "Approvals",
+  "ph": []
+ },
+ "nav.approvalsWaiting": {
+  "en": "{count} waiting for your decision",
+  "ph": [
+   "count"
+  ]
+ },
+ "nav.approvalsReturned": {
+  "en": "{count} of yours returned for changes",
+  "ph": [
+   "count"
+  ]
+ },
+ "nav.shared": {
+  "en": "Shared",
+  "ph": []
+ },
+ "nav.sharedNew": {
+  "en": "{count} with something new",
+  "ph": [
+   "count"
+  ]
+ },
+ "nav.sharedComments": {
+  "en": "{count} open comments on your files",
+  "ph": [
+   "count"
+  ]
+ },
+ "approvals.pageTitle": {
+  "en": "Approvals",
+  "ph": []
+ },
+ "approvals.heading": {
+  "en": "Approvals",
+  "ph": []
+ },
+ "approvals.description": {
+  "en": "Versions of files your colleagues ask you to approve, and the ones you sent. What is approved is one version: any change to the file afterwards voids the approvals, and the new version starts the chain over.",
+  "ph": []
+ },
+ "approvals.unavailable": {
+  "en": "Approvals are not available in this workspace.",
+  "ph": []
+ },
+ "approvals.loadFailed": {
+  "en": "Could not load the approvals.",
+  "ph": []
+ },
+ "approvals.loading": {
+  "en": "Loading…",
+  "ph": []
+ },
+ "approvals.refresh": {
+  "en": "Refresh",
+  "ph": []
+ },
+ "approvals.box.waiting": {
+  "en": "Waiting for you",
+  "ph": []
+ },
+ "approvals.box.sent": {
+  "en": "Sent by you",
+  "ph": []
+ },
+ "approvals.box.involved": {
+  "en": "Asked before",
+  "ph": []
+ },
+ "approvals.empty.waiting": {
+  "en": "Nothing waits for your decision.",
+  "ph": []
+ },
+ "approvals.empty.sent": {
+  "en": "You have not sent anything for approval yet. Open a file and choose Approval.",
+  "ph": []
+ },
+ "approvals.empty.involved": {
+  "en": "Nobody has asked you to approve anything yet.",
+  "ph": []
+ },
+ "approvals.from": {
+  "en": "From {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "approvals.fromYou": {
+  "en": "Yours",
+  "ph": []
+ },
+ "approvals.you": {
+  "en": "you",
+  "ph": []
+ },
+ "approvals.versionOf": {
+  "en": "{file}, version {n}",
+  "ph": [
+   "file",
+   "n"
+  ]
+ },
+ "approvals.status.active": {
+  "en": "On approval",
+  "ph": []
+ },
+ "approvals.status.yourTurn": {
+  "en": "Your turn",
+  "ph": []
+ },
+ "approvals.status.approved": {
+  "en": "Approved",
+  "ph": []
+ },
+ "approvals.status.approvedChanged": {
+  "en": "Approved, then changed",
+  "ph": []
+ },
+ "approvals.status.rejected": {
+  "en": "Returned",
+  "ph": []
+ },
+ "approvals.status.outdated": {
+  "en": "Changed after sending",
+  "ph": []
+ },
+ "approvals.status.cancelled": {
+  "en": "Withdrawn",
+  "ph": []
+ },
+ "approvals.line.yourTurn": {
+  "en": "It waits for your decision.",
+  "ph": []
+ },
+ "approvals.line.waiting": {
+  "en": "Waiting for {name}.",
+  "ph": [
+   "name"
+  ]
+ },
+ "approvals.line.waitingGone": {
+  "en": "Waiting for {name}, who is no longer in the company: send it to someone else.",
+  "ph": [
+   "name"
+  ]
+ },
+ "approvals.line.approved": {
+  "en": "Everyone in the chain approved this version.",
+  "ph": []
+ },
+ "approvals.line.approvedChanged": {
+  "en": "This version was approved, but the file has changed since: the approval does not apply to it any more.",
+  "ph": []
+ },
+ "approvals.line.rejectedBy": {
+  "en": "{name} returned it for changes.",
+  "ph": [
+   "name"
+  ]
+ },
+ "approvals.line.outdated": {
+  "en": "The file changed after it was sent, so this round no longer counts.",
+  "ph": []
+ },
+ "approvals.line.cancelled": {
+  "en": "The author withdrew it.",
+  "ph": []
+ },
+ "approvals.line.superseded": {
+  "en": "A newer version went to other people after the round you were asked about.",
+  "ph": []
+ },
+ "approvals.step.pending": {
+  "en": "waiting",
+  "ph": []
+ },
+ "approvals.step.current": {
+  "en": "their turn",
+  "ph": []
+ },
+ "approvals.step.approved": {
+  "en": "approved",
+  "ph": []
+ },
+ "approvals.step.rejected": {
+  "en": "returned",
+  "ph": []
+ },
+ "approvals.step.skipped": {
+  "en": "not asked",
+  "ph": []
+ },
+ "approvals.step.viaAgent": {
+  "en": "through the agent",
+  "ph": []
+ },
+ "approvals.chain.label": {
+  "en": "Who approves, in order",
+  "ph": []
+ },
+ "approvals.chain.title": {
+  "en": "Who approves, in order",
+  "ph": []
+ },
+ "approvals.person.gone": {
+  "en": "left the company",
+  "ph": []
+ },
+ "approvals.open": {
+  "en": "Open the approval",
+  "ph": []
+ },
+ "approvals.withdraw": {
+  "en": "Withdraw",
+  "ph": []
+ },
+ "approvals.withdrawConfirm": {
+  "en": "Withdraw this version from approval? Whoever it waits for is told nothing is needed from them.",
+  "ph": []
+ },
+ "approvals.actionFailed": {
+  "en": "That did not work. Try again in a minute.",
+  "ph": []
+ },
+ "approvals.sendFailed": {
+  "en": "Not sent. Try again in a minute.",
+  "ph": []
+ },
+ "approvals.back": {
+  "en": "All approvals",
+  "ph": []
+ },
+ "approvals.sentAt": {
+  "en": "sent {when}",
+  "ph": [
+   "when"
+  ]
+ },
+ "approvals.sentByAgent": {
+  "en": "sent by the agent",
+  "ph": []
+ },
+ "approvals.roundN": {
+  "en": "round {n}",
+  "ph": [
+   "n"
+  ]
+ },
+ "approvals.noteFrom": {
+  "en": "Note from {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "approvals.decide.title": {
+  "en": "Your decision",
+  "ph": []
+ },
+ "approvals.decide.rule": {
+  "en": "You approve this version only. If you return it, say what to change: the author works from your comment, and the new version starts the chain over.",
+  "ph": []
+ },
+ "approvals.decide.commentLabel": {
+  "en": "Comment",
+  "ph": []
+ },
+ "approvals.decide.commentPlaceholder": {
+  "en": "What to change, or a word to go with your approval",
+  "ph": []
+ },
+ "approvals.decide.approve": {
+  "en": "Approve",
+  "ph": []
+ },
+ "approvals.decide.reject": {
+  "en": "Return for changes",
+  "ph": []
+ },
+ "approvals.decide.commentNeeded": {
+  "en": "Write what to change before returning it.",
+  "ph": []
+ },
+ "approvals.author.nextStep": {
+  "en": "Change the file, then send the new version: the chain starts over.",
+  "ph": []
+ },
+ "approvals.author.openFile": {
+  "en": "Open the file",
+  "ph": []
+ },
+ "approvals.version.title": {
+  "en": "The version",
+  "ph": []
+ },
+ "approvals.version.changesSinceVersion": {
+  "en": "Changes since version {n}",
+  "ph": [
+   "n"
+  ]
+ },
+ "approvals.version.changesSinceRound": {
+  "en": "Changes since round {n}",
+  "ph": [
+   "n"
+  ]
+ },
+ "approvals.version.whole": {
+  "en": "Whole text",
+  "ph": []
+ },
+ "approvals.version.noChanges": {
+  "en": "The text did not change.",
+  "ph": []
+ },
+ "approvals.version.noText": {
+  "en": "This kind of file is not shown here: open or download it.",
+  "ph": []
+ },
+ "approvals.version.failed": {
+  "en": "Could not read this version.",
+  "ph": []
+ },
+ "approvals.earlier.title": {
+  "en": "Earlier rounds",
+  "ph": []
+ },
+ "approvals.earlier.download": {
+  "en": "Download this version",
+  "ph": []
+ },
+ "approvals.file.title": {
+  "en": "Approval",
+  "ph": []
+ },
+ "approvals.file.toggle": {
+  "en": "Approval",
+  "ph": []
+ },
+ "approvals.file.none": {
+  "en": "This file is not on approval. Choose who approves it, in order, and send the version it holds now.",
+  "ph": []
+ },
+ "approvals.file.missing": {
+  "en": "The file is not there any more.",
+  "ph": []
+ },
+ "approvals.file.tooLarge": {
+  "en": "A file sent for approval can be at most {maxMb} MB.",
+  "ph": [
+   "maxMb"
+  ]
+ },
+ "approvals.file.activeRule": {
+  "en": "Any change to the file now voids this round: the new version would start the chain over.",
+  "ph": []
+ },
+ "approvals.file.approvedRule": {
+  "en": "Any change to the file voids this approval.",
+  "ph": []
+ },
+ "approvals.file.unchangedSinceSent": {
+  "en": "The file has not changed since this version was sent.",
+  "ph": []
+ },
+ "approvals.file.sendNew": {
+  "en": "Send the new version",
+  "ph": []
+ },
+ "approvals.file.sendSame": {
+  "en": "Send it again as it is",
+  "ph": []
+ },
+ "approvals.file.otherPeople": {
+  "en": "Choose other people",
+  "ph": []
+ },
+ "approvals.notice.onApproval": {
+  "en": "This file is on approval: saving a change voids the round, and the chain starts over.",
+  "ph": []
+ },
+ "approvals.notice.approved": {
+  "en": "This version is approved: saving a change voids the approval.",
+  "ph": []
+ },
+ "approvals.form.chainTitle": {
+  "en": "Who approves, in order",
+  "ph": []
+ },
+ "approvals.form.chainEmpty": {
+  "en": "Nobody yet: add the people below in the order they should decide.",
+  "ph": []
+ },
+ "approvals.form.nobody": {
+  "en": "There is nobody else in the company to ask.",
+  "ph": []
+ },
+ "approvals.form.up": {
+  "en": "Move {name} up",
+  "ph": [
+   "name"
+  ]
+ },
+ "approvals.form.down": {
+  "en": "Move {name} down",
+  "ph": [
+   "name"
+  ]
+ },
+ "approvals.form.remove": {
+  "en": "Remove {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "approvals.form.noteLabel": {
+  "en": "Note for them (optional)",
+  "ph": []
+ },
+ "approvals.form.notePlaceholder": {
+  "en": "What to look at",
+  "ph": []
+ },
+ "approvals.form.howItWorks": {
+  "en": "They get the version the file holds now, one after another: the next person is asked once the one before approves. Any change to the file afterwards voids their approvals.",
+  "ph": []
+ },
+ "approvals.form.send": {
+  "en": "Send for approval",
+  "ph": []
+ },
+ "approvals.form.sendAgain": {
+  "en": "Send",
+  "ph": []
+ },
+ "approvals.error.noApprovers": {
+  "en": "Choose who approves it.",
+  "ph": []
+ },
+ "approvals.error.outside": {
+  "en": "This file is not in this workspace's projects folder.",
+  "ph": []
+ },
+ "approvals.error.missing": {
+  "en": "The file is not there any more.",
+  "ph": []
+ },
+ "approvals.error.notFile": {
+  "en": "Only a plain file can be sent for approval.",
+  "ph": []
+ },
+ "approvals.error.sensitive": {
+  "en": "This file holds credentials and is never sent.",
+  "ph": []
+ },
+ "approvals.error.tooLarge": {
+  "en": "A file sent for approval can be at most {maxMb} MB.",
+  "ph": [
+   "maxMb"
+  ]
+ },
+ "approvals.error.empty": {
+  "en": "The file is empty: there is nothing to approve.",
+  "ph": []
+ },
+ "shares.pageTitle": {
+  "en": "Shared",
+  "ph": []
+ },
+ "shares.heading": {
+  "en": "Shared files",
+  "ph": []
+ },
+ "shares.description": {
+  "en": "Files your colleagues shared with you, and the ones you shared. A shared file stays in its owner's workspace: everyone it is shared with sees it as it is now, comments on it, and - if they may edit - changes it there.",
+  "ph": []
+ },
+ "shares.unavailable": {
+  "en": "Sharing is not available in this workspace.",
+  "ph": []
+ },
+ "shares.loadFailed": {
+  "en": "Could not load the shared files.",
+  "ph": []
+ },
+ "shares.actionFailed": {
+  "en": "That did not work. Try again in a minute.",
+  "ph": []
+ },
+ "shares.refresh": {
+  "en": "Refresh",
+  "ph": []
+ },
+ "shares.back": {
+  "en": "All shared files",
+  "ph": []
+ },
+ "shares.box.withMe": {
+  "en": "Shared with you",
+  "ph": []
+ },
+ "shares.box.mine": {
+  "en": "Shared by you",
+  "ph": []
+ },
+ "shares.empty.withMe": {
+  "en": "Nobody has shared a file with you yet.",
+  "ph": []
+ },
+ "shares.empty.mine": {
+  "en": "You have not shared anything yet. Open a file and choose Share.",
+  "ph": []
+ },
+ "shares.new": {
+  "en": "New",
+  "ph": []
+ },
+ "shares.withPeople": {
+  "en": "With {names}",
+  "ph": [
+   "names"
+  ]
+ },
+ "shares.withNobody": {
+  "en": "With nobody right now",
+  "ph": []
+ },
+ "shares.openComments": {
+  "en": "open comments: {count}",
+  "ph": [
+   "count"
+  ]
+ },
+ "shares.openOwn": {
+  "en": "Open your file",
+  "ph": []
+ },
+ "shares.role.view": {
+  "en": "Can view",
+  "ph": []
+ },
+ "shares.role.comment": {
+  "en": "Can comment",
+  "ph": []
+ },
+ "shares.role.edit": {
+  "en": "Can edit",
+  "ph": []
+ },
+ "shares.role.owner": {
+  "en": "Owner",
+  "ph": []
+ },
+ "shares.may.view": {
+  "en": "You can look at it.",
+  "ph": []
+ },
+ "shares.may.comment": {
+  "en": "You can look at it and comment on it.",
+  "ph": []
+ },
+ "shares.may.edit": {
+  "en": "You can look at it, comment on it and change it. Each change is kept in its owner's history under your name.",
+  "ph": []
+ },
+ "shares.may.owner": {
+  "en": "It is your file.",
+  "ph": []
+ },
+ "shares.person.gone": {
+  "en": "left the company",
+  "ph": []
+ },
+ "shares.notice.shared": {
+  "en": "Shared with {names}: they see each change once it is saved.",
+  "ph": [
+   "names"
+  ]
+ },
+ "shares.notice.comments": {
+  "en": "Open comments: {count}.",
+  "ph": [
+   "count"
+  ]
+ },
+ "shares.file.title": {
+  "en": "Share",
+  "ph": []
+ },
+ "shares.file.toggle": {
+  "en": "Share",
+  "ph": []
+ },
+ "shares.file.who": {
+  "en": "Who has it",
+  "ph": []
+ },
+ "shares.file.none": {
+  "en": "Not shared yet. Add the people below and choose what each may do.",
+  "ph": []
+ },
+ "shares.file.nobodyNow": {
+  "en": "Nobody has it now. Add people, or stop sharing.",
+  "ph": []
+ },
+ "shares.file.nobodyElse": {
+  "en": "There is nobody else in the company to share with.",
+  "ph": []
+ },
+ "shares.file.roleOf": {
+  "en": "What {name} may do",
+  "ph": [
+   "name"
+  ]
+ },
+ "shares.file.remove": {
+  "en": "Take it from {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "shares.file.howItWorks": {
+  "en": "They see the file as it is in your workspace, with every change you save. View lets them look, Comment lets them leave comments, Edit lets them change it too - each change goes into the file's history under their name.",
+  "ph": []
+ },
+ "shares.file.save": {
+  "en": "Save",
+  "ph": []
+ },
+ "shares.file.share": {
+  "en": "Share",
+  "ph": []
+ },
+ "shares.file.saved": {
+  "en": "Saved.",
+  "ph": []
+ },
+ "shares.file.openAsShared": {
+  "en": "Open as they see it",
+  "ph": []
+ },
+ "shares.file.stop": {
+  "en": "Stop sharing",
+  "ph": []
+ },
+ "shares.file.stopConfirm": {
+  "en": "Stop sharing this file? Everyone loses it, and its comments are deleted.",
+  "ph": []
+ },
+ "shares.error.badPerson": {
+  "en": "Each person needs a role: view, comment or edit.",
+  "ph": []
+ },
+ "shares.error.outside": {
+  "en": "This file is not in this workspace's projects folder.",
+  "ph": []
+ },
+ "shares.error.missing": {
+  "en": "The file is not there any more.",
+  "ph": []
+ },
+ "shares.error.notFile": {
+  "en": "Only a plain file can be shared.",
+  "ph": []
+ },
+ "shares.error.sensitive": {
+  "en": "This file holds credentials and is never shared.",
+  "ph": []
+ },
+ "shares.error.tooLarge": {
+  "en": "A shared file can be at most {maxMb} MB.",
+  "ph": [
+   "maxMb"
+  ]
+ },
+ "shares.comments.title": {
+  "en": "Comments",
+  "ph": []
+ },
+ "shares.comments.loadFailed": {
+  "en": "Could not load the comments.",
+  "ph": []
+ },
+ "shares.comments.you": {
+  "en": "You",
+  "ph": []
+ },
+ "shares.comments.viaAgent": {
+  "en": "through the agent",
+  "ph": []
+ },
+ "shares.comments.none": {
+  "en": "No comments yet.",
+  "ph": []
+ },
+ "shares.comments.allResolved": {
+  "en": "Every comment is resolved.",
+  "ph": []
+ },
+ "shares.comments.placeholder": {
+  "en": "A comment on the file",
+  "ph": []
+ },
+ "shares.comments.placeholderOnPiece": {
+  "en": "A comment on this piece",
+  "ph": []
+ },
+ "shares.comments.pickHint": {
+  "en": "To comment on one piece, pick it on the page or select lines in the code.",
+  "ph": []
+ },
+ "shares.comments.about": {
+  "en": "About: {what}",
+  "ph": [
+   "what"
+  ]
+ },
+ "shares.comments.thePiece": {
+  "en": "the selected piece",
+  "ph": []
+ },
+ "shares.comments.clearTarget": {
+  "en": "Comment on the whole file",
+  "ph": []
+ },
+ "shares.comments.post": {
+  "en": "Comment",
+  "ph": []
+ },
+ "shares.comments.reply": {
+  "en": "Reply",
+  "ph": []
+ },
+ "shares.comments.replyPlaceholder": {
+  "en": "Your reply",
+  "ph": []
+ },
+ "shares.comments.resolve": {
+  "en": "Resolve",
+  "ph": []
+ },
+ "shares.comments.reopen": {
+  "en": "Reopen",
+  "ph": []
+ },
+ "shares.comments.resolvedBy": {
+  "en": "Resolved by {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "shares.comments.delete": {
+  "en": "Delete",
+  "ph": []
+ },
+ "shares.comments.deleteConfirm": {
+  "en": "Delete this comment?",
+  "ph": []
+ },
+ "shares.comments.deleteThreadConfirm": {
+  "en": "Delete this comment and its replies?",
+  "ph": []
+ },
+ "shares.comments.showResolved": {
+  "en": "Show resolved ({count})",
+  "ph": [
+   "count"
+  ]
+ },
+ "shares.comments.hideResolved": {
+  "en": "Hide resolved ({count})",
+  "ph": [
+   "count"
+  ]
+ },
+ "shares.view.from": {
+  "en": "From {name}",
+  "ph": [
+   "name"
+  ]
+ },
+ "shares.view.yours": {
+  "en": "Yours, shared with people: {count}",
+  "ph": [
+   "count"
+  ]
+ },
+ "shares.view.changedAt": {
+  "en": "Changed {when}",
+  "ph": [
+   "when"
+  ]
+ },
+ "shares.view.gone": {
+  "en": "The file is not in its owner's workspace any more.",
+  "ph": []
+ },
+ "shares.view.noPreview": {
+  "en": "This kind of file is not shown here.",
+  "ph": []
+ },
+ "shares.view.extracted": {
+  "en": "The words of the document, read out of it: download it to see it as it is.",
+  "ph": []
+ },
+ "shares.view.selectHelp": {
+  "en": "Point at a block of the page to comment on it",
+  "ph": []
+ },
+ "shares.view.selectHelpEdit": {
+  "en": "Point at a block to comment on it, or double-click to change its words",
+  "ph": []
+ },
+ "shares.view.selectHint": {
+  "en": "Click a block to comment on it.",
+  "ph": []
+ },
+ "shares.view.commentOnIt": {
+  "en": "the comment is about it",
+  "ph": []
+ },
+ "shares.view.saved": {
+  "en": "Saved into the owner's file.",
+  "ph": []
+ },
+ "shares.view.notSaved": {
+  "en": "Not saved. Try again in a minute.",
+  "ph": []
+ },
+ "shares.view.changedSince": {
+  "en": "Not saved: the file changed since you opened it. Load the new version and make your change there.",
+  "ph": []
+ },
+ "shares.view.loadTheirs": {
+  "en": "Load the new version",
+  "ph": []
+ },
+ "shares.view.reloadConfirm": {
+  "en": "Load the new version? What you typed here is replaced.",
+  "ph": []
+ },
+ "shares.view.saveFirst": {
+  "en": "Save your change first",
+  "ph": []
+ }
+}

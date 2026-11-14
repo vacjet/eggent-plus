@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "id": "yandex-direct",
+  "title": "Специалист по контекстной рекламе",
+  "summary": "Читает кампании и отчёты Директа, считает CTR/CPC/CPA, находит кампании без отдачи.",
+  "skills": ["external-sources"],
+  "requires": {
+    "env": ["YANDEX_DIRECT_TOKEN"],
+    "tools": ["python3"]
+  },
+  "prompts": {
+    "review": "prompts/review.md"
+  },
+  "scenario": {
+    "request": "Посмотри Директ за 30 дней: где расход без отдачи, какая цена клика и заявки. Дай три действия.",
+    "steps": [
+      "python3 skills/external-sources/yandex_read.py --source direct --out data/external",
+      "python3 skills/external-sources/yandex_read.py --status --out data/external"
+    ],
+    "expect": [
+      "вывод одной фразой: куда уходит бюджет",
+      "таблица кампаний с расходом, кликами, CTR, CPC",
+      "три действия с ожидаемым эффектом и риском",
+      "что не проверено (например, нет целей в Метрике — CPA не считается)"
+    ]
+  }
+}

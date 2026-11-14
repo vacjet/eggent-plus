@@ -1,0 +1,241 @@
+diff --git a/scripts/test-build-info.ts b/scripts/test-build-info.ts
+new file mode 100644
+index 0000000..63bb724
+--- /dev/null
++++ b/scripts/test-build-info.ts
+@@ -0,0 +1,81 @@
++/**
++ * Checks the build line: how a version reads, and what happens when nobody
++ * wrote a build file.
++ *
++ * Run with Node 22:
++ *   node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types \
++ *     --import ./scripts/alias-loader-register.mjs scripts/test-build-info.ts
++ */
++import assert from "node:assert/strict";
++import fs from "node:fs/promises";
++import os from "node:os";
++import path from "node:path";
++import { formatBuildVersion, readBuildInfo } from "../src/lib/build-info.ts";
++
++let failed = 0;
++let ran = 0;
++async function check(name: string, fn: () => Promise<void> | void): Promise<void> {
++  ran += 1;
++  try {
++    await fn();
++    console.log(`  ok    ${name}`);
++  } catch (error) {
++    failed += 1;
++    console.log(`  FAIL  ${name}: ${error instanceof Error ? error.message : String(error)}`);
++  }
++}
++
++console.log("version text:\n");
++
++await check("tag, patch count and commit make a readable version", () => {
++  assert.equal(formatBuildVersion("v0.8.0", 5, "98a76b6c1d2e"), "0.8.0+plus.5.98a76b6");
++});
++
++await check("a version without a commit is still a version", () => {
++  assert.equal(formatBuildVersion("v0.8.0", 3), "0.8.0+plus.3");
++});
++
++await check("nonsense collapses to something short instead of «v+plus.NaN»", () => {
++  assert.equal(formatBuildVersion("", Number.NaN), "0.0.0+plus.0");
++  assert.equal(formatBuildVersion("v", -2), "0.0.0+plus.0");
++});
++
++console.log("\nreading the file:\n");
++
++const work = await fs.mkdtemp(path.join(os.tmpdir(), "build-info-"));
++const dataDir = path.join(work, "data");
++await fs.mkdir(dataDir, { recursive: true });
++const cwd = process.cwd();
++
++await check("no file means no build line, not a wrong one", async () => {
++  process.chdir(work);
++  const info = await readBuildInfo();
++  assert.equal(info, null);
++  process.chdir(cwd);
++});
++
++await check("a written file is read back with a computed version", async () => {
++  await fs.writeFile(
++    path.join(dataDir, "build-info.json"),
++    JSON.stringify({ upstream: "v0.8.0", patches: 6, commit: "abc1234def", builtAt: "2026-11-13T21:00:00.000Z" })
++  );
++  process.chdir(work);
++  const info = await readBuildInfo();
++  process.chdir(cwd);
++  assert.equal(info?.version, "0.8.0+plus.6.abc1234");
++  assert.equal(info?.patches, 6);
++  assert.equal(info?.builtAt, "2026-11-13T21:00:00.000Z");
++});
++
++await check("a half-written file is ignored rather than shown", async () => {
++  await fs.writeFile(path.join(dataDir, "build-info.json"), JSON.stringify({ upstream: "v0.8.0" }));
++  process.chdir(work);
++  const info = await readBuildInfo();
++  process.chdir(cwd);
++  assert.equal(info, null, "no patch count, no claim");
++});
++
++await fs.rm(work, { recursive: true, force: true });
++
++console.log(`\n${ran} checks, ${failed} failed`);
++process.exit(failed > 0 ? 1 : 0);
+diff --git a/src/app/api/build-info/route.ts b/src/app/api/build-info/route.ts
+new file mode 100644
+index 0000000..2eb53e7
+--- /dev/null
++++ b/src/app/api/build-info/route.ts
+@@ -0,0 +1,8 @@
++import { NextResponse } from "next/server";
++import { readBuildInfo } from "@/lib/build-info";
++
++/** Which build answers here; null when the image was not deployed with the file. */
++export async function GET() {
++  const info = await readBuildInfo();
++  return NextResponse.json(info ?? { version: null });
++}
+diff --git a/src/app/dashboard/settings/general/page.tsx b/src/app/dashboard/settings/general/page.tsx
+index c266c3f..1a7d192 100644
+--- a/src/app/dashboard/settings/general/page.tsx
++++ b/src/app/dashboard/settings/general/page.tsx
+@@ -244,6 +244,46 @@ export default function GeneralSettingsPage() {
+           </section>
+         </>
+       )}
++      <BuildVersion />
+     </SettingsShell>
+   );
+ }
++
++/**
++ * Which build answers here.
++ *
++ * Read from `/api/build-info`, which the deployment writes next to the instance's
++ * data: a plain image has no such file, and then the line is simply absent
++ * rather than claiming a version nobody verified.
++ */
++function BuildVersion() {
++  const { t, locale } = useI18n();
++  const [info, setInfo] = useState<{ version: string | null; builtAt?: string } | null>(null);
++
++  useEffect(() => {
++    let cancelled = false;
++    fetch("/api/build-info", { cache: "no-store" })
++      .then((response) => (response.ok ? response.json() : null))
++      .then((body) => {
++        if (!cancelled && body && typeof body.version === "string") {
++          setInfo({ version: body.version, builtAt: typeof body.builtAt === "string" ? body.builtAt : undefined });
++        }
++      })
++      .catch(() => {});
++    return () => {
++      cancelled = true;
++    };
++  }, []);
++
++  if (!info?.version) return null;
++  const built = info.builtAt ? new Date(info.builtAt) : null;
++  const date = built && !Number.isNaN(built.getTime())
++    ? new Intl.DateTimeFormat(locale === "ru" ? "ru-RU" : "en-US", { dateStyle: "medium", timeStyle: "short" }).format(built)
++    : "";
++  return (
++    <p className="text-xs text-muted-foreground">
++      {t("settings.build", { version: info.version })}
++      {date ? ` · ${date}` : ""}
++    </p>
++  );
++}
+diff --git a/src/i18n/messages.ru.ts b/src/i18n/messages.ru.ts
+index dbcdf92..ad4e783 100644
+--- a/src/i18n/messages.ru.ts
++++ b/src/i18n/messages.ru.ts
+@@ -394,6 +394,7 @@ export const ruMessages: Record<string, string> = {
+   "chat.usage.chat": "за чат {count}",
+   "chat.usage.hint": "Сколько токенов потратил весь чат, по всем ответам.",
+   "settings.usage.project": "Этот проект потратил {count} токенов; чатов: {chats}.",
++  "settings.build": "Сборка {version}",
+   "chat.helpers.step.search": "Поиск",
+   "chat.helpers.step.page": "Чтение страницы",
+   "chat.helpers.step.files": "Файлы",
+diff --git a/src/i18n/messages.ts b/src/i18n/messages.ts
+index cd25de0..8420e70 100644
+--- a/src/i18n/messages.ts
++++ b/src/i18n/messages.ts
+@@ -400,6 +400,7 @@ const enMessages = {
+   "chat.usage.chat": "chat {count}",
+   "chat.usage.hint": "Tokens this whole chat has spent, across every answer.",
+   "settings.usage.project": "This project has spent {count} tokens across {chats} chats.",
++  "settings.build": "Build {version}",
+   "chat.helpers.step.search": "Searched",
+   "chat.helpers.step.page": "Read page",
+   "chat.helpers.step.files": "Files",
+diff --git a/src/lib/build-info.ts b/src/lib/build-info.ts
+new file mode 100644
+index 0000000..8324df0
+--- /dev/null
++++ b/src/lib/build-info.ts
+@@ -0,0 +1,59 @@
++import fs from "fs/promises";
++import path from "path";
++
++/**
++ * Which build is answering: upstream version, how many of our patches are in
++ * it, and the commit they came from.
++ *
++ * `0.8.0+plus.5.98a76b6` reads as "Eggent 0.8.0, five patches, built from that
++ * commit". A number that only counts builds (`0.8.0.1321`) tells nobody whether
++ * the patch they are waiting for is in it; the patch count does, and the commit
++ * says exactly which state of the repository produced the image.
++ *
++ * The file is written by the deployment (docker/deploy-test.sh), not at build
++ * time inside the app: the same image can be deployed twice, and what a person
++ * needs to know is what is running now.
++ */
++
++export interface BuildInfo {
++  /** Upstream tag the image was built from, e.g. "v0.8.0". */
++  upstream: string;
++  /** How many patches from `patches/` were applied. */
++  patches: number;
++  /** Commit of the eggent-plus repository the patches came from. */
++  commit?: string;
++  /** When the image was built, ISO. */
++  builtAt?: string;
++  /** What the settings page shows, e.g. "0.8.0+plus.5.98a76b6". */
++  version: string;
++}
++
++export function formatBuildVersion(upstream: string, patches: number, commit?: string): string {
++  const base = (upstream || "").replace(/^v/i, "").trim() || "0.0.0";
++  const count = Number.isFinite(patches) ? Math.max(0, Math.trunc(patches)) : 0;
++  const short = (commit || "").trim().slice(0, 7);
++  return `${base}+plus.${count}${short ? `.${short}` : ""}`;
++}
++
++function buildInfoPath(): string {
++  return path.join(process.cwd(), "data", "build-info.json");
++}
++
++/** The build that is running, or null when nobody wrote it (a plain image). */
++export async function readBuildInfo(): Promise<BuildInfo | null> {
++  try {
++    const raw = JSON.parse(await fs.readFile(buildInfoPath(), "utf-8")) as Partial<BuildInfo>;
++    const upstream = typeof raw.upstream === "string" ? raw.upstream : "";
++    const patches = Number(raw.patches);
++    if (!upstream || !Number.isFinite(patches)) return null;
++    return {
++      upstream,
++      patches,
++      commit: typeof raw.commit === "string" ? raw.commit : undefined,
++      builtAt: typeof raw.builtAt === "string" ? raw.builtAt : undefined,
++      version: formatBuildVersion(upstream, patches, typeof raw.commit === "string" ? raw.commit : undefined),
++    };
++  } catch {
++    return null;
++  }
++}

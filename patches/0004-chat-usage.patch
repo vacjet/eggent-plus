@@ -1,0 +1,292 @@
+diff --git a/scripts/test-usage-summary.ts b/scripts/test-usage-summary.ts
+new file mode 100644
+index 0000000..076b8ec
+--- /dev/null
++++ b/scripts/test-usage-summary.ts
+@@ -0,0 +1,90 @@
++/**
++ * Checks the chat total: a sum over the stats each answer already carries.
++ *
++ * Run with Node 22:
++ *   node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types \
++ *     --import ./scripts/alias-loader-register.mjs scripts/test-usage-summary.ts
++ */
++import assert from "node:assert/strict";
++import { hasChatUsage, sumChatUsage, sumChatUsageFromParts } from "../src/lib/pi/usage-summary.ts";
++
++let failed = 0;
++let ran = 0;
++function check(name: string, fn: () => void): void {
++  ran += 1;
++  try {
++    fn();
++    console.log(`  ok    ${name}`);
++  } catch (error) {
++    failed += 1;
++    console.log(`  FAIL  ${name}: ${error instanceof Error ? error.message : String(error)}`);
++  }
++}
++
++const turn = (input: number, output: number, extra: Record<string, number> = {}) => ({
++  piRuntimeStats: { lastTurn: { input, output, ...extra } },
++});
++
++console.log("summing:\n");
++
++check("two answers add up", () => {
++  const usage = sumChatUsage([turn(100, 50), turn(20, 10)]);
++  assert.equal(usage.turns, 2);
++  assert.equal(usage.input, 120);
++  assert.equal(usage.output, 60);
++  assert.equal(usage.total, 180);
++});
++
++check("a provider total wins over the sum of its parts", () => {
++  const usage = sumChatUsage([{ piRuntimeStats: { lastTurn: { input: 10, output: 5, total: 99 } } }]);
++  assert.equal(usage.total, 99, "the provider knows better than we do");
++});
++
++check("cache tokens are counted", () => {
++  const usage = sumChatUsage([turn(10, 5, { cacheRead: 1000, cacheWrite: 200 })]);
++  assert.equal(usage.total, 1215);
++  assert.equal(usage.cacheRead, 1000);
++  assert.equal(usage.cacheWrite, 200);
++});
++
++check("messages without stats and answerless turns add nothing", () => {
++  const usage = sumChatUsage([
++    { piRuntimeStats: null },
++    {},
++    turn(10, 0),
++    { piRuntimeStats: { lastTurn: {} } },
++  ]);
++  assert.equal(usage.turns, 2, "both carrying stats are counted as turns");
++  assert.equal(usage.total, 10, "only the one with tokens contributes");
++});
++
++check("negative and missing numbers are treated as zero", () => {
++  const usage = sumChatUsage([{ piRuntimeStats: { lastTurn: { input: -5, output: 0 } } }]);
++  assert.equal(usage.total, 0);
++});
++
++check("the last named model is kept for the label", () => {
++  const usage = sumChatUsage([
++    { piRuntimeStats: { model: { id: "a", name: "Model A" }, lastTurn: { total: 1 } } },
++    { piRuntimeStats: { model: { id: "b" }, lastTurn: { total: 1 } } },
++  ]);
++  assert.equal(usage.model, "b", "the last one answered most recently");
++});
++
++check("the panel's message parts sum the same way", () => {
++  const usage = sumChatUsageFromParts([
++    { parts: [{ type: "text" }, { type: "data-piStats", data: { lastTurn: { input: 5, output: 5 } } }] },
++    { parts: [{ type: "data-piStats", data: { lastTurn: { input: 1, output: 1 } } }] },
++  ]);
++  assert.equal(usage.turns, 2);
++  assert.equal(usage.total, 12);
++});
++
++check("nothing worth showing when the total is zero", () => {
++  assert.equal(hasChatUsage({ turns: 1, input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 }), false);
++  assert.equal(hasChatUsage({ turns: 0, input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 }), false);
++  assert.equal(hasChatUsage({ turns: 1, input: 5, output: 0, cacheRead: 0, cacheWrite: 0, total: 5 }), true);
++});
++
++console.log(`\n${ran} checks, ${failed} failed`);
++process.exit(failed > 0 ? 1 : 0);
+diff --git a/src/components/chat/chat-input.tsx b/src/components/chat/chat-input.tsx
+index 8f190c6..c24999b 100644
+--- a/src/components/chat/chat-input.tsx
++++ b/src/components/chat/chat-input.tsx
+@@ -13,6 +13,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
+ import { ModelPicker } from "@/components/chat/model-picker";
+ import { DictationButton, DictationStatus, useDictation } from "@/components/chat/dictation";
+ import { useI18n } from "@/i18n/provider";
++import { hasChatUsage, type ChatUsage } from "@/lib/pi/usage-summary";
+ import { formatUploadSize, MAX_UPLOAD_BYTES, MAX_UPLOAD_LABEL } from "@/lib/files/upload-limits";
+ import type { MessageKey } from "@/i18n/messages";
+ import type { ChatContextMode, ChatFile } from "@/lib/types";
+@@ -199,6 +200,8 @@ interface ChatInputProps {
+   onFilesUploaded?: (files: ChatFile[]) => void;
+   focusSignal?: number;
+   runtimeStats?: PiRuntimeStats | null;
++  /** What the whole chat has spent so far; nothing is shown while it is zero. */
++  chatUsage?: ChatUsage | null;
+   /** The program of this computer the chat runs on, when it runs on one: it replaces the line about tokens. */
+   engineLabel?: string | null;
+   contextMode?: ChatContextMode;
+@@ -222,6 +225,7 @@ export function ChatInput({
+   onFilesUploaded,
+   focusSignal,
+   runtimeStats,
++  chatUsage,
+   engineLabel,
+   contextMode = "full",
+   onContextModeChange,
+@@ -1120,6 +1124,11 @@ export function ChatInput({
+               <span className="font-mono">in {formatTokenCount(runtimeStats?.session?.input ?? runtimeStats?.lastTurn?.input)}</span>
+               <span className="font-mono">out {formatTokenCount(runtimeStats?.session?.output ?? runtimeStats?.lastTurn?.output)}</span>
+               <span className="font-mono">{formatContextUsage(runtimeStats)}</span>
++              {chatUsage && hasChatUsage(chatUsage) ? (
++                <span className="font-mono" title={t("chat.usage.hint")}>
++                  {t("chat.usage.chat", { count: formatTokenCount(chatUsage.total) })}
++                </span>
++              ) : null}
+             </>
+           )}
+         </div>
+diff --git a/src/components/chat/chat-panel.tsx b/src/components/chat/chat-panel.tsx
+index 9c532c6..536ce41 100644
+--- a/src/components/chat/chat-panel.tsx
++++ b/src/components/chat/chat-panel.tsx
+@@ -13,6 +13,7 @@ import { openFileForAgent, useAppStore } from "@/store/app-store";
+ import { useState, useCallback, useEffect, useRef, useMemo } from "react";
+ import type { ChatContextMode, ChatMessage, ChatMessagePart } from "@/lib/types";
+ import type { PiRuntimeStats } from "@/lib/pi/types";
++import { sumChatUsageFromParts } from "@/lib/pi/usage-summary";
+ import type { PiPendingInteraction } from "@/lib/pi/interaction-types";
+ import { useBackgroundSync } from "@/hooks/use-background-sync";
+ import { useActiveRuns } from "@/hooks/use-active-runs";
+@@ -733,6 +734,9 @@ export function ChatPanel({ initialQuickSkills = [] }: ChatPanelProps) {
+   const refreshActiveRuns = activeRuns.refresh;
+ 
+   const runtimeStats = useMemo(() => getLatestPiRuntimeStats(messages), [messages]);
++  // Сумма по всему чату: считается из тех же частей, что видит человек, поэтому
++  // не расходится с счётчиками под ответами.
++  const chatUsage = useMemo(() => sumChatUsageFromParts(messages), [messages]);
+   const compactionStatus = useMemo(() => getLatestPiCompactionStatus(messages), [messages]);
+   const actionNotice = useMemo(() => getLatestEggentNotice(messages), [messages]);
+   const pendingInteraction = useMemo(() => getLatestPendingInteraction(messages), [messages]);
+@@ -1550,6 +1554,7 @@ export function ChatPanel({ initialQuickSkills = [] }: ChatPanelProps) {
+         currentPath={currentPath}
+         focusSignal={inputFocusSignal}
+         runtimeStats={displayRuntimeStats}
++        chatUsage={chatUsage}
+         engineLabel={engineLabel}
+         contextMode={contextMode}
+         onContextModeChange={setContextMode}
+diff --git a/src/i18n/messages.ru.ts b/src/i18n/messages.ru.ts
+index 912ae46..cafe529 100644
+--- a/src/i18n/messages.ru.ts
++++ b/src/i18n/messages.ru.ts
+@@ -391,6 +391,8 @@ export const ruMessages: Record<string, string> = {
+   "chat.helpers.noResult": "Он ничего не вернул.",
+   "chat.helpers.meta.model": "Модель: {model}",
+   "chat.helpers.meta.tokens": "Токены: {count}",
++  "chat.usage.chat": "за чат {count}",
++  "chat.usage.hint": "Сколько токенов потратил весь чат, по всем ответам.",
+   "chat.helpers.step.search": "Поиск",
+   "chat.helpers.step.page": "Чтение страницы",
+   "chat.helpers.step.files": "Файлы",
+diff --git a/src/i18n/messages.ts b/src/i18n/messages.ts
+index c3e8cb0..e741740 100644
+--- a/src/i18n/messages.ts
++++ b/src/i18n/messages.ts
+@@ -396,6 +396,9 @@ const enMessages = {
+   "chat.helpers.noResult": "It returned nothing.",
+   "chat.helpers.meta.model": "Model: {model}",
+   "chat.helpers.meta.tokens": "Tokens: {count}",
++  // eggent-plus: what the whole chat has spent, next to this turn's own counters.
++  "chat.usage.chat": "chat {count}",
++  "chat.usage.hint": "Tokens this whole chat has spent, across every answer.",
+   "chat.helpers.step.search": "Searched",
+   "chat.helpers.step.page": "Read page",
+   "chat.helpers.step.files": "Files",
+diff --git a/src/lib/pi/usage-summary.ts b/src/lib/pi/usage-summary.ts
+new file mode 100644
+index 0000000..3eb2e61
+--- /dev/null
++++ b/src/lib/pi/usage-summary.ts
+@@ -0,0 +1,92 @@
++import type { PiRuntimeStats } from "@/lib/pi/types";
++
++/**
++ * What a whole chat has spent, summed from the stats each answer carries.
++ *
++ * Every assistant message already stores `piRuntimeStats` with the usage of its
++ * turn, so the chat total needs no new storage: it is a sum over the messages
++ * that are on disk anyway. That also means the figure survives a restart and
++ * matches exactly what the per-message footer shows.
++ *
++ * A turn with no usage at all (a program on this computer did the work, or the
++ * provider reported nothing) is not a turn that spent tokens, so it is counted
++ * as a turn but adds nothing.
++ */
++
++export interface ChatUsage {
++  /** Answers that carried runtime stats at all. */
++  turns: number;
++  input: number;
++  output: number;
++  cacheRead: number;
++  cacheWrite: number;
++  /** Provider-reported total when present, otherwise the sum of the four counts. */
++  total: number;
++  /** The last model that answered in this chat, for the label next to the figure. */
++  model?: string;
++}
++
++function numberOrZero(value: unknown): number {
++  return typeof value === "number" && Number.isFinite(value) && value > 0 ? value : 0;
++}
++
++export function usageOfTurn(stats: PiRuntimeStats | null | undefined): {
++  input: number;
++  output: number;
++  cacheRead: number;
++  cacheWrite: number;
++  total: number;
++} {
++  const last = stats?.lastTurn;
++  const input = numberOrZero(last?.input);
++  const output = numberOrZero(last?.output);
++  const cacheRead = numberOrZero(last?.cacheRead);
++  const cacheWrite = numberOrZero(last?.cacheWrite);
++  const summed = input + output + cacheRead + cacheWrite;
++  const reported = numberOrZero(last?.total);
++  return { input, output, cacheRead, cacheWrite, total: reported > 0 ? reported : summed };
++}
++
++export function sumChatUsage(items: Array<{ piRuntimeStats?: PiRuntimeStats | null }>): ChatUsage {
++  const usage: ChatUsage = { turns: 0, input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 };
++  for (const item of items) {
++    const stats = item?.piRuntimeStats;
++    if (!stats) continue;
++    usage.turns += 1;
++    const turn = usageOfTurn(stats);
++    usage.input += turn.input;
++    usage.output += turn.output;
++    usage.cacheRead += turn.cacheRead;
++    usage.cacheWrite += turn.cacheWrite;
++    usage.total += turn.total;
++    if (stats.model?.name) usage.model = stats.model.name;
++    else if (stats.model?.id) usage.model = stats.model.id;
++  }
++  return usage;
++}
++
++/**
++ * The same sum over the message stream the chat panel holds.
++ *
++ * Stats travel to the panel as a `data-piStats` part rather than a field, so the
++ * figure shown to the person is computed from what is rendered, not from a
++ * second copy that could drift.
++ */
++export function sumChatUsageFromParts(
++  messages: Array<{ parts: Array<{ type?: string; data?: unknown }> }>
++): ChatUsage {
++  const items: Array<{ piRuntimeStats?: PiRuntimeStats | null }> = [];
++  for (const message of messages) {
++    for (const part of message.parts || []) {
++      if (part?.type === "data-piStats" && part.data && typeof part.data === "object") {
++        items.push({ piRuntimeStats: part.data as PiRuntimeStats });
++      }
++    }
++  }
++  return sumChatUsage(items);
++}
++
++/** Whether there is anything worth showing: one turn with no tokens is not. */
++export function hasChatUsage(usage: ChatUsage): boolean {
++  return usage.turns > 0 && usage.total > 0;
++}

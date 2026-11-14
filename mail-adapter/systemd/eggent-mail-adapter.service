@@ -1,0 +1,24 @@
+[Unit]
+Description=Eggent mail adapter (IMAP → eggent email service contract)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=eggent-mail
+Group=eggent-mail
+WorkingDirectory=/opt/eggent-mail-adapter
+EnvironmentFile=/etc/eggent-mail/adapter.env
+Environment=EGGENT_MAIL_DIR=/var/lib/eggent-mail
+Environment=EGGENT_MAIL_HOST=127.0.0.1
+ExecStart=/usr/bin/python3 -m adapter
+Restart=always
+RestartSec=10
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/eggent-mail
+
+[Install]
+WantedBy=multi-user.target

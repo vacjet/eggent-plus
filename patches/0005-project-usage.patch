@@ -1,0 +1,278 @@
+diff --git a/scripts/test-project-usage.ts b/scripts/test-project-usage.ts
+new file mode 100644
+index 0000000..0cdee1d
+--- /dev/null
++++ b/scripts/test-project-usage.ts
+@@ -0,0 +1,100 @@
++/**
++ * Checks the project total: a sum over the chats a project owns.
++ *
++ * Run with Node 22:
++ *   node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types \
++ *     --import ./scripts/alias-loader-register.mjs scripts/test-project-usage.ts
++ */
++import assert from "node:assert/strict";
++import fs from "node:fs/promises";
++import os from "node:os";
++import path from "node:path";
++import { readProjectUsage, usageOfChats } from "../src/lib/usage/project-usage.ts";
++
++let failed = 0;
++let ran = 0;
++async function check(name: string, fn: () => Promise<void> | void): Promise<void> {
++  ran += 1;
++  try {
++    await fn();
++    console.log(`  ok    ${name}`);
++  } catch (error) {
++    failed += 1;
++    console.log(`  FAIL  ${name}: ${error instanceof Error ? error.message : String(error)}`);
++  }
++}
++
++const msg = (input: number, output: number) => ({ piRuntimeStats: { lastTurn: { input, output } } });
++
++console.log("summing a project:\n");
++
++await check("two chats add up, and both are counted", () => {
++  const usage = usageOfChats([
++    { messages: [msg(100, 50), msg(10, 5)] },
++    { messages: [msg(1, 1)] },
++  ]);
++  assert.equal(usage.chats, 2);
++  assert.equal(usage.turns, 3);
++  assert.equal(usage.total, 167);
++});
++
++await check("a chat with no messages counts as a chat and adds nothing", () => {
++  const usage = usageOfChats([{ messages: [] }, { messages: [msg(5, 5)] }]);
++  assert.equal(usage.chats, 2);
++  assert.equal(usage.total, 10);
++});
++
++await check("messages without stats are skipped", () => {
++  const usage = usageOfChats([{ messages: [{}, { piRuntimeStats: null }, msg(7, 3)] }]);
++  assert.equal(usage.turns, 1);
++  assert.equal(usage.total, 10);
++});
++
++await check("a chat that carries no messages field at all is still a chat", () => {
++  const usage = usageOfChats([{}]);
++  assert.equal(usage.chats, 1);
++  assert.equal(usage.total, 0);
++});
++
++await check("the last named model wins the label", () => {
++  const usage = usageOfChats([
++    { messages: [{ piRuntimeStats: { model: { name: "A" }, lastTurn: { total: 1 } } }] },
++    { messages: [{ piRuntimeStats: { model: { name: "B" }, lastTurn: { total: 1 } } }] },
++  ]);
++  assert.equal(usage.model, "B");
++});
++
++console.log("\nreading from disk:\n");
++
++const dir = await fs.mkdtemp(path.join(os.tmpdir(), "project-usage-"));
++await fs.writeFile(path.join(dir, "c1.json"), JSON.stringify({ id: "c1", projectId: "p1", messages: [msg(100, 100)] }));
++await fs.writeFile(path.join(dir, "c2.json"), JSON.stringify({ id: "c2", projectId: "p1", messages: [msg(1, 1)] }));
++await fs.writeFile(path.join(dir, "c3.json"), JSON.stringify({ id: "c3", projectId: "p2", messages: [msg(999, 999)] }));
++await fs.writeFile(path.join(dir, "broken.json"), "{ not json");
++
++await check("only the project's own chats are summed", async () => {
++  const usage = await readProjectUsage("p1", dir);
++  assert.equal(usage.chats, 2);
++  assert.equal(usage.total, 202);
++});
++
++await check("another project is not mixed in", async () => {
++  const usage = await readProjectUsage("p2", dir);
++  assert.equal(usage.chats, 1);
++  assert.equal(usage.total, 1998);
++});
++
++await check("a broken chat file is skipped, not fatal", async () => {
++  const usage = await readProjectUsage("p1", dir);
++  assert.equal(usage.chats, 2, "the broken file is not counted as a chat");
++});
++
++await check("a missing folder is zero, not an error", async () => {
++  const usage = await readProjectUsage("p1", path.join(dir, "does-not-exist"));
++  assert.deepEqual(usage, { turns: 0, input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0, chats: 0 });
++});
++
++await fs.rm(dir, { recursive: true, force: true });
++
++console.log(`\n${ran} checks, ${failed} failed`);
++process.exit(failed > 0 ? 1 : 0);
+diff --git a/src/app/api/projects/[id]/usage/route.ts b/src/app/api/projects/[id]/usage/route.ts
+new file mode 100644
+index 0000000..0f481b2
+--- /dev/null
++++ b/src/app/api/projects/[id]/usage/route.ts
+@@ -0,0 +1,14 @@
++import { NextRequest, NextResponse } from "next/server";
++import { getProject } from "@/lib/storage/project-store";
++import { readProjectUsage } from "@/lib/usage/project-usage";
++
++/** What this project has spent: a sum over its chats' own answers. */
++export async function GET(
++  _req: NextRequest,
++  { params }: { params: Promise<{ id: string }> }
++) {
++  const { id } = await params;
++  const project = await getProject(id);
++  if (!project) return NextResponse.json({ error: "Project not found" }, { status: 404 });
++  return NextResponse.json(await readProjectUsage(id));
++}
+diff --git a/src/components/project-model-settings.tsx b/src/components/project-model-settings.tsx
+index 99edf10..898fd05 100644
+--- a/src/components/project-model-settings.tsx
++++ b/src/components/project-model-settings.tsx
+@@ -66,7 +66,7 @@ function errorText(error: unknown): string {
+ }
+ 
+ export function ProjectModelSettings({ projectId }: { projectId: string }) {
+-  const { t } = useI18n();
++  const { t, locale } = useI18n();
+   const fieldId = useId();
+   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+   const [models, setModels] = useState<ProjectModelsState | null>(null);
+@@ -81,16 +81,23 @@ export function ProjectModelSettings({ projectId }: { projectId: string }) {
+   const [rawSaving, setRawSaving] = useState(false);
+   const [rawError, setRawError] = useState<string | null>(null);
+   const [advancedOpen, setAdvancedOpen] = useState(false);
++  /** Что проект потратил: сумма по его чатам, считается на сервере из их статистики. */
++  const [usage, setUsage] = useState<{ total: number; chats: number } | null>(null);
+ 
+   const endpoint = `/api/projects/${encodeURIComponent(projectId)}/model`;
+ 
+   const load = useCallback(async () => {
+     setStatus("loading");
+     try {
+-      const [fileRes, modelsRes] = await Promise.all([
++      const [fileRes, modelsRes, usageRes] = await Promise.all([
+         fetch(endpoint, { cache: "no-store" }),
+         fetch("/api/pi/models", { cache: "no-store" }),
++        fetch(`${endpoint}/usage`, { cache: "no-store" }).catch(() => null),
+       ]);
++      if (usageRes?.ok) {
++        const usageJson = (await usageRes.json().catch(() => null)) as { total?: number; chats?: number } | null;
++        if (usageJson) setUsage({ total: Number(usageJson.total) || 0, chats: Number(usageJson.chats) || 0 });
++      }
+       if (!fileRes.ok || !modelsRes.ok) throw new Error(`${fileRes.status}/${modelsRes.status}`);
+       const fileJson = await fileRes.json();
+       const modelsJson = (await modelsRes.json()) as ProjectModelsState & { modelLock?: ModelLockState };
+@@ -464,6 +471,15 @@ export function ProjectModelSettings({ projectId }: { projectId: string }) {
+         </Button>
+       </div>
+ 
++      {usage && usage.total > 0 ? (
++        <p className="text-xs text-muted-foreground">
++          {t("settings.usage.project", {
++            count: new Intl.NumberFormat(locale === "ru" ? "ru-RU" : "en-US").format(usage.total),
++            chats: usage.chats,
++          })}
++        </p>
++      ) : null}
++
+       <details
+         open={advancedOpen}
+         onToggle={(event) => setAdvancedOpen(event.currentTarget.open)}
+diff --git a/src/i18n/messages.ru.ts b/src/i18n/messages.ru.ts
+index cafe529..dbcdf92 100644
+--- a/src/i18n/messages.ru.ts
++++ b/src/i18n/messages.ru.ts
+@@ -393,6 +393,7 @@ export const ruMessages: Record<string, string> = {
+   "chat.helpers.meta.tokens": "Токены: {count}",
+   "chat.usage.chat": "за чат {count}",
+   "chat.usage.hint": "Сколько токенов потратил весь чат, по всем ответам.",
++  "settings.usage.project": "Этот проект потратил {count} токенов; чатов: {chats}.",
+   "chat.helpers.step.search": "Поиск",
+   "chat.helpers.step.page": "Чтение страницы",
+   "chat.helpers.step.files": "Файлы",
+diff --git a/src/i18n/messages.ts b/src/i18n/messages.ts
+index e741740..cd25de0 100644
+--- a/src/i18n/messages.ts
++++ b/src/i18n/messages.ts
+@@ -399,6 +399,7 @@ const enMessages = {
+   // eggent-plus: what the whole chat has spent, next to this turn's own counters.
+   "chat.usage.chat": "chat {count}",
+   "chat.usage.hint": "Tokens this whole chat has spent, across every answer.",
++  "settings.usage.project": "This project has spent {count} tokens across {chats} chats.",
+   "chat.helpers.step.search": "Searched",
+   "chat.helpers.step.page": "Read page",
+   "chat.helpers.step.files": "Files",
+diff --git a/src/lib/usage/project-usage.ts b/src/lib/usage/project-usage.ts
+new file mode 100644
+index 0000000..9baed66
+--- /dev/null
++++ b/src/lib/usage/project-usage.ts
+@@ -0,0 +1,68 @@
++import fs from "fs/promises";
++import path from "path";
++import type { Chat } from "@/lib/types";
++import type { PiRuntimeStats } from "@/lib/pi/types";
++import { sumChatUsage, type ChatUsage } from "@/lib/pi/usage-summary";
++
++/**
++ * What a project has spent, summed over the chats that belong to it.
++ *
++ * Each chat already stores the usage of every answer, so a project total is the
++ * same sum as a chat total, done over the chats the project owns. Nothing new is
++ * written: two copies of a spend figure disagree sooner or later, and the copy
++ * that disagrees is always the one somebody is looking at.
++ */
++
++export interface ProjectUsage extends ChatUsage {
++  /** Chats the project owns, whether or not they spent anything. */
++  chats: number;
++}
++
++/** Pure: sum what these chats' messages carry. */
++export function usageOfChats(
++  chats: Array<{ messages?: Array<{ piRuntimeStats?: PiRuntimeStats | null }> }>
++): ProjectUsage {
++  const total: ProjectUsage = { turns: 0, input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0, chats: chats.length };
++  for (const chat of chats) {
++    const messages = (chat.messages ?? []).map((message) => ({ piRuntimeStats: message.piRuntimeStats ?? null }));
++    const usage = sumChatUsage(messages);
++    total.turns += usage.turns;
++    total.input += usage.input;
++    total.output += usage.output;
++    total.cacheRead += usage.cacheRead;
++    total.cacheWrite += usage.cacheWrite;
++    total.total += usage.total;
++    if (usage.model) total.model = usage.model;
++  }
++  return total;
++}
++
++function chatsDir(): string {
++  return path.join(process.cwd(), "data", "chats");
++}
++
++/**
++ * Read the project's chats from disk.
++ *
++ * A chat file that cannot be parsed is skipped rather than failing the figure:
++ * one broken file in a folder should not hide what the rest of the project spent.
++ */
++export async function readProjectUsage(projectId: string, dir = chatsDir()): Promise<ProjectUsage> {
++  let files: string[] = [];
++  try {
++    files = await fs.readdir(dir);
++  } catch {
++    return { turns: 0, input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0, chats: 0 };
++  }
++  const chats: Chat[] = [];
++  for (const file of files) {
++    if (!file.endsWith(".json")) continue;
++    try {
++      const chat = JSON.parse(await fs.readFile(path.join(dir, file), "utf-8")) as Chat;
++      if (chat?.projectId === projectId && Array.isArray(chat.messages)) chats.push(chat);
++    } catch {
++      // A half-written chat is left out of the sum, not turned into an error.
++    }
++  }
++  return usageOfChats(chats);
++}

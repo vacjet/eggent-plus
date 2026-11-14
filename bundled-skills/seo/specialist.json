@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "id": "seo",
+  "title": "SEO-специалист",
+  "summary": "Техническая доступность, индексация, трафик и конверсии: список правок с приоритетом.",
+  "skills": ["external-sources"],
+  "requires": {
+    "env": ["YANDEX_SEO_TOKEN"],
+    "tools": ["python3"]
+  },
+  "prompts": {
+    "audit": "prompts/audit.md",
+    "report": "prompts/report.md"
+  },
+  "scenario": {
+    "request": "Проверь example.ru: что отдаёт 404, что в индексе, откуда трафик за 12 месяцев. Дай три правки с приоритетом.",
+    "steps": [
+      "python3 skills/external-sources/site_audit.py --site https://example.ru --limit 50 --out data/external",
+      "python3 skills/external-sources/yandex_read.py --source webmaster --out data/external",
+      "python3 skills/external-sources/yandex_read.py --source metrika --months 12 --out data/external",
+      "python3 skills/external-sources/site_audit.py --status --out data/external"
+    ],
+    "expect": [
+      "вывод одной фразой",
+      "три правки с приоритетом, доказательством и эффектом",
+      "у каждой цифры — ссылка на файл данных и дата чтения",
+      "что не проверено и чего не хватает"
+    ]
+  }
+}

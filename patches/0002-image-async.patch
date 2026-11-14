@@ -1,0 +1,547 @@
+diff --git a/scripts/test-image-async.ts b/scripts/test-image-async.ts
+new file mode 100644
+index 0000000..cba3e25
+--- /dev/null
++++ b/scripts/test-image-async.ts
+@@ -0,0 +1,223 @@
++/**
++ * Checks async image tasks: a provider that answers with a task instead of
++ * pictures, and the wait that turns that task into bytes.
++ *
++ * Run with Node 22:
++ *   node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types \
++ *     --import ./scripts/alias-loader-register.mjs scripts/test-image-async.ts
++ *
++ * Everything is injected, so this runs in a second and touches no network.
++ */
++import assert from "node:assert/strict";
++import { imageTaskFromPayload, waitForImageTask } from "../src/lib/pi/image-tasks.ts";
++
++let failed = 0;
++let ran = 0;
++function check(name: string, fn: () => void | Promise<void>): Promise<void> {
++  ran += 1;
++  return Promise.resolve()
++    .then(fn)
++    .then(() => console.log(`  ok    ${name}`))
++    .catch((error: unknown) => {
++      failed += 1;
++      console.log(`  FAIL  ${name}: ${error instanceof Error ? error.message : String(error)}`);
++    });
++}
++
++const PNG = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 0]);
++
++function imageResponse(): Response {
++  return new Response(PNG, { status: 200, headers: { "content-type": "image/png" } });
++}
++
++function jsonResponse(payload: unknown, status = 200): Response {
++  return new Response(JSON.stringify(payload), {
++    status,
++    headers: { "content-type": "application/json" },
++  });
++}
++
++/** Answers from a queue; the last answer repeats forever. */
++function queuedFetch(answers: Array<() => Response | Promise<Response>>) {
++  const calls: string[] = [];
++  const impl = (async (input: string | URL | Request) => {
++    const url = typeof input === "string" ? input : input instanceof URL ? input.toString() : input.url;
++    calls.push(url);
++    const next = answers.length > 1 ? answers.shift()! : answers[0];
++    return next();
++  }) as typeof fetch;
++  return { impl, calls };
++}
++
++console.log("task detection:\n");
++
++await check("a submit answer with a uid is a task", () => {
++  const task = imageTaskFromPayload("https://api.example.test/v1", { uid: "abc-1" });
++  assert.deepEqual(task, {
++    id: "abc-1",
++    resultUrl: "https://api.example.test/v1/images/tasks/abc-1/result",
++  });
++});
++
++await check("a result address in the answer is used as it is", () => {
++  const task = imageTaskFromPayload("https://api.example.test/v1", {
++    task_id: "t-9",
++    result_url: "https://cdn.example.test/out/t-9.png",
++  });
++  assert.equal(task?.resultUrl, "https://cdn.example.test/out/t-9.png");
++});
++
++await check("a nested id under data is a task too", () => {
++  assert.equal(imageTaskFromPayload("https://x.test", { data: { id: "n-1" } })?.id, "n-1");
++});
++
++await check("an answer with images is not a task", () => {
++  const payload = { created: 1, data: [{ b64_json: "AAAA" }], id: "resp-1" };
++  assert.equal(imageTaskFromPayload("https://x.test", payload), null);
++});
++
++await check("plain text, arrays and null are not tasks", () => {
++  for (const payload of [null, "ok", [], 42, { error: "no" }]) {
++    assert.equal(imageTaskFromPayload("https://x.test", payload), null);
++  }
++});
++
++console.log("\nwaiting:\n");
++
++await check("not ready, then the picture", async () => {
++  const { impl, calls } = queuedFetch([
++    () => jsonResponse({ status: "running" }, 200),
++    () => new Response("", { status: 202 }),
++    () => imageResponse(),
++  ]);
++  const result = await waitForImageTask(
++    { id: "abc", resultUrl: "https://api.example.test/v1/images/tasks/abc/result" },
++    "token",
++    { fetchImpl: impl, sleep: async () => {}, attempts: 5, delayMs: 0 }
++  );
++  assert.equal(result.ok, true);
++  if (result.ok) {
++    assert.equal(result.image.mediaType, "image/png");
++    assert.equal(result.image.bytes.length, PNG.length);
++  }
++  assert.equal(calls.length, 3, "kept polling until the image arrived");
++});
++
++await check("a 404 while the task is being created is not a failure", async () => {
++  const { impl } = queuedFetch([() => new Response("", { status: 404 }), () => imageResponse()]);
++  const result = await waitForImageTask({ id: "a", resultUrl: "https://x.test/r" }, "t", {
++    fetchImpl: impl,
++    sleep: async () => {},
++    attempts: 3,
++    delayMs: 0,
++  });
++  assert.equal(result.ok, true);
++});
++
++await check("a failed task reports the provider's reason", async () => {
++  const { impl } = queuedFetch([() => jsonResponse({ status: "failed", error: { message: "quota" } })]);
++  const result = await waitForImageTask({ id: "a", resultUrl: "https://x.test/r" }, "t", {
++    fetchImpl: impl,
++    sleep: async () => {},
++    attempts: 3,
++    delayMs: 0,
++  });
++  assert.equal(result.ok, false);
++  if (!result.ok) assert.match(result.error, /quota/);
++});
++
++await check("a hard error ends the wait at once", async () => {
++  let polls = 0;
++  const impl = (async () => {
++    polls += 1;
++    return new Response("nope", { status: 500 });
++  }) as typeof fetch;
++  const result = await waitForImageTask({ id: "a", resultUrl: "https://x.test/r" }, "t", {
++    fetchImpl: impl,
++    sleep: async () => {},
++    attempts: 10,
++    delayMs: 0,
++  });
++  assert.equal(result.ok, false);
++  if (!result.ok) assert.match(result.error, /HTTP 500/);
++  assert.equal(polls, 1, "no point polling a broken address ten times");
++});
++
++await check("a task that never finishes ends with a timeout, not a hang", async () => {
++  const { impl, calls } = queuedFetch([() => new Response("", { status: 202 })]);
++  const result = await waitForImageTask({ id: "a", resultUrl: "https://x.test/r" }, "t", {
++    fetchImpl: impl,
++    sleep: async () => {},
++    attempts: 3,
++    delayMs: 0,
++  });
++  assert.equal(result.ok, false);
++  if (!result.ok) assert.match(result.error, /not ready after 3 polls/);
++  assert.equal(calls.length, 3);
++});
++
++await check("the wall clock stops a provider that always says 202", async () => {
++  let clock = 0;
++  const { impl, calls } = queuedFetch([() => new Response("", { status: 202 })]);
++  const result = await waitForImageTask({ id: "a", resultUrl: "https://x.test/r" }, "t", {
++    fetchImpl: impl,
++    sleep: async () => {
++      clock += 60_000;
++    },
++    attempts: 100,
++    delayMs: 1,
++    timeoutMs: 150_000,
++    now: () => clock,
++  });
++  assert.equal(result.ok, false);
++  assert.ok(calls.length <= 4, `stopped by the clock, not by attempts (${calls.length} polls)`);
++});
++
++await check("a PNG labelled octet-stream is still a picture", async () => {
++  const { impl } = queuedFetch([() => new Response(PNG, {
++    status: 200,
++    headers: { "content-type": "application/octet-stream" },
++  })]);
++  const result = await waitForImageTask({ id: "a", resultUrl: "https://x.test/r" }, "t", {
++    fetchImpl: impl,
++    sleep: async () => {},
++    attempts: 2,
++    delayMs: 0,
++  });
++  assert.equal(result.ok, true);
++  if (result.ok) assert.equal(result.image.mediaType, "image/png");
++});
++
++await check("an empty image body is not success", async () => {
++  const { impl } = queuedFetch([() => new Response(new Uint8Array(), {
++    status: 200,
++    headers: { "content-type": "image/png" },
++  })]);
++  const result = await waitForImageTask({ id: "a", resultUrl: "https://x.test/r" }, "t", {
++    fetchImpl: impl,
++    sleep: async () => {},
++    attempts: 2,
++    delayMs: 0,
++  });
++  assert.equal(result.ok, false);
++  if (!result.ok) assert.match(result.error, /empty image/);
++});
++
++await check("a transport error is retried, not fatal", async () => {
++  let attempt = 0;
++  const impl = (async () => {
++    attempt += 1;
++    if (attempt === 1) throw new Error("ECONNRESET");
++    return imageResponse();
++  }) as typeof fetch;
++  const result = await waitForImageTask({ id: "a", resultUrl: "https://x.test/r" }, "t", {
++    fetchImpl: impl,
++    sleep: async () => {},
++    attempts: 3,
++    delayMs: 0,
++  });
++  assert.equal(result.ok, true);
++});
++
++console.log(`\n${ran} checks, ${failed} failed`);
++process.exit(failed > 0 ? 1 : 0);
+diff --git a/src/lib/pi/eggent-tools.ts b/src/lib/pi/eggent-tools.ts
+index c9dbfbf..e3965dd 100644
+--- a/src/lib/pi/eggent-tools.ts
++++ b/src/lib/pi/eggent-tools.ts
+@@ -16,6 +16,7 @@ import {
+   upsertCustomModelProvider,
+ } from "@/lib/pi/config-store";
+ import { managePiSchedules, noteScheduledRunReachedTelegram, scheduledRunChatFor, workspaceScheduleJobs } from "@/lib/pi/schedule-host";
++import { imageTaskFromPayload, waitForImageTask } from "@/lib/pi/image-tasks";
+ import { isRecurringJob } from "@/lib/pi/schedule-limits";
+ import { formatUsageMeter, getUsageSnapshot, isUsageProviderConfigured } from "@/lib/usage/usage-provider";
+ import { createPendingInteraction } from "@/lib/pi/pending-interactions";
+@@ -215,6 +216,25 @@ async function writeGeneratedImages(options: { cwd?: string }, payload: unknown)
+   return saved;
+ }
+ 
++/**
++ * Save one picture that came back from an async task.
++ *
++ * Kept next to `writeGeneratedImages` rather than folded into it because the
++ * bytes are already decoded and there is exactly one of them: the base64 walk
++ * above is about parsing an OpenAI-shaped response, and this is not one.
++ */
++async function writeGeneratedImageBytes(
++  options: { cwd?: string },
++  image: { bytes: Uint8Array; mediaType: string }
++): Promise<{ path: string; mediaType?: string; source: string }> {
++  const outputDir = path.join(options.cwd || process.cwd(), "generated-images");
++  await fs.mkdir(outputDir, { recursive: true });
++  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
++  const filePath = path.join(outputDir, `eggent-image-${stamp}-1.${imageExtension(image.mediaType)}`);
++  await fs.writeFile(filePath, image.bytes);
++  return { path: filePath, mediaType: image.mediaType, source: "async-task" };
++}
++
+ /**
+  * Files put into the chat while a question card was open. The composer's
+  * paperclip works under a card, and a card asking for a sample is answered by
+@@ -1115,6 +1135,43 @@ export async function createEggentPiTools(options: {
+           return textResult(JSON.stringify({ success: false, error: message, status: response.status }, null, 2), { success: false, status: response.status });
+         }
+ 
++        // An async provider answers with a task instead of pictures. Follow it:
++        // without this the turn reports "no inline images" and the person, who
++        // asked for a picture, gets nothing at all.
++        const task = imageTaskFromPayload(backend.baseUrl, payload);
++        if (task) {
++          const waited = await waitForImageTask(task, backend.token);
++          if (!waited.ok) {
++            return textResult(
++              JSON.stringify(
++                {
++                  success: false,
++                  async: true,
++                  provider: backend.providerLabel,
++                  taskId: task.id,
++                  error: waited.error,
++                  hint: "The provider accepted the request and renders it later; the wait above is what failed.",
++                },
++                null,
++                2
++              ),
++              { success: false, async: true, taskId: task.id }
++            );
++          }
++          const saved = await writeGeneratedImageBytes(options, waited.image);
++          const asyncResult = {
++            success: true,
++            provider: backend.providerLabel,
++            imageCount: 1,
++            images: [saved],
++            referenceImageCount: inputReferences.length,
++            quality: body.quality,
++            async: true,
++            note: "The provider rendered the image asynchronously and it was saved locally. Show the path to the user and offer one short next action.",
++          };
++          return textResult(JSON.stringify(asyncResult, null, 2), asyncResult);
++        }
++
+         const savedImages = await writeGeneratedImages(options, payload);
+         // The provider may report what this request cost. Eggent does not price
+         // anything itself; it only passes the provider's own formatted figure on
+diff --git a/src/lib/pi/image-tasks.ts b/src/lib/pi/image-tasks.ts
+new file mode 100644
+index 0000000..cbde4fe
+--- /dev/null
++++ b/src/lib/pi/image-tasks.ts
+@@ -0,0 +1,230 @@
++/**
++ * Async image APIs: the provider answers a generation request with a task, and
++ * the picture arrives later from a second address.
++ *
++ * The OpenAI-compatible shape (`/images/generations` returning base64 inline)
++ * covers most providers, but an aggregator that renders on its own hardware
++ * answers with a task id and asks to be polled. Without this the tool reports
++ * "no inline images" and the person sees nothing, so the task is followed here:
++ * submit, poll, save the bytes.
++ *
++ * Everything is pure apart from the injected fetch and sleep, so the behaviour
++ * is checked in `scripts/test-image-async.ts` without a network.
++ */
++
++/** A generation in flight: which task, and where its result appears. */
++export interface ImageTask {
++  id: string;
++  resultUrl: string;
++}
++
++const ID_FIELDS = ["uid", "id", "task_id", "taskId", "job_id", "jobId"] as const;
++const URL_FIELDS = ["result_url", "resultUrl", "status_url", "statusUrl", "url"] as const;
++const FAILED_STATUSES = new Set(["failed", "error", "cancelled", "canceled", "rejected"]);
++
++/**
++ * The task behind a submit response, or null when the provider answered with
++ * images (or with something that is not a task at all).
++ *
++ * Only called when no image was found in the payload: a provider that returns
++ * `data: []` and a task is exactly the case this exists for, while a provider
++ * that returns `data: [{b64_json}]` and also an `id` is already done.
++ */
++function payloadCarriesImages(record: Record<string, unknown>): boolean {
++  const items = Array.isArray(record.data) ? record.data : Array.isArray(record.images) ? record.images : [];
++  return items.some((item) => {
++    if (!item || typeof item !== "object" || Array.isArray(item)) return false;
++    const entry = item as Record<string, unknown>;
++    return (
++      typeof entry.b64_json === "string" ||
++      typeof entry.image === "string" ||
++      typeof entry.data === "string" ||
++      typeof entry.url === "string"
++    );
++  });
++}
++
++export function imageTaskFromPayload(baseUrl: string, payload: unknown): ImageTask | null {
++  if (!payload || typeof payload !== "object" || Array.isArray(payload)) return null;
++  const record = payload as Record<string, unknown>;
++  // A provider that already returned pictures is done: its `id` is a response
++  // id, not a task, and polling it would replace a finished image with a wait.
++  if (payloadCarriesImages(record)) return null;
++  const nested = record.data && typeof record.data === "object" && !Array.isArray(record.data)
++    ? (record.data as Record<string, unknown>)
++    : null;
++  const source = nested ?? record;
++
++  let id = "";
++  for (const field of ID_FIELDS) {
++    const value = source[field] ?? record[field];
++    if (typeof value === "string" && value.trim()) {
++      id = value.trim();
++      break;
++    }
++    if (typeof value === "number") {
++      id = String(value);
++      break;
++    }
++  }
++  if (!id) return null;
++
++  for (const field of URL_FIELDS) {
++    const value = source[field] ?? record[field];
++    if (typeof value === "string" && /^https?:\/\//i.test(value.trim())) {
++      return { id, resultUrl: value.trim() };
++    }
++  }
++  // Nothing in the answer says where the result lives, so use the layout the
++  // async providers in front of us use: a task address under the same base.
++  return { id, resultUrl: `${baseUrl.replace(/\/+$/, "")}/images/tasks/${encodeURIComponent(id)}/result` };
++}
++
++export interface TaskImage {
++  bytes: Uint8Array;
++  mediaType: string;
++}
++
++export interface WaitOptions {
++  /** How many polls before giving up. */
++  attempts?: number;
++  /** Pause between polls. */
++  delayMs?: number;
++  /** Injected for tests. */
++  fetchImpl?: typeof fetch;
++  sleep?: (ms: number) => Promise<void>;
++  /** Injected for tests; a provider that keeps answering "not ready" forever must end. */
++  now?: () => number;
++  /** Wall-clock ceiling for the whole wait. */
++  timeoutMs?: number;
++  onPoll?: (attempt: number, status: string) => void;
++}
++
++export type WaitResult = { ok: true; image: TaskImage } | { ok: false; error: string };
++
++const DEFAULT_ATTEMPTS = 40;
++const DEFAULT_DELAY_MS = 3000;
++const DEFAULT_TIMEOUT_MS = 120_000;
++
++/**
++ * Which image these bytes are, or null when they are not an image at all.
++ *
++ * The bytes decide, not the header: a provider that streams a raw PNG may label
++ * it `application/octet-stream`, and trusting the header would turn a finished
++ * picture into a wait that ends in a timeout.
++ */
++function mediaTypeOf(header: string | null, bytes: Uint8Array): string | null {
++  const fromHeader = (header || "").split(";")[0].trim().toLowerCase();
++  if (bytes.length > 8 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) return "image/png";
++  if (bytes.length > 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return "image/jpeg";
++  if (bytes.length > 12 && bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50) return "image/webp";
++  if (bytes.length > 6 && bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x38) return "image/gif";
++  if (fromHeader.startsWith("image/")) return fromHeader;
++  return null;
++}
++
++function describeJsonFailure(payload: Record<string, unknown>): string | null {
++  const rawStatus = payload.status ?? payload.state;
++  const status = typeof rawStatus === "string" ? rawStatus.trim().toLowerCase() : "";
++  const error = payload.error;
++  const message =
++    typeof error === "string"
++      ? error.trim()
++      : error && typeof error === "object" && !Array.isArray(error)
++        ? String((error as Record<string, unknown>).message || "").trim()
++        : "";
++  if (message) return message;
++  if (FAILED_STATUSES.has(status)) return `Image task ended as ${status}`;
++  return null;
++}
++
++/**
++ * Poll the task until the picture arrives.
++ *
++ * Returns the bytes rather than a path: where a generated file goes is the
++ * caller's business, and a test should not write anything.
++ */
++export async function waitForImageTask(
++  task: ImageTask,
++  token: string,
++  options: WaitOptions = {}
++): Promise<WaitResult> {
++  const attempts = Math.max(1, options.attempts ?? DEFAULT_ATTEMPTS);
++  const delayMs = Math.max(0, options.delayMs ?? DEFAULT_DELAY_MS);
++  const timeoutMs = Math.max(0, options.timeoutMs ?? DEFAULT_TIMEOUT_MS);
++  const doFetch = options.fetchImpl ?? fetch;
++  const sleep = options.sleep ?? ((ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms)));
++  const now = options.now ?? (() => Date.now());
++  const started = now();
++  let last = "no answer yet";
++
++  for (let attempt = 1; attempt <= attempts; attempt += 1) {
++    if (now() - started > timeoutMs) break;
++
++    let response: Response | null = null;
++    let transportError = "";
++    try {
++      response = await doFetch(task.resultUrl, {
++        method: "GET",
++        headers: { Authorization: `Bearer ${token}` },
++      });
++    } catch (error) {
++      transportError = error instanceof Error ? error.message : String(error);
++    }
++
++    if (!response) {
++      last = `the task address did not answer: ${transportError}`;
++    } else {
++      const contentType = (response.headers.get("content-type") || "").toLowerCase();
++      if (response.ok) {
++        const bytes = new Uint8Array(await response.arrayBuffer());
++        const mediaType = bytes.length > 0 ? mediaTypeOf(contentType, bytes) : null;
++        if (mediaType) {
++          return { ok: true, image: { bytes, mediaType } };
++        }
++        if (bytes.length === 0) {
++          // An empty 200 is a provider saying "soon", not a picture.
++          last = "the provider returned an empty image";
++          options.onPoll?.(attempt, last);
++          if (attempt < attempts) await sleep(delayMs);
++          continue;
++        }
++        // Not an image: a status document, or a body we cannot read.
++        const text = bytes.length > 0 ? new TextDecoder().decode(bytes) : "";
++        let payload: Record<string, unknown> | null = null;
++        try {
++          const parsed = text ? JSON.parse(text) : null;
++          payload = parsed && typeof parsed === "object" && !Array.isArray(parsed)
++            ? (parsed as Record<string, unknown>)
++            : null;
++        } catch {
++          payload = null;
++        }
++        const failure = payload ? describeJsonFailure(payload) : null;
++        if (failure) return { ok: false, error: failure };
++        last = payload
++          ? `the provider says the task is ${String(payload.status ?? payload.state ?? "not finished")}`
++          : "the task address answered with neither an image nor a status";
++      } else if (
++        response.status === 202 ||
++        response.status === 404 ||
++        response.status === 409 ||
++        response.status === 425
++      ) {
++        // Accepted, not there yet, or already being worked on: all mean "poll again".
++        last = `the task is not ready (HTTP ${response.status})`;
++      } else {
++        const text = await response.text().catch(() => "");
++        return {
++          ok: false,
++          error: `the task address answered HTTP ${response.status}${text ? `: ${text.slice(0, 300)}` : ""}`,
++        };
++      }
++    }
++
++    options.onPoll?.(attempt, last);
++    if (attempt < attempts) await sleep(delayMs);
++  }
++
++  return { ok: false, error: `the image was still not ready after ${attempts} polls: ${last}` };
++}

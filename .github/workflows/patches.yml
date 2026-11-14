@@ -1,0 +1,86 @@
+name: patches
+
+# Проверка сборки eggent-plus на теге upstream: накладываются ли патчи,
+# сходится ли русская локаль и собирается ли Next.js. Включается после
+# публикации репозитория (решение 12.11.2026). Тег upstream поднимается
+# руками в UPSTREAM_TAG — единственное место, где он записан для CI.
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  UPSTREAM_REPO: https://github.com/eggent-ai/eggent.git
+  UPSTREAM_TAG: v0.8.0
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout eggent-plus
+        uses: actions/checkout@v4
+
+      # Без этого шага на раннере остаётся Node 20, а тесты upstream вызывают
+      # --experimental-strip-types: флаг появился в Node 22.6, на 20-м сборка
+      # падает ещё до компиляции. Образ проекта тоже собран на node:22.
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Версии
+        run: |
+          node --version
+          npm --version
+          python3 --version
+
+      - name: Clone upstream at the tag
+        run: |
+          git clone --depth 1 --branch "$UPSTREAM_TAG" "$UPSTREAM_REPO" upstream
+          git -C upstream describe --tags
+
+      - name: Apply patches
+        run: |
+          shopt -s nullglob
+          patches=(patches/*.patch)
+          if [ ${#patches[@]} -eq 0 ]; then
+            echo "patches/*.patch пуст — проверять нечего" >&2
+            exit 1
+          fi
+          for p in "${patches[@]}"; do
+            echo "check $p"
+            git -C upstream apply --check "$PWD/$p"
+            git -C upstream apply "$PWD/$p"
+          done
+
+      - name: No secrets in history
+        run: |
+          # Текущий коммит проверяет ./check.sh. Здесь — вся история: ключ,
+          # добавленный и удалённый, остаётся в ней навсегда.
+          if git log --all -p --no-color \
+             | grep -nE 'sk-[A-Za-z0-9_-]{16,}|AIza[0-9A-Za-z_-]{20,}|ghp_[A-Za-z0-9]{20,}|xox[baprs]-[0-9A-Za-z-]{10,}|BEGIN [A-Z ]*PRIVATE KEY' \
+             | grep -vE 'messages\.(ru\.)?ts|test-|docs/|patches/' ; then
+            echo "похоже на секрет в истории git — репозиторий публичный" >&2
+            exit 1
+          fi
+
+      - name: Russian locale
+        run: |
+          python3 scripts/check-i18n.py --self-test
+          python3 scripts/check-i18n.py
+
+      - name: Vocabulary
+        working-directory: upstream
+        run: npm run -s test:vocabulary
+
+      - name: Repository checks
+        run: ./check.sh
+
+      - name: Install dependencies
+        working-directory: upstream
+        run: npm ci
+
+      - name: Build
+        working-directory: upstream
+        run: npm run build

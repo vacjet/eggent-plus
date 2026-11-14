@@ -1,0 +1,25 @@
+# Данные экземпляра — никогда
+data/
+.env
+.env.*
+
+# Секреты и всё, что похоже на них
+secrets*
+*.pem
+*.key
+*.p12
+id_rsa*
+id_ed25519*
+
+# Рабочая копия upstream — клон тега, не коммитится
+upstream/
+
+# Копии и мусор
+__pycache__/
+*.pyc
+*.tar.gz
+*.log
+backups/
+node_modules/
+.next/
+tmp/
