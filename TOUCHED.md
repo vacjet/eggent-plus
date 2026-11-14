@@ -6,8 +6,8 @@
 | Файл upstream | Зачем | Патч |
 |---|---|---|
 | `src/i18n/locales.ts` | добавить `ru` в `SUPPORTED_LOCALES` | ru-locale |
-| `src/i18n/messages.ru.ts` | новый файл перевода (1773 ключа, включая строки расхода) | ru-locale, chat-usage, project-usage, build-version, specialist-autoselect, card-proof |
-| `src/i18n/messages.ts` | регистрация русского словаря (`ru: ruMessages`), ключи подписи расхода, подписи специалиста и карточки | ru-locale, chat-usage, specialist-autoselect, card-proof |
+| `src/i18n/messages.ru.ts` | новый файл перевода (1773 ключа, включая строки расхода) | ru-locale, chat-usage, project-usage, build-version, specialist-autoselect, card-proof, file-review |
+| `src/i18n/messages.ts` | регистрация русского словаря (`ru: ruMessages`), ключи подписи расхода, подписи специалиста, карточки и правок файлов | ru-locale, chat-usage, specialist-autoselect, card-proof, file-review |
 | `src/i18n/vocabulary.ts` | русские намерения и стоп-слова | ru-locale |
 | `src/lib/pi/eggent-tools.ts` | асинхронные картинки (задача → опрос → файл); инструмент `eggent_script_schedules` | image-async, script-schedules |
 | `src/lib/pi/image-tasks.ts` | новый файл: распознать задачу в ответе провайдера и дождаться картинки | image-async |
@@ -39,6 +39,10 @@
 | `src/app/api/board/cards/[id]/route.ts` | `move.proof` в PATCH карточки | card-proof |
 | `src/lib/board/client.ts` | `moveCard(..., proof)` | card-proof |
 | `src/components/board/card-sheet.tsx` | поле «Чем проверено?» перед закрытием карточки | card-proof |
+| `src/lib/files/versions/review.ts` | новый файл: какая правка агента предлагается к отмене и сам откат | file-review |
+| `src/app/api/files/versions/review/route.ts` | новый маршрут: чтение правок к отмене и решение «принять / отклонить» | file-review |
+| `src/components/chat/files-produced.tsx` | строка «правка агента» с «Отклонить» и «Оставить» под ответом | file-review |
+| `scripts/test-file-review.ts` | новый файл: 7 кейсов выбора версии для отмены | file-review |
 | `src/lib/specialists/choice.ts` | новый файл: правила выбора специалиста, промпт, разбор ответа модели | specialist-autoselect |
 | `src/lib/specialists/catalog.ts` | новый файл: специалисты, установленные в проекте (`specialist.json` рядом со скиллом) | specialist-autoselect |
 | `src/lib/specialists/select.ts` | новый файл: один вызов модели без инструментов, таймаут, выбор модели | specialist-autoselect |

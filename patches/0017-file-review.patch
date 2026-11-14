@@ -1,0 +1,399 @@
+diff --git a/scripts/test-file-review.ts b/scripts/test-file-review.ts
+new file mode 100644
+index 0000000..f1fc39b
+--- /dev/null
++++ b/scripts/test-file-review.ts
+@@ -0,0 +1,71 @@
++/**
++ * Checks which agent edit is offered for undo: newest version by the agent, and
++ * the version before it.
++ *
++ * Run with Node 22:
++ *   node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types \
++ *     --import ./scripts/alias-loader-register.mjs scripts/test-file-review.ts
++ *
++ * The restore itself is the existing one (versions/review.ts), exercised on a
++ * workspace; what is tested here is the choice, which is where a mistake would
++ * mean offering to undo an edit the person made themselves.
++ */
++import assert from "node:assert/strict";
++import { rejectTargetOf } from "../src/lib/files/versions/review.ts";
++import type { VersionAuthorKind, VersionInfo } from "../src/lib/files/versions/shape.ts";
++
++let failed = 0;
++let ran = 0;
++function check(name: string, fn: () => void): void {
++  ran += 1;
++  try {
++    fn();
++    console.log(`  ok    ${name}`);
++  } catch (error) {
++    failed += 1;
++    console.log(`  FAIL  ${name}: ${error instanceof Error ? error.message : String(error)}`);
++  }
++}
++
++function version(n: number, kind: VersionAuthorKind, extra: Partial<VersionInfo> = {}): VersionInfo {
++  return { n, at: `2026-11-14T10:0${n}:00.000Z`, size: 10, by: { kind }, ...extra };
++}
++
++// Новее — первым, как их отдаёт история (journal.versions перевёрнут).
++const agentAfterEarlier = [version(3, "agent"), version(2, "person"), version(1, "earlier")];
++
++console.log("какую правку предлагать к отмене:\n");
++
++check("правка агента поверх предыдущей версии", () => {
++  assert.deepEqual(rejectTargetOf(agentAfterEarlier), { current: 3, previous: 2 });
++});
++
++check("одна версия — отменять нечего", () => {
++  assert.equal(rejectTargetOf([version(1, "agent")]), null);
++});
++
++check("новая версия человека — это не правка агента", () => {
++  assert.equal(rejectTargetOf([version(3, "person"), version(2, "agent")]), null);
++});
++
++check("восстановление и правка извне — не то, что предлагается", () => {
++  assert.equal(rejectTargetOf([version(4, "restore"), version(3, "agent")]), null);
++  assert.equal(rejectTargetOf([version(4, "outside"), version(3, "agent")]), null);
++});
++
++check("удалённую версию не возвращаем как отмену правки", () => {
++  const withDeleted = [version(4, "agent"), version(3, "person", { deleted: true }), version(2, "earlier")];
++  assert.deepEqual(rejectTargetOf(withDeleted), { current: 4, previous: 2 });
++});
++
++check("если всё предыдущее удалено — нечего возвращать", () => {
++  const allDeleted = [version(2, "agent"), version(1, "earlier", { deleted: true })];
++  assert.equal(rejectTargetOf(allDeleted), null);
++});
++
++check("пустая история не падает", () => {
++  assert.equal(rejectTargetOf([]), null);
++});
++
++console.log(`\n${ran - failed}/${ran} проверок пройдено`);
++if (failed > 0) process.exit(1);
+diff --git a/src/app/api/files/versions/review/route.ts b/src/app/api/files/versions/review/route.ts
+new file mode 100644
+index 0000000..c17eb13
+--- /dev/null
++++ b/src/app/api/files/versions/review/route.ts
+@@ -0,0 +1,64 @@
++import type { NextRequest } from "next/server";
++import { checkTerminalRequest, guardStatus, jsonError } from "@/lib/terminal/guard";
++import { getServerTranslator } from "@/i18n/server";
++import { projectFolderIsLink } from "@/lib/files/workspace-root";
++import { versionsEnabled } from "@/lib/files/versions/config";
++import { editUnderReview, rejectEdit } from "@/lib/files/versions/review";
++
++/**
++ * The edit an agent made to a file, and the person's decision about it.
++ *
++ *   GET  /api/files/versions/review?project=X&paths=a,b   ->  { paths: { a: {current, previous} } }
++ *   POST /api/files/versions/review  { project, path, decision: "reject" | "accept" }
++ *
++ * Reading is one call for the row of files under an answer: asking per file
++ * would be five requests for one line of the screen. "Reject" is a restore of
++ * the version before the agent's, written as a new version (see versions/review);
++ * "accept" writes nothing and answers so the row can stop asking.
++ */
++export async function GET(req: NextRequest) {
++  const failure = await checkTerminalRequest(req, { write: false });
++  if (failure) return jsonError("Not available.", guardStatus(failure));
++  const project = req.nextUrl.searchParams.get("project")?.trim() || "";
++  const paths = (req.nextUrl.searchParams.get("paths") || "")
++    .split(",")
++    .map((value) => value.trim())
++    .filter(Boolean)
++    .slice(0, 25);
++  if (!project || paths.length === 0) return jsonError("project and paths are required", 400);
++  if (!(await versionsEnabled())) return Response.json({ paths: {} }, { headers: { "Cache-Control": "no-store" } });
++  if (await projectFolderIsLink(project)) return jsonError("Not available.", 403);
++
++  const found: Record<string, { current: number; previous: number }> = {};
++  for (const path of paths) {
++    const review = await editUnderReview(project, path).catch(() => null);
++    if (review) found[path] = review;
++  }
++  return Response.json({ paths: found }, { headers: { "Cache-Control": "no-store" } });
++}
++
++export async function POST(req: NextRequest) {
++  const failure = await checkTerminalRequest(req, { write: true });
++  if (failure) return jsonError("Not available.", guardStatus(failure));
++  const t = await getServerTranslator(req.headers.get("accept-language"));
++  const body = (await req.json().catch(() => null)) as { project?: unknown; path?: unknown; decision?: unknown } | null;
++  const project = typeof body?.project === "string" ? body.project.trim() : "";
++  const filePath = typeof body?.path === "string" ? body.path.trim() : "";
++  const decision = body?.decision === "reject" ? "reject" : body?.decision === "accept" ? "accept" : null;
++  if (!project || !filePath || !decision) return jsonError(t("api.error.projectIdAndFilePathRequired"), 400);
++  if (await projectFolderIsLink(project)) return jsonError(t("api.error.invalidFilePath"), 403);
++
++  if (decision === "accept") {
++    return Response.json({ decision, at: new Date().toISOString() }, { headers: { "Cache-Control": "no-store" } });
++  }
++
++  const result = await rejectEdit(project, filePath);
++  if ("refused" in result) {
++    const message = result.refused === "missing" ? t("files.history.versionMissing") : t("files.history.restoreFailed");
++    return Response.json({ error: message, code: result.refused }, { status: 409, headers: { "Cache-Control": "no-store" } });
++  }
++  return Response.json(
++    { decision, restoredFrom: result.restoredFrom, version: result.version },
++    { headers: { "Cache-Control": "no-store" } }
++  );
++}
+diff --git a/src/components/chat/files-produced.tsx b/src/components/chat/files-produced.tsx
+index edee281..69f338e 100644
+--- a/src/components/chat/files-produced.tsx
++++ b/src/components/chat/files-produced.tsx
+@@ -52,9 +52,14 @@ export function FilesProduced({ groups }: { groups: ProducedGroup[] }) {
+   const chatId = useAppStore((state) => state.activeChatId);
+   const openFilePreview = useAppStore((state) => state.openFilePreview);
+   const [existence, setExistence] = useState<Existence | null>(null);
++  const [busyReview, setBusyReview] = useState<string | null>(null);
+   const [telegram, setTelegram] = useState(false);
+   const [sent, setSent] = useState<Record<string, "sending" | "sent" | "failed">>({});
+   const [note, setNote] = useState<string | null>(null);
++  // Файлы, которые этот ход изменил у себя в истории: их можно принять или отклонить.
++  const [reviews, setReviews] = useState<Record<string, { current: number; previous: number }>>({});
++  const [decided, setDecided] = useState<Record<string, "accepted" | "rejected" | "failed">>({});
++  const [reviewed, setReviewed] = useState<Record<string, number>>({});
+ 
+   // A card is stored with its message and a file is deleted whenever its owner
+   // likes: ask which are still there before offering a button that would fail.
+@@ -97,6 +102,65 @@ export function FilesProduced({ groups }: { groups: ProducedGroup[] }) {
+ 
+   if (rows.length === 0) return null;
+   const shown = rows.slice(0, VISIBLE);
++  // Один запрос на проект вместо запроса на файл: строка под ответом — это строка.
++  useEffect(() => {
++    const byProject = new Map<string, string[]>();
++    for (const group of groups) {
++      const paths = group.items.map((item) => item.path);
++      if (paths.length === 0) continue;
++      byProject.set(group.project, [...(byProject.get(group.project) ?? []), ...paths]);
++    }
++    if (byProject.size === 0) return;
++    let cancelled = false;
++    void (async () => {
++      const found: Record<string, { current: number; previous: number }> = {};
++      for (const [project, paths] of byProject) {
++        try {
++          const query = new URLSearchParams({ project, paths: paths.join(",") });
++          const response = await fetch(`/api/files/versions/review?${query}`, { cache: "no-store" });
++          if (!response.ok) continue;
++          const data = (await response.json()) as { paths?: Record<string, { current: number; previous: number }> };
++          for (const [path, review] of Object.entries(data.paths ?? {})) {
++            found[keyOf(project, path)] = review;
++          }
++        } catch {
++          // Без истории строке просто нечего предложить.
++        }
++      }
++      if (!cancelled) setReviews(found);
++    })();
++    return () => {
++      cancelled = true;
++    };
++  }, [groups]);
++
++  const decide = async (project: string, path: string, decision: "reject" | "accept") => {
++    const key = keyOf(project, path);
++    setBusyReview(key);
++    try {
++      const response = await fetch("/api/files/versions/review", {
++        method: "POST",
++        headers: { "Content-Type": "application/json" },
++        body: JSON.stringify({ project, path, decision }),
++      });
++      const data = (await response.json().catch(() => null)) as { restoredFrom?: number; error?: string } | null;
++      if (!response.ok) {
++        setDecided((current) => ({ ...current, [key]: "failed" }));
++        setNote(data?.error ?? t("files.review.failed"));
++        return;
++      }
++      setDecided((current) => ({ ...current, [key]: decision === "reject" ? "rejected" : "accepted" }));
++      if (decision === "reject" && typeof data?.restoredFrom === "number") {
++        setReviewed((current) => ({ ...current, [key]: data.restoredFrom as number }));
++      }
++    } catch {
++      setDecided((current) => ({ ...current, [key]: "failed" }));
++      setNote(t("files.review.failed"));
++    } finally {
++      setBusyReview(null);
++    }
++  };
++
+   const hidden = total - shown.length;
+   // One archive per folder: the files of an answer are nearly always in one.
+   const archiveGroup = groups.length === 1 ? groups[0] : null;
+@@ -157,6 +221,37 @@ export function FilesProduced({ groups }: { groups: ProducedGroup[] }) {
+                 <span className="block truncate text-muted-foreground">
+                   {[folder, formatSize(item.size)].filter(Boolean).join(" · ")}
+                 </span>
++                {reviews[key] ? (
++                  <span className="mt-0.5 flex flex-wrap items-center gap-1.5">
++                    {decided[key] === "rejected" ? (
++                      <span className="text-muted-foreground">
++                        {t("files.review.rejected", { n: reviewed[key] ?? reviews[key].previous })}
++                      </span>
++                    ) : decided[key] === "accepted" ? (
++                      <span className="text-muted-foreground">{t("files.review.kept")}</span>
++                    ) : (
++                      <>
++                        <span className="text-muted-foreground">{t("files.review.title")}</span>
++                        <button
++                          type="button"
++                          disabled={busyReview === key}
++                          onClick={() => void decide(project, item.path, "reject")}
++                          className="rounded-md border px-1.5 py-0.5 text-xs transition-colors hover:bg-accent disabled:opacity-50"
++                        >
++                          {t("files.review.reject")}
++                        </button>
++                        <button
++                          type="button"
++                          disabled={busyReview === key}
++                          onClick={() => void decide(project, item.path, "accept")}
++                          className="rounded-md px-1.5 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:opacity-50"
++                        >
++                          {t("files.review.keep")}
++                        </button>
++                      </>
++                    )}
++                  </span>
++                ) : null}
+               </span>
+               <span className="flex shrink-0 items-center gap-1">
+                 {isOpenableFile(name) ? (
+diff --git a/src/i18n/messages.ru.ts b/src/i18n/messages.ru.ts
+index 38834bc..9631a17 100644
+--- a/src/i18n/messages.ru.ts
++++ b/src/i18n/messages.ru.ts
+@@ -552,6 +552,12 @@ export const ruMessages: Record<string, string> = {
+   "files.downloadZipOf": "Скачать {name} как .zip",
+   "files.downloadAllZip": "Скачать всё как .zip",
+   "files.produced.title": "Файлы этого ответа",
++  "files.review.title": "правка агента",
++  "files.review.reject": "Отклонить правку",
++  "files.review.keep": "Оставить",
++  "files.review.rejected": "Вернул версию {n}",
++  "files.review.kept": "Оставлено",
++  "files.review.failed": "Не удалось вернуть предыдущую версию.",
+   "files.produced.more": "+{count} ещё",
+   "files.produced.zipAll": "Скачать всё как .zip",
+   "files.produced.sendToTelegram": "Отправить в Telegram",
+diff --git a/src/i18n/messages.ts b/src/i18n/messages.ts
+index 7018a7d..2dadfa7 100644
+--- a/src/i18n/messages.ts
++++ b/src/i18n/messages.ts
+@@ -559,6 +559,12 @@ const enMessages = {
+   "files.downloadZipOf": "Download {name} as .zip",
+   "files.downloadAllZip": "Download everything as .zip",
+   "files.produced.title": "Files from this answer",
++  "files.review.title": "edited by the agent",
++  "files.review.reject": "Undo the edit",
++  "files.review.keep": "Keep",
++  "files.review.rejected": "Restored version {n}",
++  "files.review.kept": "Kept",
++  "files.review.failed": "Could not restore the previous version.",
+   "files.produced.more": "+{count} more",
+   "files.produced.zipAll": "Download all as .zip",
+   "files.produced.sendToTelegram": "Send to Telegram",
+diff --git a/src/lib/files/versions/review.ts b/src/lib/files/versions/review.ts
+new file mode 100644
+index 0000000..3265df6
+--- /dev/null
++++ b/src/lib/files/versions/review.ts
+@@ -0,0 +1,89 @@
++import fs from "node:fs/promises";
++import { getWorkDir } from "@/lib/storage/project-store";
++import { captureAfter, captureBefore, versionTargetFor, writeFileInside } from "@/lib/files/versions/capture";
++import { versionsEnabled } from "@/lib/files/versions/config";
++import { getVersionStore } from "@/lib/files/versions/store";
++import type { VersionInfo } from "@/lib/files/versions/shape";
++
++/**
++ * The edit an agent made to a file, offered to the person as a decision.
++ *
++ * The history already keeps every version and can put any of them back, so
++ * nothing new is needed to undo an edit. What was missing is the offer: after a
++ * turn that changed a file, the person was told the file exists and left to
++ * discover by themselves that its previous content is one click away.
++ *
++ * "Reject" is a restore of the version before the agent's - written as a new
++ * version of its own, so rejecting can itself be undone. "Accept" writes
++ * nothing: the file already holds what was accepted, and the history is the
++ * record either way.
++ */
++
++export interface EditUnderReview {
++  /** The version the agent's edit left in the file. */
++  current: number;
++  /** The version to bring back to reject it. */
++  previous: number;
++}
++
++/**
++ * Which edit to offer, from the file's versions, newest first.
++ *
++ * Only an agent's newest version is an offer: a person's own save, a restore,
++ * or a change made outside is something they already decided or already know
++ * about. A missing previous version means there is nothing to go back to, and a
++ * deleted one is skipped - bringing a file back to "deleted" is not an edit
++ * being rejected.
++ */
++export function rejectTargetOf(versions: VersionInfo[]): EditUnderReview | null {
++  if (versions.length < 2) return null;
++  const [newest] = versions;
++  if (!newest || newest.by.kind !== "agent") return null;
++  const previous = versions.slice(1).find((version) => !version.deleted);
++  if (!previous) return null;
++  return { current: newest.n, previous: previous.n };
++}
++
++/** Whether this file has an agent edit worth offering, or nothing. */
++export async function editUnderReview(projectId: string, filePath: string): Promise<EditUnderReview | null> {
++  if (!(await versionsEnabled())) return null;
++  const target = await versionTargetFor(projectId, filePath);
++  if (!target) return null;
++  const journal = await getVersionStore().journal(target.key);
++  return rejectTargetOf([...(journal?.versions ?? [])].reverse());
++}
++
++/**
++ * Put back the version before the agent's edit.
++ *
++ * The same writes as restoring by hand, and the same refusal: what the file
++ * holds now is kept first when it can be, and when it cannot (too large to
++ * keep) nothing is written and the caller is told why.
++ */
++export async function rejectEdit(
++  projectId: string,
++  filePath: string
++): Promise<{ restoredFrom: number; version: VersionInfo | null } | { refused: "too-large" | "unreadable" | "missing" | "invalid" }> {
++  if (!(await versionsEnabled())) return { refused: "invalid" };
++  const target = await versionTargetFor(projectId, filePath);
++  if (!target) return { refused: "invalid" };
++
++  const store = getVersionStore();
++  const journal = await store.journal(target.key);
++  const found = rejectTargetOf([...(journal?.versions ?? [])].reverse());
++  if (!found) return { refused: "missing" };
++
++  const content = await store.content(target.key, found.previous);
++  if (!content) return { refused: "missing" };
++
++  const before = await captureBefore(target.absolute).catch(() => "unreadable" as const);
++  if (before === "too-large" || before === "unreadable") return { refused: before };
++
++  try {
++    await writeFileInside(target.absolute, content, await fs.realpath(getWorkDir(projectId)));
++  } catch {
++    return { refused: "invalid" };
++  }
++  const version = await captureAfter(target.absolute, { kind: "restore", restoredFrom: found.previous });
++  return { restoredFrom: found.previous, version };
++}
